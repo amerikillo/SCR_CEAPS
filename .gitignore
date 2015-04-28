@@ -41,3 +41,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+SCR_CEAPS/build
+SCR_CEAPS/dist
+/SCR_CEAPS/build
+/SCR_CEAPS/dist

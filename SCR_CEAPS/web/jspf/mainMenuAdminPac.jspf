@@ -1,0 +1,67 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../main_menu.jsp">SIALSS</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mod. Farmacias<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../../farmacia/modSurteFarmacia.jsp">Surtido Receta</a></li>
+                            <li><a href="../../farmacia/modSurteFarmaciaP.jsp">Surtido Receta Pendientes</a></li>
+                            <li><a href="../../farmacia/modSurteFarmaciaCol.jsp">Surtido Recetas Colectivas</a></li>
+                            <li><a href="../../farmacia/modRecetasSurtidas.jsp">Consultas</a></li>
+                            <li><a href="../../receta/receta_colectiva.jsp">Receta Colectiva</a></li>
+                            <li><a href="../../receta/reimpresion_ticket.jsp">Reimpresión Ticket</a></li>
+                            <li><a href="../../receta/reimpresion_ticket_colec.jsp">Reimpresión Ticket Colectiva</a></li>
+                            <!--li class="divider"></li>
+                            <li><a href="#rf">Reimpresión de Comprobantes</a></li-->
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reportes<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <!--li><a href="../../farmacia/repDiarioFarmacia.jsp">Reporte Diario por Receta</a></li>
+                            <li><a href="../../farmacia/repMensFarmacia.jsp">Reporte Mensual por Receta</a></li>
+                            <li><a href="../../farmacia/repConsSemanal.jsp">Consumo Semanal</a></li-->
+                            <li><a href="../../farmacia/repSolSur.jsp">Solicitado / Surtido</a></li>
+                            <li><a href="../../reportes/dispensadoReceta.jsp">Dispensado Receta</a></li>
+                            <li><a href="../../reportes/dispensadoRecetaCol.jsp">Dispensado Receta Colectiva</a></li>
+                            <li><a href="../../reportes/diarioReceta.jsp">Reporte Diario Receta</a></li>
+                            <li><a href="../../reportes/diarioRecetaCol.jsp">Reporte Diario Receta Colectiva</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Existencias<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../../farmacia/existencias.jsp">Existencias</a></li>
+                            <li><a href="../../farmacia/cargaAbasto.jsp">Cargar Abasto</a></li>
+                            <!--li class="divider"></li>
+                            <li><a href="#rf">Reimpresión de Comprobantes</a></li-->
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administración de Pacientes<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="pacientes.jsp">Pacientes</a></li>
+                            <!--li><a href="pacientes/alta_pacientes.jsp">Alta de Pacientes</a></li>
+                            <li><a href="pacientes/editar_paciente.jsp">Edición de Pacientes</a></li>
+                            <!--li class="divider"></li>
+                            <li><a href="#rf">Reimpresión de Comprobantes</a></li-->
+                        </ul>
+                    </li>
+                    
+                </ul>
+                <div class="navbar-form navbar-right">
+                    <a class="btn btn-default" href="../../index.jsp">Salir</a>
+                </div>
+            </div><!--/.nav-collapse -->
+        </div>
