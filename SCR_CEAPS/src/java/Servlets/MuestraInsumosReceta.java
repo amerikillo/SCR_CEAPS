@@ -50,7 +50,7 @@ public class MuestraInsumosReceta extends HttpServlet {
             con.conectar();
             try {
                 //ResultSet rset = con.consulta("SELECT dr.fol_det, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dr.status, o.des_ori from productos p, detalle_productos dp, detreceta dr, receta r, origen o where dr.baja !='1' and p.cla_pro = dp.cla_pro and dp.det_pro = dr.det_pro AND dr.id_rec = r.id_rec AND dp.id_ori = o.id_ori AND r.fol_rec = '" + request.getParameter("folio") + "' and r.id_usu = '" + sesion.getAttribute("id_usu") + "' ;");
-                ResultSet rset = con.consulta("SELECT dr.fol_det, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dr.status, o.des_ori,o.id_ori from productos p, detalle_productos dp, detreceta dr, receta r, origen o where dr.baja !='1' and p.cla_pro = dp.cla_pro and dp.det_pro = dr.det_pro AND dr.id_rec = r.id_rec AND dp.id_ori = o.id_ori AND r.fol_rec = '" + sesion.getAttribute("folio_rec") + "' and r.id_usu = '" + sesion.getAttribute("id_usu") + "' ;");
+                ResultSet rset = con.consulta("SELECT dr.fol_det, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dr.status, o.des_ori,o.id_ori, dr.id_cau, dr.id_cau2, dr.indicaciones from productos p, detalle_productos dp, detreceta dr, receta r, origen o where dr.baja !='1' and p.cla_pro = dp.cla_pro and dp.det_pro = dr.det_pro AND dr.id_rec = r.id_rec AND dp.id_ori = o.id_ori AND r.fol_rec = '" + sesion.getAttribute("folio_rec") + "' and r.id_usu = '" + sesion.getAttribute("id_usu") + "' ;");
                 while (rset.next()) {
                     json.put("fol_det", rset.getString("fol_det"));
                     json.put("cla_pro", rset.getString("cla_pro"));
@@ -60,6 +60,9 @@ public class MuestraInsumosReceta extends HttpServlet {
                     json.put("can_sol", rset.getString("can_sol"));
                     json.put("cant_sur", rset.getString("cant_sur"));
                     json.put("id_ori", rset.getString("id_ori"));
+                    json.put("id_cau", rset.getString("id_cau"));
+                    json.put("id_cau2", rset.getString("id_cau2"));
+                    json.put("indicaciones", rset.getString("indicaciones"));
                     jsona.add(json);
                     json = new JSONObject();
                 }

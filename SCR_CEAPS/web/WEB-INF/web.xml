@@ -160,6 +160,18 @@
         <servlet-name>Existencias</servlet-name>
         <servlet-class>Servlets.Existencias</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>validaCauses</servlet-name>
+        <servlet-class>Servlets.validaCauses</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Unidades</servlet-name>
+        <servlet-class>Servlets.Unidades</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CrearBackup</servlet-name>
+        <servlet-class>Backup.CrearBackup</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Receta</servlet-name>
         <url-pattern>/Receta</url-pattern>
@@ -319,6 +331,18 @@
     <servlet-mapping>
         <servlet-name>Existencias</servlet-name>
         <url-pattern>/Existencias</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>validaCauses</servlet-name>
+        <url-pattern>/validaCauses</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Unidades</servlet-name>
+        <url-pattern>/Unidades</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CrearBackup</servlet-name>
+        <url-pattern>/CrearBackup</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

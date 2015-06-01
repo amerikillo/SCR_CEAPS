@@ -90,7 +90,7 @@ $(function () {
         $("#ori2").attr("value", "");
         $("#existencias").attr("value", "");
         $("#indica").val("");
-        $("#causes").val("");
+        //$("#causes").val("");
         $("#can_sol").val("");
     }
 
@@ -190,7 +190,7 @@ $(document).ready(function () {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    ////$("#causes").val("");
                     $("#can_sol").val("");
                     $("#cla_pro").focus();
                 }
@@ -202,7 +202,7 @@ $(document).ready(function () {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    ////$("#causes").val("");
                     $("#can_sol").val("");
                     $("#cla_pro").focus();
                 }
@@ -252,7 +252,7 @@ $(document).ready(function () {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    //$("#causes").val("");
                     $("#can_sol").val("");
                     $("#cla_pro").focus();
                 }
@@ -264,7 +264,7 @@ $(document).ready(function () {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    //$("#causes").val("");
                     $("#can_sol").val("");
                     $("#cla_pro").focus();
                 }
@@ -314,7 +314,7 @@ $(document).ready(function () {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    //$("#causes").val("");
                     $("#can_sol").val("");
                 }
 

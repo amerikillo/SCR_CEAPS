@@ -20,7 +20,7 @@
     ResultSet rset;
     ConectionDB con = new ConectionDB();
 
-    String id = "", cedula = "", ape_pat = "", ape_mat = "", nom_pac = "", rfc = "", cedulap = "", f_status = "", usuario = "", password = "", iniRec = "", finRec = "", folAct = "";
+    String id = "", cedula = "", ape_pat = "", ape_mat = "", nom_pac = "", rfc = "", cedulap = "", f_status = "", usuario = "", password = "", iniRec = "", finRec = "", folAct = "",tipoConsu="";
     try {
         id = request.getParameter("id");
 
@@ -29,7 +29,7 @@
 
     try {
         con.conectar();
-        rset = con.consulta("SELECT m.cedula,m.ape_pat,m.ape_mat,nom_med,rfc,cedulapro,f_status,u.user,u.passReal,m.iniRec,m.finRec,m.folAct FROM medicos m INNER JOIN usuarios u on m.cedula=u.cedula WHERE u.cedula='" + id + "'");
+        rset = con.consulta("SELECT m.cedula,m.ape_pat,m.ape_mat,nom_med,rfc,cedulapro,f_status,u.user,u.passReal,m.iniRec,m.finRec,m.folAct,m.tipoConsulta FROM medicos m INNER JOIN usuarios u on m.cedula=u.cedula WHERE u.cedula='" + id + "'");
         if (rset.next()) {
             cedula = rset.getString(1);
             ape_pat = rset.getString(2);
@@ -43,6 +43,7 @@
             iniRec = rset.getString(10);
             finRec = rset.getString(11);
             folAct = rset.getString(12);
+            tipoConsu=rset.getString(13);
         }
         con.cierraConexion();
     } catch (Exception e) {
@@ -134,9 +135,41 @@
                             </div>
                             <br />
                             <div class="row">
+                                <label class="col-sm-2 control-label">Tipo de Consulta</label>
+                                <div class="hidden">
+                                    <input type="text" class="form-control" value="<%=tipoConsu%>" name="txtTipoConsu" id="txtTipoConsu" readonly>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select class="form-control" id="slcTipoConsu" name="slcTipoConsu">
+                                        <option value="">---Seleccione---</option>
+                                        <option value="Consulta Externa" 
+                                                <%
+                                                if(tipoConsu.equals("Consulta Externa")){
+                                                    out.println("selected");
+                                                }
+                                                %>
+                                                >Consulta Externa</option>
+                                        <option value="Urgencias"
+                                                <%
+                                                if(tipoConsu.equals("Urgencias")){
+                                                    out.println("selected");
+                                                }
+                                                %>
+                                               >Urgencias</option>
+                                        <option value="Hospitalizacion"
+                                                <%
+                                                if(tipoConsu.equals("Hospitalizacion")){
+                                                    out.println("selected");
+                                                }
+                                                %>
+                                               >Hospitalización</option>
+                                    </select>
+                                </div>
+                            </div><br/> 
+                            <div class="row">
                                 <label for="usuario" class="col-sm-2 control-label">Usuario</label>
                                 <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="" readonly=""  value="<%=usuario%>"/>
+                                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="" value="<%=usuario%>" />
                                 </div>    
                                 <label for="rfc" class="col-sm-2 control-label">Password</label>
                                 <div class="col-sm-2">
@@ -146,7 +179,7 @@
                             <br />
                             <div class="row">                                
                                 <div class="col-lg-6">
-                                    <button class="btn btn-block btn-primary" id="Guardar" onclick="return validaGuardar();">Actualizar</button>
+                                    <button class="btn btn-block btn-primary" id="Guardar">Actualizar</button>
                                 </div>
                                 <div class="col-lg-6">
                                     <button class="btn btn-block btn-success" id="Regresar" >Regresar</button>
@@ -157,7 +190,7 @@
                 </div>
             </div>
         </div>
-    </body>
+
     <!-- 
     ================================================== -->
     <!-- Se coloca al final del documento para que cargue mas rapido -->
@@ -167,8 +200,6 @@
     <script src="../../js/jquery-ui-1.10.3.custom.js"></script>
     <script src="../../js/bootstrap-datepicker.js"></script>    
     <script>
-
-
                                         function tabular(e, obj)
                                         {
                                             tecla = (document.all) ? e.keyCode : e.which;
@@ -198,7 +229,6 @@
                                             }
                                         }
 
-
                                         function isNumberKey(evt)
                                         {
                                             var charCode = (evt.which) ? evt.which : event.keyCode
@@ -215,14 +245,13 @@
                                             document.getElementById("mySpan").value = y.toUpperCase();
 
                                         }
-
-
-
-
                                         $(document).ready(function () {
                                             $('#selectsts').change(function () {
                                                 var valor = $('#selectsts').val();
                                                 $('#estatus').val(valor);
+                                            });
+                                            $('#slcTipoConsu').change(function(){
+                                                $('#txtTipoConsu').val($('#slcTipoConsu').val());
                                             });
                                             $('#formulario_pacientes').submit(function () {
                                                 //alert("Ingresó");
@@ -241,7 +270,7 @@
                                                 var estatus = $('#estatus').val();
                                                 var password = $('#password').val();
                                                 var form = $('#formulario_pacientes');
-                                                if (ape_pat === "" || ape_mat === "" || nombre === "" || rfc === "" || password === "" || iniRec === "" || finRec === "" || folAct === "") {
+                                                if (ape_pat === "" || ape_mat === "" || nombre === "" || rfc === "" || password === "" || iniRec === "" || finRec === "" || folAct === "" || $('#slcTipoConsu').val()==="") {
                                                     alert("Tiene campos vacíos, verifique.");
                                                     return false;
                                                 }
@@ -284,19 +313,13 @@
                                                             alert(mensaje);
                                                             window.location.href = 'medico.jsp';
                                                         }
-
-
                                                     }
                                                 }
-
-
                                             });
                                             $('#Regresar').click(function () {
                                                 self.location = 'medico.jsp';
                                             });
-
                                         });
-
-
     </script>
+        </body>
 </html>

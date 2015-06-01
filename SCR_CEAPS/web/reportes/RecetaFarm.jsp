@@ -3,7 +3,6 @@
     Created on : 25/11/2014, 04:45:27 PM
     Author     : CEDIS TOLUCA3
 --%>
-
 <%@page import="Clases.ConectionDB"%>
 <%@page import="javax.print.attribute.standard.Copies"%>
 <%@page import="javax.print.attribute.standard.MediaSizeName"%>
@@ -50,7 +49,8 @@
     <head><title></title></head>
     <body>
         <img src="../imagenes/GNKL_Small.JPG" width="100" alt="Lgo">
-        <%            ConectionDB con = new ConectionDB();
+        <%  
+        ConectionDB con = new ConectionDB();
             Connection conn;
             con.conectar();
             conn = con.getConn();
@@ -85,13 +85,14 @@
                     System.out.println("ErrorRuta1->" + ex);
                     reportfile = new File("/home/linux9/NetBeansProjects/SCR_MEDALFA/SCR_MEDALFA/web/reportes/RecetaFarm.jasper");
                 }
-                String tip_cob = "";
+                String tip_cob = "",tip_cons="";
                 try {
-                    ResultSet rs = con.consulta("select tip_cob from recetas where fol_rec='" + Folio + "' and cant_sur!=0 GROUP BY fol_rec");
+                    ResultSet rs = con.consulta("select tip_cob,tip_cons from recetas where fol_rec='" + Folio + "' and cant_sur!=0 GROUP BY fol_rec");
                     if (rs.next()) {
                         tip_cob = rs.getString(1);
+                        tip_cons=rs.getString(2);
                     }
-
+                    System.out.println("TIP-COB->"+tip_cob+" TIP-CONS->"+tip_cons);
                 } catch (Exception ex) {
                     System.out.println("Error al buscar" + ex);
                 }
@@ -115,6 +116,19 @@
                     parameter.put("SP", "");
                     parameter.put("PA", "");
                     parameter.put("PR", "X");
+                }
+                if(tip_cons.equals("Consulta Externa")){
+                    parameter.put("CEX","X");
+                    parameter.put("URG","");
+                    parameter.put("HOS","");
+                }else if(tip_cons.equals("Urgencias")){
+                    parameter.put("CEX","");
+                    parameter.put("URG","X");
+                    parameter.put("HOS","");
+                }else if(tip_cons.equals("Hospitalizacion")){
+                    parameter.put("CEX","");
+                    parameter.put("URG","");
+                    parameter.put("HOS","X");
                 }
                 JasperPrint jasperPrint = JasperFillManager.fillReport(reportfile.getPath(), parameter, conn);
 
@@ -172,21 +186,21 @@
                     reporticket = new File(application.getRealPath("reportes/RecetaTicket.jasper"));
                 } catch (Exception ex) {
                     System.out.println("ErrorRutaCOL->" + ex);
-                    reporticket = new File("/home/linux9/NetBeansProjects/SCR_MEDALFA/SCR_MEDALFA/web/reportes/RecetaTicket.jasper");
+                    //reporticket = new File("/home/linux9/NetBeansProjects/SCR_MEDALFA/SCR_MEDALFA/web/reportes/RecetaTicket.jasper");
                 }
                 Map parameterticket = new HashMap();
                 parameterticket.put("folio", Folio);
                 parameterticket.put("NomUsu", Usuario);
-                JasperPrint jasperPrintticket = JasperFillManager.fillReport(reporticket.getPath(), parameterticket, conn);
+                //JasperPrint jasperPrintticket = JasperFillManager.fillReport(reporticket.getPath(), parameterticket, conn);
 
                 JRPrintServiceExporter exporter = new JRPrintServiceExporter();
-                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrintticket);
+                //exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrintticket);
                 exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, impresoras[Epson].getAttributes());
                 exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
                 exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
                 //exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);       
                 try {
-                    exporter.exportReport();
+                    //exporter.exportReport();
                 } catch (Exception ex) {
                     out.print("<script type='text/javascript'>alert('Folio sin Datos ');</script>");
                     System.out.println("Error-> " + ex);
@@ -200,21 +214,21 @@
                     reporticket = new File(application.getRealPath("reportes/RecetaTicket.jasper"));
                 } catch (Exception ex) {
                     System.out.println("ErrorRuta++->" + ex);
-                    reporticket = new File("/home/linux9/NetBeansProjects/SCR_MEDALFA/SCR_MEDALFA/web/reportes/RecetaTicket.jasper");
+                    //reporticket = new File("/home/linux9/NetBeansProjects/SCR_MEDALFA/SCR_MEDALFA/web/reportes/RecetaTicket.jasper");
                 }
                 Map parameterticket = new HashMap();
                 parameterticket.put("folio", Folio);
                 parameterticket.put("NomUsu", Usuario);
-                JasperPrint jasperPrintticket = JasperFillManager.fillReport(reporticket.getPath(), parameterticket, conn);
+                //JasperPrint jasperPrintticket = JasperFillManager.fillReport(reporticket.getPath(), parameterticket, conn);
 
                 JRPrintServiceExporter exporter = new JRPrintServiceExporter();
-                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrintticket);
+                //exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrintticket);
                 exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, impresoras[Epson].getAttributes());
                 exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
                 exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
                 //exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);       
                 try {
-                    exporter.exportReport();
+                    //exporter.exportReport();
                 } catch (Exception ex) {
                     out.print("<script type='text/javascript'>alert('Folio sin Datos ');</script>");
                     System.out.println("Error-> " + ex);

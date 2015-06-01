@@ -238,7 +238,7 @@
                 </div>
                     <textarea class="form-control" rows="5" required placeholder="Justificación" name="obs"></textarea>
                 <br/>
-                <button class="btn btn-block btn-primary" name="accion" value="salidaAjuste">Ajustar(-)</button>
+                <button class="btn btn-block btn-primary" name="accion" value="salidaAjuste" onclick="return cofirm('Realizar Ajuste?')">Ajustar(-)</button>
             </form> 
             <%
                     }

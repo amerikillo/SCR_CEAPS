@@ -56,15 +56,48 @@ public class CapturaMedicamentoManual extends HttpServlet {
                 int sol = Integer.parseInt(request.getParameter("can_sol"));
                 int sur = sol;
                 int sol1 = 0;
-                String causes = "";
+                String causes = "", causes2 = "";
+                sesion.setAttribute("folio_recRM", request.getParameter("folio"));
+                /*
+                 * Causes 2
+                 */
                 byte[] a = request.getParameter("causes").getBytes("UTF-8");
                 String causes_L = new String(a, "UTF-8");
+                sesion.setAttribute("diag1", causes_L);
+                String[] arrayCauses = causes_L.split(" - ");
+                String indicaciones = request.getParameter("can_sol")+" CAJAS POR " + request.getParameter("dias") + " DIA(S)";
+                byte[] b = request.getParameter("indicaciones").getBytes("ISO-8859-1");
+                String indica = new String(b, "UTF-8");
+                if (!indica.equals("")) {
+                    indicaciones = indicaciones + " | \n" + indica;
+                }
+                if (arrayCauses.length > 1) {
+                    causes_L = arrayCauses[1];
+                }
                 ResultSet rset_cau = con.consulta("select id_cau from causes where des_cau = '" + causes_L + "' ");
                 while (rset_cau.next()) {
                     causes = rset_cau.getString(1);
                 }
                 if (causes.equals("")) {
                     causes = "999";
+                }
+                /*
+                 * Causes 2
+                 */
+
+                a = request.getParameter("causes2").getBytes("UTF-8");
+                causes_L = new String(a, "UTF-8");
+                sesion.setAttribute("diag2", causes_L);
+                arrayCauses = causes_L.split(" - ");
+                if (arrayCauses.length > 1) {
+                    causes_L = arrayCauses[1];
+                }
+                rset_cau = con.consulta("select id_cau from causes where des_cau = '" + causes_L + "' ");
+                while (rset_cau.next()) {
+                    causes2 = rset_cau.getString(1);
+                }
+                if (causes2.equals("")) {
+                    //causes2 = "999";
                 }
                 String det_pro = "";
                 String id_rec = "";
@@ -76,7 +109,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                 }
                 System.out.println("tipoooooo" + id_tip);
                 System.out.println("----------------****" + id_rec);
-                con.insertar("update receta set baja = '0', transito = '1'  where id_rec = " + id_rec + " ");
+                con.insertar("update receta set baja = '0', transito = '1'  where id_rec = '" + id_rec + "' ");
                 if (id_tip.equals("1")) {
                     /*
                      *
@@ -126,7 +159,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                         } else {
                                             //Contador = Contador + 1;
                                             System.out.println("No Entro1" + "/" + cont);
-                                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + sur + "', '" + sur + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + sur + "', '" + sur + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0' ,'" + causes2 + "') ");
                                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sur + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                         }
                                         can_sol = 0;
@@ -150,7 +183,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                         } else {
                                             System.out.println("No Entro2" + "/" + cont);
                                             //Contador = Contador + 1;
-                                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0','" + causes2 + "' ) ");
                                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sol1 + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                         }
                                         can_sol = 0;
@@ -172,7 +205,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                 } else {
                                     //Contador = Contador + 1;
                                     System.out.println("No Entro3" + "/" + cont);
-                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA  " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0','" + causes2 + "' ) ");
                                     con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                 }
                                 can_sol = 0;
@@ -237,7 +270,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                             } else {
                                                 //Contador = Contador + 1;
                                                 System.out.println("No Entro1" + "/" + cont);
-                                                con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + request.getParameter("can_sol") + "', '" + sur + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                                                con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + request.getParameter("can_sol") + "', '" + sur + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0','" + causes2 + "' ) ");
                                                 con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sur + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                             }
                                             can_sol = 0;
@@ -261,7 +294,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                             } else {
                                                 System.out.println("No Entro2" + "/" + cont);
                                                 //Contador = Contador + 1;
-                                                con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                                                con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0','" + causes2 + "' ) ");
                                                 con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sol1 + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                             }
                                             can_sol = 0;
@@ -284,7 +317,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                     } else {
                                         //Contador = Contador + 1;
                                         System.out.println("No Entro3" + "/" + cont);
-                                        con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                                        con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0','" + causes2 + "' ) ");
                                         con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                     }
                                     can_sol = 0;
@@ -314,7 +347,19 @@ public class CapturaMedicamentoManual extends HttpServlet {
                                     det_pro = rset2.getString(1);
                                 }
                             }
-                            con.insertar("insert into detreceta values ('0', '" + det_pro + "', '" + sol + "', '0', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '0', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS', '0', '0' ) ");
+                            int banPend = 0, can_solAnt = 0;
+                            String fol_det = "";
+                            ResultSet rset2 = con.consulta("select fol_det,can_sol from detreceta where id_rec = '" + id_rec + "' and det_pro = '" + det_pro + "' ");
+                            while (rset2.next()) {
+                                banPend = 1;
+                                can_solAnt = rset2.getInt("can_sol");
+                                fol_det = rset2.getString("fol_det");
+                            }
+                            if (banPend == 1) {
+                                con.insertar("update detreceta set can_sol = '" + (sol + can_solAnt) + "' , baja='0' where fol_det = '" + fol_det + "'");
+                            } else {
+                                con.insertar("insert into detreceta values ('0', '" + det_pro + "', '" + sol + "', '0', '" + request.getParameter("fecha") + "', '0', '" + id_rec + "', CURTIME(), '" + causes + "','" + indicaciones + "', '0', '0','" + causes2 + "' ) ");
+                            }
                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '0', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                         } else {
                             out.println("<script>alert('SOLO 4 MEDICAMENTOS.')</script>");
@@ -342,19 +387,19 @@ public class CapturaMedicamentoManual extends HttpServlet {
                             if (sol <= 0) {
                                 if (sol == 0) {
                                     sur = Integer.parseInt(rset.getString("cant"));
-                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + request.getParameter("can_sol") + "', '" + sur + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0' ) ");
+                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + request.getParameter("can_sol") + "', '" + sur + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0','SIN INDICACIONES' ) ");
                                     con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sur + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                                     con.insertar("update inventario set cant = '0', web = '0' where id_inv = '" + rset.getString("id_inv") + "' ");
                                 }
                                 if (sol < 0) {
                                     sur = sol * -1;
-                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0' ) ");
+                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0','SIN INDICACIONES' ) ");
                                     con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sol1 + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                                     con.insertar("update inventario set cant = '" + (-1 * sol) + "', web = '0' where id_inv = '" + rset.getString("id_inv") + "' ");
                                 }
                                 break;
                             }
-                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0' ) ");
+                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0','SIN INDICACIONES' ) ");
                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                             con.insertar("update inventario set cant = '0', web = '0' where id_inv = '" + rset.getString("id_inv") + "' ");
                         } else {
@@ -364,7 +409,7 @@ public class CapturaMedicamentoManual extends HttpServlet {
                         if (!(det_pro != "")) {
                             det_pro = "1";
                         }
-                        con.insertar("insert into detreceta values ('0', '" + det_pro + "', '" + sol + "', '0', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '0', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0' ) ");
+                        con.insertar("insert into detreceta values ('0', '" + det_pro + "', '" + sol + "', '0', '" + request.getParameter("fecha") + "', '0', '" + id_rec + "', CURTIME(), '1','SIN INDICACIONES', '0', '0','SIN INDICACIONES' ) ");
                         con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '0', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                     }
                 }

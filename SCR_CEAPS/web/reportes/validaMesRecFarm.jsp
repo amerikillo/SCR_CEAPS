@@ -35,8 +35,8 @@
             //Ensure correct for language. English is "January 1, 2004"
             var TODAY = monthname[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
             //---------------   END LOCALIZEABLE   ---------------
-
-            //<script language="javascript" src="list02.js"></script>
+        </script>
+        //<script language="javascript" src="list02.js"></script>
         <style type="text/css">
             <!--
             .style1 {
@@ -168,7 +168,8 @@
                                             <td width="76"> <span class="Estilo8">Cant. Sur</span></td>
                                         </tr>
                                         <%     try {
-                                                System.out.println("1--> SELECT r.fecha_hora, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dp.cla_fin FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("cla_uni") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0 group by dr.fol_det;");
+                                                int totCantSur = 0, totCantSol = 0, cantFol = 0, c = 1;
+                                                System.out.println("1-->  SELECT r.fecha_hora, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dp.cla_fin FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND pa.id_pac = r.id_pac AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("cla_uni") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0 group by dr.fol_det;");
 
                                                 rset = stmt.executeQuery("SELECT r.fecha_hora, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dp.cla_fin FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND pa.id_pac = r.id_pac AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("cla_uni") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0 group by dr.fol_det;");
                                                 while (rset.next()) {
@@ -178,6 +179,12 @@
                                                         financ = "Seguro Popular";
                                                     } else if (rset.getString("dp.cla_fin").equals("2")) {
                                                         financ = "FASSA";
+                                                    }
+                                                    ResultSet rs = conn.consulta("SELECT r.fol_rec, Sum(dr.can_sol), Sum(dr.cant_sur), Count(dr.fol_det) FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND pa.id_pac = r.id_pac AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("cla_uni") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0 AND r.fol_rec ='" + rset.getString("fol_rec") + "' group by r.fol_rec;");
+                                                    if (rs.next()) {
+                                                        totCantSol = rs.getInt(2);
+                                                        totCantSur = rs.getInt(3);
+                                                        cantFol = rs.getInt(4);
                                                     }
                                         %>
                                         <tr>
@@ -196,6 +203,17 @@
                                             <td align="center"><%=rset.getString("cant_sur")%></td>
                                         </tr>
                                         <%
+                                            if (c >= cantFol) {
+                                        %>
+                                        <tr style="background: #9acfea">
+                                            <td>TOTAL FOLIO</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                            <td align="center"><%=totCantSol%></td>
+                                            <td align="center"><%=totCantSur%></td>
+                                        </tr>
+                                        <%
+                                                        c = 0;
+                                                    }
+                                                    c++;
                                                 }
                                             } catch (Exception ex) {
                                                 System.out.println("Error-> " + ex.getMessage());
@@ -210,7 +228,7 @@
                                             <td>&nbsp;</td>
                                             <td>&nbsp;</td>
 
-                                            <td class="Estilo5" align="right">&nbsp;</td>
+                                            <td class="Estilo5" align="right">TOTALES</td>
                                             <td class="Estilo5" align="center">&nbsp;</td>
                                             <td class="Estilo5" align="center"></td>
                                             <td class="Estilo5" align="center">&nbsp;</td>

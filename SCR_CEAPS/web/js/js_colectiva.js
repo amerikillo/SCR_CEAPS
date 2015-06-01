@@ -83,7 +83,7 @@ $('#btn_capturar').click(function () {
     var des_pro = $('#des_pro').val();
     var form = $('#formulario_receta');
     if (cla_pro !== "" && des_pro !== "") {
-        if ($('#can_sol').val() === "") {
+        if ($('#can_sol').val() === ""||$('#can_sol').val() === "0") {
             alert('Capture la cantidad a entregar');
         } else {
             document.getElementById('formulario_receta').action = "../CapturaMedicamentoColectivo";
@@ -172,7 +172,7 @@ $(function () {
         $("#ori2").attr("value", "");
         $("#existencias").attr("value", "");
         $("#indica").val("");
-        $("#causes").val("");
+        //$("#causes").val("");
         $("#can_sol").val("");
     }
 
@@ -280,7 +280,7 @@ $(document).ready(function () {
                         $("#ori2").attr("value", "");
                         $("#existencias").attr("value", "");
                         $("#indica").val("");
-                        $("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
                         $("#des_pro").focus();
                     }
@@ -293,7 +293,7 @@ $(document).ready(function () {
                         $("#ori2").attr("value", "0");
                         $("#existencias").attr("value", "0");
                         $("#indica").val("");
-                        //$("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
                         $("#unidades").focus();
                     }
@@ -365,7 +365,7 @@ $(document).ready(function () {
                         $("#ori2").attr("value", "");
                         $("#existencias").attr("value", "");
                         $("#indica").val("");
-                        $("#causes").val("");
+                        //$("#causes").val("");
                         $("#can_sol").val("");
                         $("#cla_pro").focus();
                     }
@@ -379,7 +379,7 @@ $(document).ready(function () {
                         $("#ori2").attr("value", "0");
                         $("#existencias").attr("value", "0");
                         $("#indica").val("");
-                        //$("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
                         $("#unidades").focus();
                     }

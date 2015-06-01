@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +51,7 @@ public class Farmacias extends HttpServlet {
         try {
             String NombreUsu = "";
             String usuario = (String) sesion.getAttribute("id_usu");
+            String cedulaUsu = "";
 
             /*
              * Para el Surtido de la Receta
@@ -60,6 +63,10 @@ public class Farmacias extends HttpServlet {
                     ResultSet RsetUsu = con.consulta("SELECT nombre FROM usuarios WHERE id_usu='" + usuario + "'");
                     if (RsetUsu.next()) {
                         NombreUsu = RsetUsu.getString(1);
+                    }
+                    RsetUsu = con.consulta("SELECT u.cedula FROM usuarios u, receta r WHERE u.id_usu = r.id_usu and r.id_rec='" + request.getParameter("id_rec") + "' ");
+                    if (RsetUsu.next()) {
+                        cedulaUsu = RsetUsu.getString(1);
                     }
                     System.out.println(NombreUsu);
                     String fol_det2 = request.getParameter("fol_det");
@@ -86,13 +93,15 @@ public class Farmacias extends HttpServlet {
                             }
                         }
                     }
-                    out.println("<script>alert('Se surtió la receta con folio: " + request.getParameter("fol_rec") + " correctamente.')</script>");
+                    out.println("<script>alert('La receta número [" + request.getParameter("id_rec") + "] con folio [" + request.getParameter("fol_rec") + "] se surtió correctamente.')</script>");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     out.println("<script>alert('Error al surtir la receta')</script>");
                 }
                 con.cierraConexion();
-                out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + request.getParameter("fol_rec") + "&tipo=" + idtip + "&usuario=" + NombreUsu + "', '', 'width=1200,height=800,left=50,top=50,toolbar=no')</script>");
+                if (!cedulaUsu.equals("-")) {
+                    out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + request.getParameter("fol_rec") + "&tipo=" + idtip + "&usuario=" + NombreUsu + "', '', 'width=1200,height=800,left=50,top=50,toolbar=no')</script>");
+                }
                 //out.println("<script>window.location='reportes/TicketReceta.jsp?fol_rec=" + request.getParameter("fol_rec") + "'</script>");
                 if ("si".equals(request.getParameter("col"))) {
                     sesion.setAttribute("folio_rec", "");
@@ -133,7 +142,7 @@ public class Farmacias extends HttpServlet {
                             int sur21 = Integer.parseInt(sur2);
                             int sur = sur21;
                             int total = sur12 + sur21;
-                            rset5 = con.consulta("SELECT i.id_inv, DP.det_pro, P.cla_pro, P.des_pro, DP.cad_pro, DP.lot_pro, I.cant, DP.cla_fin, DP.id_ori FROM detalle_productos DP, productos P, inventario I, unidades U, usuarios US WHERE DP.cla_pro = P.cla_pro AND DP.det_pro = I.det_pro AND I.cla_uni = U.cla_uni AND US.cla_uni = U.cla_uni AND P.cla_pro = '" + clave + "' AND US.id_usu='" + sesion.getAttribute("id_usu") + "' and DP.cad_pro between '" + fecha1 + "' and '" + fecha2 + "' AND cant>0 ORDER BY  DP.id_ori, DP.cad_pro, I.cant ASC ");
+                            rset5 = con.consulta("SELECT I.id_inv, DP.det_pro, P.cla_pro, P.des_pro, DP.cad_pro, DP.lot_pro, I.cant, DP.cla_fin, DP.id_ori FROM detalle_productos DP, productos P, inventario I, unidades U, usuarios US WHERE DP.cla_pro = P.cla_pro AND DP.det_pro = I.det_pro AND I.cla_uni = U.cla_uni AND US.cla_uni = U.cla_uni AND P.cla_pro = '" + clave + "' AND US.id_usu='" + sesion.getAttribute("id_usu") + "' and DP.cad_pro between '" + fecha1 + "' and '" + fecha2 + "' AND cant>0 ORDER BY  DP.id_ori, DP.cad_pro, I.cant ASC ");
                             while (rset5.next()) {
                                 banExist = 1;
                                 if (Integer.parseInt(rset5.getString("cant")) > 0) {
@@ -195,7 +204,7 @@ public class Farmacias extends HttpServlet {
 
                                     } else {
                                         if (dife > 0) {
-                                            rset = con.consulta("SELECT i.id_inv, DP.det_pro, P.cla_pro, P.des_pro, DP.cad_pro, DP.lot_pro, I.cant, DP.cla_fin, DP.id_ori FROM detalle_productos DP, productos P, inventario I, unidades U, usuarios US WHERE DP.cla_pro = P.cla_pro AND DP.det_pro = I.det_pro AND I.cla_uni = U.cla_uni AND US.cla_uni = U.cla_uni AND P.cla_pro = '" + clave + "' AND US.id_usu='" + sesion.getAttribute("id_usu") + "' and DP.cad_pro between '" + fecha1 + "' and '" + fecha2 + "' AND cant>0 ORDER BY  DP.id_ori, DP.cad_pro, I.cant ASC ");
+                                            rset = con.consulta("SELECT I.id_inv, DP.det_pro, P.cla_pro, P.des_pro, DP.cad_pro, DP.lot_pro, I.cant, DP.cla_fin, DP.id_ori FROM detalle_productos DP, productos P, inventario I, unidades U, usuarios US WHERE DP.cla_pro = P.cla_pro AND DP.det_pro = I.det_pro AND I.cla_uni = U.cla_uni AND US.cla_uni = U.cla_uni AND P.cla_pro = '" + clave + "' AND US.id_usu='" + sesion.getAttribute("id_usu") + "' and DP.cad_pro between '" + fecha1 + "' and '" + fecha2 + "' AND cant>0 ORDER BY  DP.id_ori, DP.cad_pro, I.cant ASC ");
                                             while (rset.next()) {
                                                 det_pro = rset.getString("det_pro");
                                                 if (Integer.parseInt(rset.getString("cant")) > 0) {
@@ -272,14 +281,16 @@ public class Farmacias extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
-                    out.println("<script>alert('Error al surtir la receta Pendiente')</script>");
+                    out.println("<script>alert('Error al surtir la receta Pendiente:" + e.getMessage() + "')</script>");
                 }
                 con.cierraConexion();
                 if (!imp.equals("no")) {
                     out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + request.getParameter("fol_rec") + "&tipo=" + idtip + "')</script>");
+                } else {
+                    out.println("<script>alert('La receta número [" + request.getParameter("id_rec") + "] con folio [" + request.getParameter("fol_rec") + "] se surtió correctamente.')</script>");
                 }
                 //out.println("<script>window.location='reportes/TicketReceta.jsp?fol_rec=" + request.getParameter("fol_rec") + "'</script>");
-                out.println("<script>alert('Se surtió la receta con folio: " + request.getParameter("fol_rec") + " correctamente.')</script>");
+                //
                 out.println("<script>window.location='farmacia/modSurteFarmaciaP.jsp'</script>");
             } /*
              * 
@@ -301,9 +312,9 @@ public class Farmacias extends HttpServlet {
                             id_rec = rset2.getString(5);
                             n_cant = cant_inv + cant_sur;
 
-                            con.insertar("update detreceta set can_sol = '0', cant_sur = '0', baja='1' where fol_det = '" + rset.getString(1) + "' ");
+                            con.insertar("update detreceta set cant_sur = '0', baja='1' where fol_det = '" + rset.getString(1) + "' ");
                             con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
-                            con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL IVENTARIO', '-', NOW(), 'SE SE CANCELA RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                            con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE SE CANCELA RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                         }
 
                     }
@@ -318,6 +329,7 @@ public class Farmacias extends HttpServlet {
                 out.println("<script>window.location='farmacia/modSurteFarmacia.jsp'</script>");
             } else if (request.getParameter("accion").equals("modificar")) {
                 try {
+                    String fol_rec = "";
                     con.conectar();
                     String fol_det = request.getParameter("fol_det");
                     System.out.println(fol_det);
@@ -353,6 +365,10 @@ public class Farmacias extends HttpServlet {
                                         cantSur = rset.getInt("cant_sur");
                                         cantSol = rset.getInt("can_sol");
                                     }
+                                    rset = con.consulta("select fol_rec from receta where id_rec = '" + id_rec + "' ");
+                                    while (rset.next()) {
+                                        fol_rec = rset.getString("fol_rec");
+                                    }
                                 } catch (Exception e) {
                                 }
                                 if (cantSol == sol1 && cantSur == sur1) {
@@ -376,8 +392,19 @@ public class Farmacias extends HttpServlet {
                     }
                     con.cierraConexion();
                     out.println("<script>alert('Modifiación Correcta')</script>");
+                    sesion.setAttribute("fol_rec", fol_rec);
+                    //response.setContentType("text/html");
+                    //request.setAttribute"(fol_rec", fol_rec
+                    //);
+                    //request.getRequestDispatcher("farmacia/modSurteFarmacia.jsp").forward(request, response);
                     out.println("<script>window.location='farmacia/modSurteFarmacia.jsp'</script>");
                     //response.sendRedirect("farmacia/modSurteFarmacia.jsp");
+                    /*String url = "/farmacia/modSurteFarmacia.jsp"; //relative url for display jsp page
+                     ServletContext sc = getServletContext();
+                     RequestDispatcher rd = sc.getRequestDispatcher(url);
+
+                     request.setAttribute("fol_rec", fol_rec);
+                     rd.forward(request, response);*/
                 } catch (Exception e) {
                 }
             }

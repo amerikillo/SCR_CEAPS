@@ -39,7 +39,7 @@
         response.sendRedirect("index.jsp");
     }
 
-    String fecha1 = df2.format(new Date());
+    String fecha1 = "2010-01-01";
     String fecha2 = "2030-01-01";
     int meses = 0;
     try {
@@ -109,7 +109,24 @@
                         <div class="col-lg-1">
                             <button class="btn btn-primary" type="submit">Consultar</button>
                         </div>
+                        <div class="col-lg-1">
+                            <a class="btn btn-success" href="gnrExistencias.jsp" >Descargar</a>
+                        </div>
+                        <div class="col-lg-1">
+                            <a class="btn btn-warning" href="existencias.jsp" >Actualizar</a>
+                        </div>
+
                     </form>
+                    <div class="col-lg-2">
+                        <form action="../CrearBackup">
+                            <button type="submit" class="btn btn-danger btn-block" onclick="return validaRespaldo()">Respaldar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" id="imgCarga">
+                    <div class="text-center">
+                        <img src="../imagenes/ajax-loader-1.gif" width="100">
+                    </div>
                 </div>
                 <br/>
                 <table class="table table-bordered table-condensed table-responsive table-striped" id="existencias">
@@ -132,16 +149,19 @@
 
                                 ResultSet rset = con.consulta("select * from existencias where cad_pro between '" + fecha1 + "' and '" + fecha2 + "' and cant!=0 and f_status='A' and cla_uni = '" + cla_uni + "'");
                                 while (rset.next()) {
+                                    String caducado = "";
                                     clave = rset.getString(1);
                                     descrip = rset.getString(3);
                                     lote = rset.getString(4);
                                     caducidad = rset.getString(5);
                                     origen = rset.getString(6);
                                     cantidad = rset.getString(7);
+                                    if (rset.getDate(5).before(new Date())) {
+                                        caducado = "class='danger'";
+                                    }
                                     caducidad = df3.format(df2.parse(caducidad));
-
                         %>
-                        <tr>
+                        <tr <%=caducado%>>
 
                             <td><%=clave%></td>
                             <!--td></td-->
@@ -161,8 +181,8 @@
                         %>
                     </tbody>
                 </table><br/>
-                    <label class="text-center h3">Claves en Cero</label><br/>
-                    <table class="table table-bordered table-condensed table-responsive table-striped" id="existenciasCero">
+                <label class="text-center h3">Claves en Cero</label><br/>
+                <table class="table table-bordered table-condensed table-responsive table-striped" id="existenciasCero">
                     <thead>
                         <tr>
                             <td>Clave</td>
@@ -213,10 +233,21 @@
         <script src="../js/dataTables.bootstrap.js"></script>
         <script src="../js/jquery-ui-1.10.3.custom.js"></script>
         <script>
-            $(document).ready(function() {
-                $('#existencias').dataTable();
-                $('#existenciasCero').dataTable();
-            });
+
+                                $(document).ready(function() {
+                                    $('#existencias').dataTable();
+                                    $('#existenciasCero').dataTable();
+                                    $('#imgCarga').toggle();
+                                });
+
+                                function validaRespaldo() {
+                                    var c = confirm('Seguro de generar el respaldo?');
+                                    if (c) {
+                                        $('#imgCarga').toggle();
+                                        return true;
+                                    }
+                                    return false;
+                                }
         </script>
     </body>
 

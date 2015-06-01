@@ -86,6 +86,7 @@
             sesion.setAttribute("num_afi", "");
             sesion.setAttribute("ced_rec", "");
             sesion.setAttribute("med_rec", "");
+            sesion.setAttribute("obser", "");
             
         }
     } catch (Exception e) {

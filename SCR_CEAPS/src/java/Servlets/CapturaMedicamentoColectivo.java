@@ -104,7 +104,7 @@ public class CapturaMedicamentoColectivo extends HttpServlet {
                                     con.actualizar("update kardex set cant = '" + can_sur1 + "' WHERE det_pro='" + det_pro + "' AND id_rec='" + id_rec + "' ");
                                 } else {
                                     System.out.println("No Entro1" + "/" + cont);
-                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + sur + "', '" + sur + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS = " + request.getParameter("piezas_sol") + " UNIDADES', '0', '0' ) ");
+                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + sur + "', '" + sur + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS = " + request.getParameter("piezas_sol") + " UNIDADES', '0', '0','' ) ");
                                     con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sur + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                                 }
                                 can_sol = 0;
@@ -126,7 +126,7 @@ public class CapturaMedicamentoColectivo extends HttpServlet {
                                     con.actualizar("update kardex set cant = '" + can_sur1 + "' WHERE det_pro='" + det_pro + "' AND id_rec='" + id_rec + "' ");
                                 } else {
                                     System.out.println("No Entro2" + "/" + cont);
-                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS = " + request.getParameter("piezas_sol") + " UNIDADES', '0', '0' ) ");
+                                    con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + (sol1) + "', '" + (sol1) + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS = " + request.getParameter("piezas_sol") + " UNIDADES', '0', '0','' ) ");
                                     con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + sol1 + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                                 }
                                 can_sol = 0;
@@ -147,7 +147,7 @@ public class CapturaMedicamentoColectivo extends HttpServlet {
                             con.actualizar("update kardex set cant = '" + can_sur1 + "' WHERE det_pro='" + det_pro + "' AND id_rec='" + id_rec + "' ");
                         } else {
                             System.out.println("No Entro3" + "/" + cont);
-                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS = " + request.getParameter("piezas_sol") + " UNIDADES', '0', '0' ) ");
+                            con.insertar("insert into detreceta values ('0', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', '" + rset.getString("cant") + "', '" + request.getParameter("fecha") + "', '1', '" + id_rec + "', CURTIME(), '" + causes + "','" + request.getParameter("unidades") + " CAJAS, UNA TAB/AMP CADA " + request.getParameter("horas") + " HORAS POR " + request.getParameter("dias") + " DIAS = " + request.getParameter("piezas_sol") + " UNIDADES', '0', '0','' ) ");
                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + rset.getString("det_pro") + "', '" + rset.getString("cant") + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                         }
                         can_sol = 0;
@@ -180,7 +180,7 @@ public class CapturaMedicamentoColectivo extends HttpServlet {
                         con.actualizar("update detreceta set can_sol='" + can_sol1 + "',cant_sur='" + can_sur1 + "' WHERE det_pro='" + det_pro + "' AND id_rec='" + id_rec + "'");
                         con.actualizar("update kardex set cant = '" + can_sur1 + "' WHERE det_pro='" + det_pro + "' AND id_rec='" + id_rec + "' ");
                     } else {
-                        con.insertar("insert into detreceta values ('0', '" + det_pro + "', '" + sol + "', '0', '" + df.format(df2.parse(request.getParameter("fecha"))) + "', '0', '" + id_rec + "', CURTIME(), '" + causes + "','', '0', '0' ) ");
+                        con.insertar("insert into detreceta values ('0', '" + det_pro + "', '" + sol + "', '0', '" + request.getParameter("fecha") + "', '0', '" + id_rec + "', CURTIME(), '" + causes + "','', '0', '0','' ) ");
                         con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '0', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA COL', '" + sesion.getAttribute("id_usu") + "', '0')");
                     }
 

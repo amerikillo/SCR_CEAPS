@@ -7,17 +7,12 @@ package Servlets;
 
 import Clases.ConectionDB;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.ResultSet;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -37,13 +32,8 @@ public class EditaMedicamento extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         System.out.println("hols");
-        DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         ConectionDB con = new ConectionDB();
-        JSONObject json = new JSONObject();
-        JSONArray jsona = new JSONArray();
         HttpSession sesion = request.getSession(true);
         try {
             con.conectar();
@@ -62,9 +52,9 @@ public class EditaMedicamento extends HttpServlet {
                 if (Integer.parseInt(request.getParameter("cant_sol")) == 0) {
                     System.out.println("Cantidad 0");
                     n_cant = cant_inv + cant_sur;
-                    con.insertar("update detreceta set can_sol = '0', cant_sur = '0', baja='1' where fol_det = '" + request.getParameter("fol_det") + "' ");
+                    con.insertar("update detreceta set can_sol = '0', cant_sur = '0', baja='1', indicaciones='' where fol_det = '" + request.getParameter("fol_det") + "' ");
                     con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
-                    con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL IVENTARIO', '-', NOW(), 'SE ELIMINA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                    con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE ELIMINA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                 } else {
                     if (Integer.parseInt(request.getParameter("cant_sol")) > can_sol) {
                         if (Integer.parseInt(request.getParameter("cant_sol")) > cant_inv) {
@@ -73,15 +63,17 @@ public class EditaMedicamento extends HttpServlet {
                                 System.out.println("Cantidad mayor");
                                 int dif = Integer.parseInt(request.getParameter("cant_sol")) - cant_sur;
                                 n_cant = cant_inv - dif;
-                                con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '0', baja='0' where fol_det = '" + request.getParameter("fol_det") + "' ");
+                                con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '0', baja='0', indicaciones='" + request.getParameter("cant_sol") + " POR " + request.getParameter("duraModal") + " DIA(S) | " + request.getParameter("indicaModal") + "' where fol_det = '" + request.getParameter("fol_det") + "' ");
                                 con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
                                 con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + dif + "', 'SALIDA RECETA', '-', NOW(), 'SE MODIFICA INSUMO', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                            } else {
+                                con.insertar("update detreceta set indicaciones='" + request.getParameter("cant_sol") + " POR " + request.getParameter("duraModal") + " DIA(S) | " + request.getParameter("indicaModal") + "' where fol_det = '" + request.getParameter("fol_det") + "' ");
                             }
                         } else {
                             System.out.println("Cantidad mayor");
                             int dif = Integer.parseInt(request.getParameter("cant_sol")) - cant_sur;
                             n_cant = cant_inv - dif;
-                            con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '" + request.getParameter("cant_sol") + "', baja='0' where fol_det = '" + request.getParameter("fol_det") + "' ");
+                            con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '" + request.getParameter("cant_sol") + "', baja='0', indicaciones='" + request.getParameter("cant_sol") + " POR " + request.getParameter("duraModal") + " DIA(S) | " + request.getParameter("indicaModal") + "' where fol_det = '" + request.getParameter("fol_det") + "' ");
                             con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + dif + "', 'SALIDA RECETA', '-', NOW(), 'SE MODIFICA INSUMO', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                         }
@@ -90,21 +82,22 @@ public class EditaMedicamento extends HttpServlet {
                             System.out.println("Cantidad menor");
                             int dif = can_sol - Integer.parseInt(request.getParameter("cant_sol"));
                             n_cant = cant_inv + dif;
-                            con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '0' where fol_det = '" + request.getParameter("fol_det") + "' ");
+                            con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '0', indicaciones='" + request.getParameter("cant_sol") + " POR " + request.getParameter("duraModal") + " DIA(S) | " + request.getParameter("indicaModal") + "' where fol_det = '" + request.getParameter("fol_det") + "' ");
                             con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
-                            con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + dif + "', 'REINTEGRA AL IVENTARIO', '-', NOW(), 'SE MODIFICA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                            con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + dif + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE MODIFICA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                         } else {
                             System.out.println("Cantidad menor");
                             int dif = can_sol - Integer.parseInt(request.getParameter("cant_sol"));
                             n_cant = cant_inv + dif;
-                            con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '" + request.getParameter("cant_sol") + "' where fol_det = '" + request.getParameter("fol_det") + "' ");
+                            con.insertar("update detreceta set can_sol = '" + request.getParameter("cant_sol") + "', cant_sur = '" + request.getParameter("cant_sol") + "', indicaciones='" + request.getParameter("cant_sol") + " POR " + request.getParameter("duraModal") + " DIA(S) | " + request.getParameter("indicaModal") + "' where fol_det = '" + request.getParameter("fol_det") + "' ");
                             con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
-                            con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + dif + "', 'REINTEGRA AL IVENTARIO', '-', NOW(), 'SE MODIFICA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                            con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + dif + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE MODIFICA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                         }
                     }
                 }
 
             } catch (Exception e) {
+                System.out.println(e);
             }
             con.cierraConexion();
         } catch (Exception e) {
@@ -139,15 +132,5 @@ public class EditaMedicamento extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

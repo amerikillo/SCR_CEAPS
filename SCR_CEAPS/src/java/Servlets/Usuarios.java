@@ -74,7 +74,7 @@ public class Usuarios extends HttpServlet {
                     if (rset1.next()) {
                         Unidad = rset1.getString("cla_uni");
                     }
-                    con.actualizar("update usuarios set nombre='" + completo + "',ape_pat='" + ape_pat + "',ape_mat='" + ape_mat + "',user='" + request.getParameter("usuario") + "', cla_uni='" + Unidad + "', pass=MD5('" + request.getParameter("password") + "'),passReal='" + request.getParameter("password") + "' where id_usu='" + request.getParameter("id_usu") + "'");
+                    con.actualizar("update usuarios set nombre='" + nombre.toUpperCase() + "',ape_pat='" + ape_pat + "',ape_mat='" + ape_mat + "',user='" + request.getParameter("usuario") + "', cla_uni='" + Unidad + "', pass=MD5('" + request.getParameter("password") + "'),passReal='" + request.getParameter("password") + "' where id_usu='" + request.getParameter("id_usu") + "'");
                     ResultSet rset2 = con.consulta("select id_usu from usuarios WHERE user='" + request.getParameter("usuario") + "'");
                     while (rset2.next()) {
                         foliop = Integer.parseInt(rset2.getString("id_usu"));

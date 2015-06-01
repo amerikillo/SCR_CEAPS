@@ -392,8 +392,8 @@
     <script src="../js/js_colectiva.js"></script>
     <script>
 
-$('#tablaMedicamento').load('receta_Farmacia.jsp #tablaMedicamento');
-$('#tablaBotones').load('receta_Farmacia.jsp #tablaBotones');
+$('#tablaMedicamento').load('receta_farmacia.jsp #tablaMedicamento');
+$('#tablaBotones').load('receta_farmacia.jsp #tablaBotones');
 /*
  * 
  * @returns {undefined}

@@ -79,14 +79,16 @@ public class RecetaNombreCol extends HttpServlet {
             }
             int ban = 0;
             try {
-                ResultSet rset = con.consulta("SELECT cedula,nom_com FROM medicos WHERE nom_com = '" + nombre + "' limit 1 ");
+                ResultSet rset = con.consulta("SELECT cedula,nom_com, tipoConsulta FROM medicos WHERE nom_com = '" + nombre + "' limit 1 ");
                 while (rset.next()) {
 
                     ban = 1;
                     sesion.setAttribute("cedula", rset.getString(1));
                     sesion.setAttribute("nom_med", rset.getString(2));
+                    sesion.setAttribute("tipoConsulta", rset.getString(3));
                     json.put("cedula", rset.getString(1));
                     json.put("nom_med", rset.getString(2));
+                    json.put("tipoConsulta", rset.getString(3));
                     jsona.add(json);
                     json = new JSONObject();
                 }

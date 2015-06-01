@@ -63,11 +63,15 @@ public class ProductoClave extends HttpServlet {
                         int ban = 0;
                         String id_pac = "";
                         String id_rec = "";
-
+                        String obser = "";
                         byte[] a = request.getParameter("nom_pac").getBytes("ISO-8859-1");
                         String nombre = new String(a, "UTF-8");
                         a = request.getParameter("carnet").getBytes("ISO-8859-1");
                         String carnet = new String(a, "UTF-8");
+
+                        a = request.getParameter("observaciones").getBytes("ISO-8859-1");
+                        obser = new String(a, "UTF-8");
+                        sesion.setAttribute("obser", obser);
                         ResultSet rset = con.consulta("select id_pac from pacientes where nom_com = '" + nombre + "' and num_afi = '" + request.getParameter("fol_sp") + "' ");
                         while (rset.next()) {
                             id_pac = rset.getString(1);
@@ -87,15 +91,17 @@ public class ProductoClave extends HttpServlet {
 
                         json.put("carnet", carnet);
                         if (ban == 1) {
-                            con.insertar("update receta set id_pac = '" + id_pac + "', cedula='" + request.getParameter("cedula") + "', carnet= '" + carnet + "' where id_rec= '" + id_rec + "'");
+                            con.insertar("update receta set obser='" + obser + "', id_pac = '" + id_pac + "', cedula='" + request.getParameter("cedula") + "', carnet= '" + carnet + "', tip_cons='" + request.getParameter("tipoCons") + "' where id_rec= '" + id_rec + "'");
                         } else {//Si no inserta la receta
-                            con.insertar("insert into receta values ('0', '" + request.getParameter("folio") + "', '" + id_pac + "', '" + request.getParameter("cedula") + "', '1', '" + sesion.getAttribute("id_usu") + "', '-', '" + carnet + "', '1', NOW(),'1', '0', '0')");
+                            con.insertar("insert into receta values ('0', '" + request.getParameter("folio") + "', '" + id_pac + "', '" + request.getParameter("cedula") + "', '1', '" + sesion.getAttribute("id_usu") + "', '-', '" + carnet + "', '1',concat('" + request.getParameter("fecha") + " ',CURTIME()),'1', '0', '0','" + obser + "','" + request.getParameter("tipoCons") + "')");
                         }
 
                     } catch (Exception e) {
+                        System.out.println("Error1->" + e);
                     }
 
                 } catch (Exception e) {
+                    System.out.println("Error2->" + e);
                 }
 
                 /*

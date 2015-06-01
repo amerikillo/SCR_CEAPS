@@ -24,7 +24,8 @@ import org.json.simple.JSONObject;
  */
 public class ModiMedico extends HttpServlet {
 
-            ConectionDB con = new ConectionDB();
+    ConectionDB con = new ConectionDB();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,26 +44,29 @@ public class ModiMedico extends HttpServlet {
             JSONArray jsona = new JSONArray();
             DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            int baja=0;
+            int baja = 0;
             con.conectar();
-            try {                               
+            try {
                 byte[] a = request.getParameter("ape_pat").getBytes("ISO-8859-1");
                 String ape_pat = new String(a, "UTF-8");
                 a = request.getParameter("ape_mat").getBytes("ISO-8859-1");
                 String ape_mat = new String(a, "UTF-8");
                 a = request.getParameter("nombre").getBytes("ISO-8859-1");
                 String nombre = new String(a, "UTF-8");
-                String  completo = ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase(); 
-                
-                con.actualizar("update medicos set ape_pat='"+ape_pat.toUpperCase()+"',ape_mat='"+ape_mat.toUpperCase()+"',nom_med='" + nombre.toUpperCase() + "',nom_com='" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "',rfc='" + request.getParameter("rfc") + "',cedulapro='" + request.getParameter("cedula") + "',f_status='" + request.getParameter("estatus") + "', iniRec='"+request.getParameter("iniRec")+"',finRec='"+request.getParameter("finRec")+"',folAct='"+request.getParameter("folAct")+"' WHERE cedula='"+request.getParameter("clave")+"'");
-                if(request.getParameter("estatus").equals("A"))
-                    baja=1;
-                else
-                    baja=0;
-                con.actualizar("UPDATE usuarios SET pass=MD5('"+request.getParameter("password")+"'),baja='"+baja+"',passReal='"+request.getParameter("password")+"' WHERE cedula='"+request.getParameter("clave")+"'");
-                json.put("mensaje", "Médico actualizado correctamente con la Clave "+request.getParameter("clave")+" ");                
-                json.put("ban","1");
-                
+
+                String tipoConsu = request.getParameter("txtTipoConsu");
+                String completo = ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase();
+                System.out.println("Nombre completo:" + completo);
+                con.actualizar("update medicos set tipoConsulta='" + tipoConsu + "', ape_pat='" + ape_pat.toUpperCase() + "',ape_mat='" + ape_mat.toUpperCase() + "',nom_med='" + nombre.toUpperCase() + "',nom_com='" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "',rfc='" + request.getParameter("rfc") + "',cedulapro='" + request.getParameter("cedula") + "',f_status='" + request.getParameter("estatus") + "', iniRec='" + request.getParameter("iniRec") + "',finRec='" + request.getParameter("finRec") + "',folAct='" + request.getParameter("folAct") + "' WHERE cedula='" + request.getParameter("clave") + "'");
+                if (request.getParameter("estatus").equals("A")) {
+                    baja = 1;
+                } else {
+                    baja = 0;
+                }
+                con.actualizar("UPDATE usuarios SET pass=MD5('" + request.getParameter("password") + "'),baja='" + baja + "',passReal='" + request.getParameter("password") + "', ape_pat='" + ape_pat.toUpperCase() + "',ape_mat='" + ape_mat.toUpperCase() + "',nombre='" + nombre.toUpperCase() + "', user = '" + request.getParameter("usuario") + "'  WHERE cedula='" + request.getParameter("clave") + "'");
+                json.put("mensaje", "Médico actualizado correctamente con la Clave " + request.getParameter("clave") + " ");
+                json.put("ban", "1");
+
             } catch (Exception e) {
                 json.put("mensaje", "El Médico no se pudo actualizar");
                 System.out.println(e.getMessage());

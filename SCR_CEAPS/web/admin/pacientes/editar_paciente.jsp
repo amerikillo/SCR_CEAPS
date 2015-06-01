@@ -149,6 +149,7 @@
                                 </div>                                
                             </div>
                             <br />
+                            <!--
                             <h4>Datos de la Poliza</h4>
                             <div class="row">
                                 <label for="ini_vig" class="col-sm-2 control-label">Inicio de Vigencia</label>
@@ -161,6 +162,7 @@
                                 </div>
                             </div>
                             <br />
+                            -->
                             <div class="row">
                                 <div class="col-lg-6">
                                     <button class="btn btn-block btn-primary" id="Guardar" onclick="return validaGuardar();">Actualizar</button>                                
@@ -286,9 +288,7 @@
                                         }
 
                                         $(function() {
-                                            $("#ini_vig").datepicker();
                                             $("#fec_nac").datepicker();
-                                            $("#fin_vig").datepicker();
                                         });
 
 
@@ -307,11 +307,9 @@
                                                 var fec_nac = $('#fec_nac').val();
                                                 var sexo = $('#sexo').val();
                                                 var no_exp = $('#no_exp').val();
-                                                var ini_vig = $('#ini_vig').val();
-                                                var fin_vig = $('#fin_vig').val();
                                                 var estatus = $('#estatus').val();
                                                 var form = $('#formulario_pacientes');
-                                                if (no_afi === "" || tip_cob === "" || ape_pat === "" || ape_mat === "" || nombre === "" || fec_nac === "" || sexo === "" || no_exp === "" || ini_vig === "" || fin_vig === "") {
+                                                if (no_afi === "" || tip_cob === "" || ape_pat === "" || ape_mat === "" || nombre === "" || fec_nac === "" || sexo === "" || no_exp === "" ) {
                                                     alert("Tiene campos vacíos, verifique.");
                                                     return false;
                                                 }
@@ -323,36 +321,18 @@
                                                 var f_nac = fec_nac.split('/');
                                                 var f_n = f_nac[2] + '-' + f_nac[1] + "-" + f_nac[0]
 
-                                                var i_vig = ini_vig.split('/');
-                                                var i_v = i_vig[2] + '-' + i_vig[1] + "-" + i_vig[0]
-
-                                                var f_vig = fin_vig.split('/');
-                                                var f_v = f_vig[2] + '-' + f_vig[1] + "-" + f_vig[0]
 
                                                 if (Date.parse(dtFechaActual) < Date.parse(f_n)) {
                                                     alert("La fecha de nacimiento no puede ser mayor a la fecha actual");
                                                     return false;
                                                 }
-                                                if (Date.parse(i_v) > Date.parse(f_v)) {
-                                                    alert("El inicio de la vigencia no puede ser después del fin de la vigencia");
-                                                    return false;
-                                                }
 
                                                 if ((fec_nac.match(RegExPattern)) && (fec_nac != '')) {
                                                 } else {
-                                                    alert("Caducidad Incorrecta, verifique.");
+                                                    alert("Fecha Nacimiento Incorrecta, verifique.");
                                                     return false;
                                                 }
-                                                if ((ini_vig.match(RegExPattern)) && (ini_vig != '')) {
-                                                } else {
-                                                    alert("Inicio de vigencia incorrecta, verifique.");
-                                                    return false;
-                                                }
-                                                if ((fin_vig.match(RegExPattern)) && (fin_vig != '')) {
-                                                } else {
-                                                    alert("Fin de vigencia incorrecta, verifique.");
-                                                    return false;
-                                                }
+     
                                                 $.ajax({
                                                     type: form.attr('method'),
                                                     url: form.attr('action'),
@@ -380,8 +360,7 @@
                                                             $('#fec_nac').val("");
                                                             $('#sexo').val("");
                                                             $('#no_exp').val("");
-                                                            $('#ini_vig').val("");
-                                                            $('#fin_vig').val("");
+      
 
                                                             self.location = 'pacientes.jsp';
                                                         }

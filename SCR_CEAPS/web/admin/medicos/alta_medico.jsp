@@ -45,36 +45,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="../../main_menu.jsp">SIALSS</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">                    
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administración de Médicos<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="medico.jsp">Médicos</a></li>                            
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administración de Usuarios<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="../usuario/usuario.jsp">Usuarios</a></li>                            
-                        </ul>
-                    </li>
-                </ul>
-                <div class="navbar-form navbar-right">
-                    <a class="btn btn-default" href="../../index.jsp">Salir</a>
-                </div>
-            </div><!--/.nav-collapse -->
-        </div>
+        
+        <%@include file="../../jspf/mainMenu.jspf" %> 
         <div class="container-fluid">
             <div class="container">
                 <div class="row">
@@ -153,6 +125,16 @@
                                 <label for="folFin" class="col-sm-1 control-label">Folio Fin</label>
                                 <div class="col-sm-2">
                                     <input type="number" class="form-control" id="folFin" name="folFin" required />
+                                </div>
+                            </div><br/>
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Tipo de Consulta</label>
+                                <div class="col-sm-2">
+                                    <select class="form-control" id="slcTipoConsu" name="slcTipoConsu">
+                                        <option value="Consulta Externa">Consulta Externa</option>
+                                        <option value="Urgencias">Urgencias</option>
+                                        <option value="Hospitalización">Hospitalización</option>
+                                    </select>
                                 </div>
                             </div>
                             <br />

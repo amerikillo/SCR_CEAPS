@@ -18,7 +18,7 @@
     DecimalFormatSymbols custom = new DecimalFormatSymbols();
     ResultSet rset;
     ConectionDB con = new ConectionDB();
-    String que = "", titulo = "Alta de Usuarios", nombre = "", user = "", apeP = "", apeM = "", ocultarA = "hidden", ocultarG = "", disa = "", id = "", uni = "", pass = "", form = "../../Usuarios";
+    String que = "", titulo = "Alta de Usuarios Farmacia", nombre = "", user = "", apeP = "", apeM = "", ocultarA = "hidden", ocultarG = "", disa = "", id = "", uni = "", pass = "", form = "../../Usuarios";
     if (request.getParameter("que") == null) {
         que = "";
     } else {
@@ -41,7 +41,7 @@
             apeM = rset.getString(5);
             uni = rset.getString(6);
             pass = rset.getString(7);
-            titulo = "Edición de Usuarios";
+            titulo = "Edición de Usuarios Farmacia";
             ocultarA = "";
             ocultarG = "hidden";
             disa = "disabled";

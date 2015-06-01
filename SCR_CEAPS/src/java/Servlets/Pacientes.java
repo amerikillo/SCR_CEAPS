@@ -15,8 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -68,17 +66,20 @@ public class Pacientes extends HttpServlet {
                         mensaje = mensaje + "\nEl paciente" + completo + "ya existía previamente";
                     } else {
                         String TipCob = request.getParameter("tip_cob");
-                        String ini_vig = "", fin_vig = "";
-                        if (!TipCob.equals("SP")) {
-                            ini_vig = "2010-01-01";
-                            fin_vig = "2050-12-31";
-                        } else {
-                            ini_vig = request.getParameter("ini_vig");
-                            fin_vig = request.getParameter("fin_vig");
-                            ini_vig = (ini_vig);
-                            fin_vig = (fin_vig);
-                        }
-                        con.insertar("insert into pacientes values('0', '" + ape_pat.toUpperCase() + "', '" + ape_mat.toUpperCase() + "', '" + nombre.toUpperCase() + "', '" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "', '" + request.getParameter(i + "fec_nac") + "', '" + request.getParameter(i + "sexo").toUpperCase() + "', '" + request.getParameter("no_afi") + "', '" + request.getParameter("tip_cob") + "', '" + ini_vig + "', '" + fin_vig + "', '0', '" + request.getParameter(i + "no_exp") + "', 'A','');");
+                        String ini_vig, fin_vig;
+                        ini_vig = "2010-01-01";
+                        fin_vig = "2050-12-31";
+
+//                        if (!TipCob.equals("SP")) {
+//                            ini_vig = "2010-01-01";
+//                            fin_vig = "2050-12-31";
+//                        } else {
+//                            ini_vig = request.getParameter("ini_vig");
+//                            fin_vig = request.getParameter("fin_vig");
+//                            ini_vig = (ini_vig);
+//                            fin_vig = (fin_vig);
+//                        }
+                        con.insertar("insert into pacientes values('0', '" + ape_pat.toUpperCase() + "', '" + ape_mat.toUpperCase() + "', '" + nombre.toUpperCase() + "', '" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "', '" + request.getParameter(i + "fec_nac") + "', '" + request.getParameter(i + "sexo").toUpperCase() + "', '" + request.getParameter("no_afi") + "', '" + TipCob + "', '" + ini_vig + "', '" + fin_vig + "', '0', '" + request.getParameter(i + "no_exp") + "', 'A','');");
                         ResultSet rset2 = con.consulta("SELECT id_pac FROM pacientes WHERE nom_com='" + completo + "'");
                         while (rset2.next()) {
                             foliop = Integer.parseInt(rset2.getString("id_pac"));

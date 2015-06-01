@@ -39,7 +39,7 @@
 
     }
 
-    String fecha1 = df2.format(new Date());
+    String fecha1 = "2010-01-01";
     String fecha2 = "2030-01-01";
     int meses = 0;
     try {
@@ -106,6 +106,9 @@
                         <div class="col-lg-1">
                             <button class="btn btn-primary" type="submit">Consultar</button>
                         </div>
+                        <div class="col-lg-1">
+                            <a class="btn btn-warning" href="existencias1.jsp" >Actualizar</a>
+                        </div>
                     </form>
                 </div>
                 <br/>
@@ -115,9 +118,9 @@
                             <td>Clave</td>
                             <!--td>CB</td-->
                             <td>Descripción</td>
-                            <td>Lote</td>
+                            <!--td>Lote</td>
                             <td>Caducidad</td>
-                            <td>Origen</td>
+                            <td>Origen</td-->
                             <td>Cantidad</td>
                         </tr>
                     </thead>
@@ -127,25 +130,29 @@
                                 con.conectar();
                                 String clave = "", descrip = "", lote = "", caducidad = "", origen = "", cantidad = "0";
 
-                                ResultSet rset = con.consulta("select * from existencias where cad_pro between '" + fecha1 + "' and '" + fecha2 + "' and cant!=0 and f_status='A' and cla_uni = '" + cla_uni + "'");
+                                ResultSet rset = con.consulta("select * from existencias where cad_pro between '" + fecha1 + "' and '" + fecha2 + "' and cant!=0 and f_status='A' and cla_uni = '" + cla_uni + "' group by cla_pro");
                                 while (rset.next()) {
+                                    String caducado = "";
                                     clave = rset.getString(1);
                                     descrip = rset.getString(3);
                                     lote = rset.getString(4);
                                     caducidad = rset.getString(5);
                                     origen = rset.getString(6);
                                     cantidad = rset.getString(7);
+                                    //caducidad = df3.format(df2.parse(caducidad));
+
+                                    if (rset.getDate(5).before(new Date())) {
+                                        caducado = "class='danger'";
+                                    }
                                     caducidad = df3.format(df2.parse(caducidad));
-
                         %>
-                        <tr>
-
+                        <tr <%=caducado%>>
                             <td><%=clave%></td>
                             <!--td></td-->
                             <td><%=descrip%></td>
-                            <td><%=lote%></td>
+                            <!--td><%=lote%></td>
                             <td><%=caducidad%></td>
-                            <td><%=origen%></td>
+                            <td><%=origen%></td-->
                             <td><%=cantidad%></td>
                         </tr>
                         <%
@@ -153,13 +160,13 @@
                                 }
                                 con.cierraConexion();
                             } catch (Exception e) {
-
+                                System.out.println(e);
                             }
                         %>
                     </tbody>
                 </table><br/>
-                    <label class="text-center h3">Claves en Cero</label><br/>
-                    <table class="table table-bordered table-condensed table-responsive table-striped" id="existenciasCero">
+                <label class="text-center h3">Claves en Cero</label><br/>
+                <table class="table table-bordered table-condensed table-responsive table-striped" id="existenciasCero">
                     <thead>
                         <tr>
                             <td>Clave</td>

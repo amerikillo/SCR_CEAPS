@@ -11,19 +11,37 @@
 <%    ConectionDB con = new ConectionDB();
     HttpSession sesion = request.getSession();
     String id_usu = "";
-    String uni_ate = "", cedula = "", medico = "";
+    String uni_ate = "", cedula = "", medico = "", obser = "", diag1 = "", diag2 = "", tipoConsulta = "", cedPro = "", tip_cons = "";
     try {
         id_usu = (String) session.getAttribute("id_usu");
         uni_ate = (String) session.getAttribute("cla_uni");
         cedula = (String) session.getAttribute("cedula");
         medico = (String) session.getAttribute("id_usu");
+        obser = (String) session.getAttribute("obser");
+        diag1 = (String) session.getAttribute("diag1");
+        diag2 = (String) session.getAttribute("diag2");
+        if (obser == null) {
+            obser = "";
+        }
 
+        if (diag1 == null) {
+            diag1 = "";
+        }
+        if (diag2 == null) {
+            diag2 = "";
+        }
         con.conectar();
         try {
-            ResultSet rset = con.consulta("select us.nombre, un.des_uni from usuarios us, unidades un where us.cla_uni = un.cla_uni and us.id_usu = '" + id_usu + "' ");
+            ResultSet rset = con.consulta("select concat(us.nombre,' ',ape_pat,' ',ape_mat) as nombre, un.des_uni from usuarios us, unidades un where us.cla_uni = un.cla_uni and us.id_usu = '" + id_usu + "' ");
             while (rset.next()) {
                 medico = rset.getString(1);
                 uni_ate = rset.getString(2);
+            }
+
+            rset = con.consulta("select tipoConsulta, cedulapro from medicos where cedula = '" + cedula + "' ");
+            while (rset.next()) {
+                tipoConsulta = rset.getString(1);
+                cedPro = rset.getString(2);
             }
         } catch (Exception e) {
             e.getMessage();
@@ -48,10 +66,11 @@
 
         try {
             con.conectar();
-            ResultSet rset = con.consulta("select carnet, id_rec from receta where fol_rec = '" + folio_rec + "'");
+            ResultSet rset = con.consulta("select carnet, id_rec, tip_cons from receta where fol_rec = '" + folio_rec + "'");
             while (rset.next()) {
                 carnet = rset.getString("carnet");
                 id_rec = rset.getString("id_rec");
+                tip_cons = rset.getString("tip_cons");
             }
             con.cierraConexion();
         } catch (Exception e) {
@@ -115,27 +134,57 @@
 
                 <div class="row">
                     <div class="col-md-4"><h3>Receta Electr&oacute;nica</h3> </div>
-                    <div class="col-md-2"><img src="../imagenes/isem.png" title="Logo" height="80" alt="Logo"></div> 
-                    <div class="col-md-2"><img src="../imagenes/savi1.jpg" title="Logo" height="80" alt="Logo"></div> 
-                    <div class="col-md-2"><img src="../imagenes/medalfaLogo.png" title="Logo" height="80" alt="Logo"></div> 
-                    <div class="col-md-2"><img src="../imagenes/gobierno.png" title="Logo" height="80" alt="Logo"></div> 
+                    <div class="col-md-2"><img src="../imagenes/isem.png" title="Logo" height="50" alt="Logo"></div> 
+                    <div class="col-md-2"><img src="../imagenes/savi1.jpg" title="Logo" height="50" alt="Logo"></div> 
+                    <div class="col-md-2"><img src="../imagenes/medalfaLogo.png" title="Logo" height="50" alt="Logo"></div> 
+                    <div class="col-md-2"><img src="../imagenes/gobierno.png" title="Logo" height="50" alt="Logo"></div> 
                 </div>
 
                 <form class="form-horizontal" role="form" name="formulario_receta" id="formulario_receta" method="get" action="../Receta">
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="row">
-                                <label for="fecha" class="col-sm-1 control-label"> Unidad de Salud:</label>
+                                <label for="fecha" class="col-sm-1 control-label"> U. de Salud:</label>
                                 <div class="col-md-6">
                                     <input type="text" class="input-sm form-control" id="uni_ate" readonly name="uni_ate" placeholder="" value="<%=uni_ate%>"/>
                                 </div>
                                 <label for="fecha" class="col-sm-1 control-label">Folio</label>
-                                <div class="col-sm-2">
-                                    <input name="folio" type="text" class="input-sm form-control" id="folio" placeholder="Folio"  value="<%=folio_rec%>" readonly>
+                                <div class="col-sm-2 has-error">
+                                    <input name="folio" type="text" class="input-sm form-control" id="folio" placeholder="Folio"  style="color:red;" value="<%=folio_rec%>" readonly>
                                 </div>
                                 <label for="fecha" class="col-sm-1 control-label">Fecha</label>
                                 <div class="col-sm-1">
-                                    <input type="text" class="input-sm form-control" id="fecha1" readonly name="fecha" placeholder="" data-date-format="dd/mm/yyyy" value="<%=df3.format(new java.util.Date())%>"/>
+                                    <input type="date" class="input-sm form-control" id="fecha1" readonly name="fecha" placeholder="" value="<%=df2.format(new java.util.Date())%>"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <h4 class="col-sm-1">Tipo de Consulta</h4>
+                                <div class="col-sm-2">
+                                    <select class="form-control" name="tipoCons" id="tipoCons">
+                                        <option value="0">--Seleccione--</option>
+                                        <option
+                                            <%
+                                                if (tip_cons.equals("Consulta Externa")) {
+                                                    out.println("selected");
+                                                }
+                                            %>
+                                            >Consulta Externa</option>
+                                        <option
+                                            <%
+                                                if (tip_cons.equals("Urgencias")) {
+                                                    out.println("selected");
+                                                }
+                                            %>
+                                            >Urgencias</option>
+                                        <option value="Hospitalizacion"
+                                                <%
+                                                    if (tip_cons.equals("Hospitalizacion")) {
+                                                        out.println("selected");
+                                                    }
+                                                %>
+                                                >Hospitalización</option>
+                                    </select>
                                 </div>
                             </div>
                             <br/>
@@ -144,13 +193,13 @@
                                     <div class=" panel panel-default">
                                         <br/>                                       
                                         <div class="col-sm-12">
-                                            <button type="button" class="btn btn-default btn-sm" data-placement="left" data-toggle="tooltip" data-placement="left" title="Buscar Paciente por folio de paciente" id="bus_pac"><span class="glyphicon glyphicon-search"></span></button>
+                                            <button type="button" class="btn btn-default btn-sm" data-placement="left" data-toggle="tooltip" title="Buscar Paciente por folio de paciente" id="bus_pac"><span class="glyphicon glyphicon-search"></span></button>
                                             No. Paciente
                                         </div>
                                         <div class="col-sm-6">
                                             <input type="text" class="input-sm form-control" id="sp_pac" onkeypress="borraNombre();
-            return isNumberKey(event);
-            return tabular(event, this);
+                                                    return isNumberKey(event);
+                                                    return tabular(event, this);
                                                    " onchange="borraNombre();" onkeyup="borraNombre();" name="sp_pac" placeholder="Clave Paciente"  value=""/>
                                         </div>
                                         <div class="col-sm-6">
@@ -164,12 +213,12 @@
                                         </div>
                                         <br/>
                                         <div class="col-sm-12">
-                                            <button type="button" class="btn btn-default btn-sm" data-placement="left" data-toggle="tooltip" data-placement="left" title="Buscar Paciente por su nombre" id="bus_pacn"><span class="glyphicon glyphicon-search"></span></button>
+                                            <button type="button" class="btn btn-default btn-sm" data-placement="left" data-toggle="tooltip" title="Buscar Paciente por su nombre" id="bus_pacn"><span class="glyphicon glyphicon-search"></span></button>
                                             Nombre
                                         </div>
                                         <div class="col-sm-12">
                                             <input type="text" class="input-sm form-control" id="nombre_jq" name="nombre_jq" placeholder="Nombre" onkeypress="borraNoAfi();
-            return tabular(event, this);"  value="<%=nom_com%>">
+                                                    return tabular(event, this);"  value="<%=nom_com%>">
                                         </div>
                                         <br/>
                                         <div class="col-sm-4">
@@ -177,7 +226,7 @@
                                         </div>
 
                                         <div class="col-sm-4">
-                                            <a href="../admin/pacientes/pacientes1.jsp" class="btn btn-success btn-sm btn-block" target="_blank">Ver Pacientes</a>
+                                            <a href="../admin/pacientes/pacientes.jsp" class="btn btn-success btn-sm btn-block" target="_blank">Ver Pacientes</a>
                                         </div>
 
                                         <div class="col-sm-4">
@@ -225,14 +274,23 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <hr/>
                                         <div class="col-md-12">Médico:</div>
                                         <div class="col-md-12">
                                             <input type="text" class="input-sm form-control" id="medico" readonly name="medico" placeholder="" value="<%=medico%>"/>
                                         </div>
                                         <div class="col-md-12">Cédula:</div>
+                                        <!--div class="col-md-6">Tipo Consulta:</div-->
                                         <div class="col-md-12">
-                                            <input type="text" class="input-sm form-control" id="cedula" readonly name="cedula" placeholder="" value="<%=cedula%>"/>
+                                            <input type="text" class="input-sm form-control" id="cedu" readonly name="cedu" placeholder="" value="<%=cedPro%>"/>
+                                            <input type="text" class="input-sm form-control hidden" id="cedula" readonly name="cedula" placeholder="" value="<%=cedula%>"/>
+                                        </div>
+                                        <!--div class="col-md-6">
+                                            <input type="text" class="input-sm form-control" id="tipoConsulta" readonly name="tipoConsulta" placeholder="" value="<%=tipoConsulta%>"/>
+                                        </div-->
+                                        <hr/>
+                                        <div class="col-md-12">Observaciones</div>
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" name="observaciones" onkeyup="$('#observa').val(this.value)"><%=obser%></textarea>
                                         </div>
                                         <br/>
                                     </div>
@@ -242,6 +300,29 @@
 
                                         <br/>
                                         <div class="panel-body">
+                                            <div class="row">
+                                                <strong class="col-sm-2">Diagnóstico</strong>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-lg-1  control-label">Primario</label>
+                                                <div class="col-lg-4">
+                                                    <input type="text" class="input-sm form-control" id="causes" name="causes" placeholder="Causes" size="1"  onkeypress="return tabular(event, this);" value="<%=diag1%>">
+                                                </div>
+                                                <label class="col-lg-1  control-label">Secundario</label>
+                                                <div class="col-lg-4">
+                                                    <input type="text" class="input-sm form-control" id="causes2" name="causes2" placeholder="Causes" size="1"  onkeypress="return tabular(event, this);" value="<%=diag2%>">
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <a class="btn btn-success btn-sm btn-block" onclick="window.open('../farmacia/catalogoCIE.jsp', '_blank')"><span class="glyphicon glyphicon-list"></span></a>
+
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <a class="btn btn-warning btn-sm btn-block" id="borraCauses"><span class="glyphicon glyphicon-remove-circle"></span></a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <strong class="col-sm-2">Capture Medicamento</strong>
+                                            </div>
                                             <div class="row">
                                                 <label for="cla_pro" class="col-sm-1 control-label">Clave</label>
                                                 <div class="col-sm-2">
@@ -289,44 +370,44 @@
                                                 <label for="fol_sp" class="col-sm-2">Indicaciones:</label>
                                             </div>
                                             <div class="row">
-                                                <label class="col-lg-1  control-label">CIE-10</label>
-                                                <div class="col-lg-8">
-                                                    <input type="text" class="input-sm form-control" id="causes" name="causes" placeholder="Causes" size="1"  onkeypress="return tabular(event, this);" value="">
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <a class="btn btn-success btn-sm" onclick="window.open('../farmacia/catalogoCIE.jsp', '_blank')"><span class="glyphicon glyphicon-list"></span></a>
-                                                </div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-sm-8">
-                                                    <table align="center">
-                                                        <tr>
-                                                            <td><input type="text" class="input-sm form-control" name="unidades" id="unidades" placeholder="" size="1" onkeyup="sumar();" onkeypress="return isNumberKey(event, this);"  value=""/></td>
-                                                            <td><b>Cajas, una ampula/tableta cada</b></td>
-                                                            <td><input type="text" class="input-sm form-control" name="horas" id="horas" placeholder=""  size="1" onkeyup="sumar();"  onkeypress="return isNumberKey(event, this);" value=""/></td>
-                                                            <td><b>Horas, por</b></td>
-                                                            <td><input type="text" class="input-sm form-control" name="dias" id="dias" placeholder=""  size="1" onkeyup="sumar();"  onkeypress="return isNumberKey(event, this);" value=""/></td> 
-                                                            <td><b>Días</b></td>
-                                                            <td width="30px"> </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td><!--b>Piezas Solicitadas</b--></td>
-                                                            <td><input type="text" class="hidden" id="piezas_sol" name="piezas_sol" placeholder="0" size="1"  onkeypress="return isNumberKey(event, this);" value="" readonly></td>
-                                                            <td><b>Total Cajas</b></td>
-                                                            <td><input type="text" class="input-sm form-control" id="can_sol" name="can_sol" placeholder="0" size="1"  onkeypress="return tabular(event, this);" value="" readonly ></td>
-                                                            <td>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
+                                                    <div class="row">
+                                                        <table align="center">
+                                                            <tr>
+                                                                <td width="80"><input type="number" class="input-sm form-control" name="unidades" id="unidades" placeholder="" onkeyup="sumar();" onkeypress="return isNumberKey(event, this);" min="1" value=""/></td>
+                                                                <td><b>Caja(s)/Frasco(s),</b></td>
+                                                                <td width="80" class="hidden"><input type="number" class="input-sm form-control" name="horas" id="horas" placeholder="" onkeyup="sumar();"  onkeypress="return isNumberKey(event, this);" value=" " min="1"/></td>
+                                                                <td><b>por</b></td>
+                                                                <td width="80"><input type="number" class="input-sm form-control" name="dias" id="dias" placeholder="" onkeyup="sumar();"  onkeypress="return isNumberKey(event, this);" value="" min="1"/></td> 
+                                                                <td><b>Días</b></td>
+                                                                <td width="30px"> </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td><!--b>Piezas Solicitadas</b--></td>
+                                                                <td><input type="text" class="hidden" id="piezas_sol" name="piezas_sol" placeholder="0" size="1"  onkeypress="return isNumberKey(event, this);" value="" readonly></td>
+                                                                <td><b>Total Cajas</b></td>
+                                                                <td><input type="text" class="input-sm form-control" id="can_sol" name="can_sol" placeholder="0" size="1"  onkeypress="return tabular(event, this);" value="" readonly ></td>
+                                                                <td>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <br/>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <textarea class="form-control" placeholder="Indicaciones" name="indicaciones" id="indicacionesRF"></textarea>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <button class="btn btn-block btn-primary btn-sm" id="btn_capturar" name="btn_capturar" type="button">Capturar</button>
+                                                    <button class="btn btn-block btn-primary btn-sm" id="btn_capturar2" name="btn_capturar2" type="button" onclick="validaCauses()">Capturar</button>
+                                                    <button class="hidden" id="btn_capturar" name="btn_capturar" type="button" onclick="">Capturar</button>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="panel-footer" id="tablaMedicamento">
-                                            <table class="table table-striped table-bordered table-condensed" id="tablaMedicamentos">
+                                        <div class="panel-footer"  id="tablaMedicamentoMod">
+                                            <table class="table table-striped table-bordered table-condensed"  id="tablaMedicamentos">
                                                 <tr>
                                                     <td>Clave</td>
                                                     <td>Descripción</td>
@@ -368,7 +449,9 @@
                 </form>
 
                 <div class="hidden">
-                    <form class="form-horizontal" name="form" id="form" method="get" action="../RecetaNueva2">            
+                    <form class="form-horizontal" name="form" id="form" method="get" action="../RecetaNueva2">   
+
+                        <input class="form-control" name="obser" value="<%=obser%>" id="observa" />
                         <!--form method="post"-->
                         <div class="panel-footer">
                             <div class="row" id="tablaBotones">
@@ -414,9 +497,23 @@
             <%
                 try {
                     con.conectar();
-                    ResultSet rset = con.consulta("select dr.fol_det, dr.can_sol, dr.cant_sur, dp.cla_pro, p.des_pro from detreceta dr, detalle_productos dp, productos p where dr.det_pro = dp.det_pro and dp.cla_pro = p.cla_pro and id_rec = '" + id_rec + "' ");
+                    ResultSet rset = con.consulta("select dr.fol_det, dr.can_sol, dr.cant_sur, dp.cla_pro, p.des_pro, dr.indicaciones from detreceta dr, detalle_productos dp, productos p where dr.det_pro = dp.det_pro and dp.cla_pro = p.cla_pro and id_rec = '" + id_rec + "' ");
                     while (rset.next()) {
                         //System.out.println(rset.getString("fol_det"));
+                        String indicaciones = rset.getString("indicaciones");
+                        String[] indicaArray = indicaciones.split(" POR ");
+                        String[] indicaArray2 = null;
+                        String duracion = "", indica = "";
+                        if (indicaArray[1].indexOf("|") > 0) {
+                            indicaArray2 = indicaArray[1].split("\\|");
+                            duracion = indicaArray2[0].replace(" DIA(S)", "");
+                            indica = indicaArray2[1].replace("\n", "");
+                        } else {
+                            String[] indicaArray3 = indicaArray[1].split("DIA(S)");
+                            duracion = indicaArray[1].replace(" DIA(S)", "");
+                            indica = "";
+                        }
+
             %>
             <div class="modal fade" id="edita_clave_<%=rset.getString("fol_det")%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -427,14 +524,15 @@
                         <div class="modal-body">
                             <form name="form_editaInsumo_<%=rset.getString("fol_det")%>" method="post" id="form_editaInsumo_<%=rset.getString("fol_det")%>">
                                 <input type="text" name="fol_det" class="hidden" value="<%=rset.getString("fol_det")%>">
-                                Clave: <input type="text" class="form-control" autofocus placeholder="Ingrese su Nombre" name="txtf_nom" id="txtf_nom" value="<%=rset.getString("cla_pro")%>" readonly />
-                                Descripción: <input type="text" class="form-control"  placeholder="Ingrese su Cuenta de Correo" name="txtf_cor" id="txtf_cor" value="<%=rset.getString("des_pro")%>" readonly />
-                                Cantidad Solicitada: <input type="text" class="form-control"  placeholder="Cant Sol" name="cant_sol" id="cant_sol_<%=rset.getString("fol_det")%>" value="<%=rset.getString("can_sol")%>" />
-                                Cantidad Surtida: <input type="text" class="form-control"  placeholder="Cant Sur" name="cant_sur" id="cant_sur_<%=rset.getString("fol_det")%>" value="<%=rset.getString("cant_sur")%>" readonly />
+                                Clave: <input type="text" class="form-control" autofocus placeholder="Clave name="txtf_nom" id="txtf_nom" value="<%=rset.getString("cla_pro")%>" readonly />
+                                              Descripción: <input type="text" class="form-control"  placeholder="Descripción" name="txtf_cor" id="txtf_cor" value="<%=rset.getString("des_pro")%>" readonly />
+                                Cantidad Solicitada: <input type="number" class="form-control"  placeholder="Cant Sol" name="cant_sol" id="cant_sol_<%=rset.getString("fol_det")%>" value="<%=rset.getString("can_sol")%>" min="0" />
+                                <div class="hidden">Cantidad Surtida: <input type="number" class="form-control"  placeholder="Cant Sur" name="cant_sur" id="cant_sur_<%=rset.getString("fol_det")%>" value="<%=rset.getString("cant_sur")%>" readonly /></div>
+                                Duración: DIA(S) <input type="text" class="form-control"  placeholder="Duración" name="duraModal" id="duraModal" value="<%=duracion%>" />
+                                Indicaciones:  <textarea class="form-control"  placeholder="Indicaciones" name="indicaModal" id="indicaModal"><%=indica%></textarea>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_modificar_<%=rset.getString("fol_det")%>" name = "btn_modificar_<%=rset.getString("fol_det")%>">Modificar Solicitud</button>
                                 </div>
-
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -469,6 +567,7 @@
                     }
                     con.cierraConexion();
                 } catch (Exception e) {
+                    out.println(e);
                 }
             %>
         </div>
@@ -481,16 +580,87 @@
         <script src="../js/jquery-ui.js"></script>
         <!--script src="../js/bootstrap-datepicker.js"></script-->
         <script src="../js/js_farmacia.js"></script>
+
+        <script type="text/javascript">
+                                        /*window.onbeforeunload = confirmExit;
+                                         
+                                         function confirmExit()
+                                         {
+                                         if ($('#nom_pac').val() === "") {
+                                         return true;
+                                         } else {
+                                         return "Tiene datos sin guardar";
+                                         }
+                                         }*/
+        </script>
         <script>
 
-        $('#tablaMedicamento').load('receta_Farmacia.jsp #tablaMedicamento');
-        $('#tablaBotones').load('receta_Farmacia.jsp #tablaBotones');
-        /*
-         * 
-         * @returns {undefined}
-         */
-        $(function() {
-            var availableTags = [
+            $(document).ready(function() {
+            <%
+                try {
+                    con.conectar();
+                    ResultSet rset = con.consulta("select fol_det from detreceta where id_rec = '" + id_rec + "' ");
+                    while (rset.next()) {
+                        //System.out.println(rset.getString("fol_    det"));
+%>
+                $('#btn_modificar_<%=rset.getString("fol_det")%>').click(function() {
+                    var dir = '../EditaMedicamento';
+                    var form = $('#form_editaInsumo_<%=rset.getString("fol_det")%>');
+                    var cant_sol = $('#cant_sol_<%=rset.getString("fol_det")%>').val();
+                    if (cant_sol === "" || parseInt(cant_sol) < 0) {
+                        alert("No puede ir el campo de solicitado vacío o negativo");
+                        return false;
+                    }
+                    else {
+
+                        $.ajax({
+                            type: form.attr('method'),
+                            url: dir,
+                            data: form.serialize(),
+                            success: function(data) {
+                            },
+                            error: function() {
+                                //alert("Ha ocurrido un error");
+                            }
+                        });
+                        $('#Modales').load('receta_farmacia.jsp #Modales');
+                        window.location.reload();
+                    }
+                });
+
+
+                $('#btn_eliminar_<%=rset.getString("fol_det")%>').click(function() {
+                    var dir = '../EliminaClave';
+                    var form = $('#form_eliminaInsumo_<%=rset.getString("fol_det")%>');
+                    $.ajax({
+                        type: form.attr('method'),
+                        url: dir,
+                        data: form.serialize(),
+                        success: function(data) {
+                        },
+                        error: function() {
+                            //alert("Ha ocurrido un error");
+                        }
+                    });
+                    $('#Modales').load('receta_farmacia.jsp #Modales');
+                    location.reload();
+                });
+            <%
+                    }
+                    con.cierraConexion();
+                } catch (Exception e) {
+                }
+            %>
+
+            });
+
+
+            /*
+             * 
+             * @returns {undefined}
+             */
+            $(function() {
+                var availableTags = [
             <%
                 try {
                     con.conectar();
@@ -505,13 +675,16 @@
                 } catch (Exception e) {
                 }
             %>
-            ];
-            $("#causes").autocomplete({
-                source: availableTags
+                ];
+                $("#causes").autocomplete({
+                    source: availableTags
+                });
+                $("#causes2").autocomplete({
+                    source: availableTags
+                });
             });
-        });
-        $(function() {
-            var availableTags = [
+            $(function() {
+                var availableTags = [
             <%
                 try {
                     con.conectar();
@@ -526,72 +699,61 @@
                 } catch (Exception e) {
                 }
             %>
-            ];
-            $("#des_pro").autocomplete({
-                source: availableTags
+                ];
+                $("#des_pro").autocomplete({
+                    source: availableTags
+                });
             });
-        });
 
 
 
-        $(document).ready(function() {
+            function validaCauses() {
+                var causes = document.getElementById('causes').value;
+
+                if (causes === "") {
+                    alert('Capture Diagnóstico válido');
+                    e.focus();
+                    return false;
+                }
+                var causesArray = causes.split(" - ");
+                causes = causesArray[0];
+                var causesTodos = "";
             <%
                 try {
                     con.conectar();
-                    ResultSet rset = con.consulta("select fol_det from detreceta where id_rec = '" + id_rec + "' ");
+                    ResultSet rset = con.consulta("select id_cau, des_cau from causes ");
                     while (rset.next()) {
-                        //System.out.println(rset.getString("fol_    det"));
-%>
-            $('#btn_modificar_<%=rset.getString("fol_det")%>').click(function() {
-                var dir = '../EditaMedicamento';
-                var form = $('#form_editaInsumo_<%=rset.getString("fol_det")%>');
-                var cant_sol = $('#cant_sol_<%=rset.getString("fol_det")%>');
-                if (cant_sol === "") {
-                    alert("No puede ir el campo de solicitado vacío");
-                }
-                else {
-
-                    $.ajax({
-                        type: form.attr('method'),
-                        url: dir,
-                        data: form.serialize(),
-                        success: function(data) {
-                        },
-                        error: function() {
-                            //alert("Ha ocurrido un error");
-                        }
-                    });
-                    $('#Modales').load('receta_farmacia.jsp #Modales');
-                    window.location.reload();
-                }
-            });
-
-
-            $('#btn_eliminar_<%=rset.getString("fol_det")%>').click(function() {
-                var dir = '../EliminaClave';
-                var form = $('#form_eliminaInsumo_<%=rset.getString("fol_det")%>');
-                $.ajax({
-                    type: form.attr('method'),
-                    url: dir,
-                    data: form.serialize(),
-                    success: function(data) {
-                    },
-                    error: function() {
-                        //alert("Ha ocurrido un error");
-                    }
-                });
-                $('#Modales').load('receta_farmacia.jsp #Modales');
-                location.reload();
-            });
+            %>
+                causesTodos = causesTodos + "<%=rset.getString("id_cau")%>-";
             <%
                     }
                     con.cierraConexion();
                 } catch (Exception e) {
+
                 }
             %>
+                var causesTodosArray = causesTodos.split('-');
+                var ban1 = 0;
+                for (i = 0; i <= causesTodosArray.length; i++) {
+                    if (causes === causesTodosArray[i]) {
+                        $('#btn_capturar').click();
+                        return true;
+                        ban1 = 1;
+                    }
+                }
+                if (ban1 === 0) {
+                    alert('Capture Diagnóstico válido');
+                }
+                //return false;
+                e.focus();
+            }
+            function upperCase(x)
+            {
+                var y = document.getElementById(x).value;
+                document.getElementById(x).value = y.toUpperCase();
+                document.getElementById("mySpan").value = y.toUpperCase();
 
-        });
-
+            }
         </script>
 
     </body>

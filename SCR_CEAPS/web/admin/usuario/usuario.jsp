@@ -41,7 +41,7 @@
                     <div class="col-lg-10">
 
                         <div class="row">
-                            <div class="col-md-8"><h2>Usuarios Registrados</h2></div>
+                            <div class="col-md-8"><h2>Usuarios Registrados Farmacica</h2></div>
                             <div class="col-md-1"></div>
                             <div class="col-md-3"><img src="../../imagenes/medalfalogo2.png" width=100 alt="LOGO"></div>
                         </div>
@@ -74,7 +74,7 @@
                                         <%
                                             try {
                                                 con.conectar();
-                                                rset = con.consulta("SELECT us.id_usu, us.nombre, uni.des_uni FROM usuarios AS us INNER JOIN unidades AS uni ON us.cla_uni = uni.cla_uni WHERE us.baja <> 0 and rol<>0");
+                                                rset = con.consulta("SELECT us.id_usu,CONCAT(us.nombre,' ',us.ape_pat,' ',us.ape_mat) as Nombre, uni.des_uni FROM usuarios AS us INNER JOIN unidades AS uni ON us.cla_uni = uni.cla_uni WHERE us.cedula='-' and rol!=0");
 
                                                 while (rset.next()) {
                                         %>

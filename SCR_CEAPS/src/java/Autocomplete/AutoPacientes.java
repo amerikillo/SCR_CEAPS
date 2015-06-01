@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Autocomplete;
 
 import Clases.ConectionDB;
@@ -46,11 +45,13 @@ public class AutoPacientes extends HttpServlet {
         JSONObject json = new JSONObject();
         JSONArray jsona = new JSONArray();
         HttpSession sesion = request.getSession(true);
+        byte[] a = request.getParameter("nombre").getBytes("ISO-8859-1");
+        String nombre = new String(a, "UTF-8");
 
         try {
             con.conectar();
             try {
-                ResultSet rset = con.consulta("select id_pac, nom_com from pacientes where nom_com like '%"+request.getParameter("nombre")+"%' limit 0,50");
+                ResultSet rset = con.consulta("select id_pac, nom_com from pacientes where nom_com like '%" + nombre + "%' and f_status='A' limit 0,50");
                 while (rset.next()) {
                     json.put("id_pac", rset.getString("id_pac"));
                     json.put("nom_com", rset.getString("nom_com"));

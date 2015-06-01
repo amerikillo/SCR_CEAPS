@@ -31,9 +31,8 @@
             
             <form class="form-signin" action="Login" method="post">
                 <div class="row">
-                    <div class="col-md-8"><h2 style="color: #ffffff; font-style: oblique">SISTEMA DE FARMACIA</h2></div>
+                    <div class="col-md-12"><h2 style="color: #ffffff; font-style: oblique">SISTEMA DE FARMACIA</h2></div>
                    
-                    <div class="col-md-4"></div>
                 </div>
                 
                 <div class="panel panel-body">

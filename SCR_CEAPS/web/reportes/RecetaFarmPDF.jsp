@@ -20,7 +20,7 @@
     String Imagen2 = "imagen/savi1.jpg";
     String Imagen3 = "imagen/gobierno.png";
     String Reporte = "RecetaFarmR.jasper";
-    String tip_cob = "";
+    String tip_cob = "",tip_cons="";
     String tipo = "";
     Connection conexion;
     con.conectar();
@@ -33,34 +33,49 @@
         File reportFile = new File(application.getRealPath("/reportes/RecetaFarm.jasper"));
 
         try {
-            ResultSet rs = con.consulta("select tip_cob from recetas where fol_rec='" + Folio + "' and cant_sur!=0 GROUP BY fol_rec");
-            if (rs.next()) {
-                tip_cob = rs.getString(1);
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Error al buscar" + ex);
-        }
-        Map parameter = new HashMap();
-        parameter.put("folio", Folio);
-        parameter.put("logo1", Imagen);
-        parameter.put("logo2", Imagen2);
-        parameter.put("logo3", Imagen3);
-        parameter.put("reporte", Reporte);
-        System.out.println("FolioS22-->" + Folio);
-        if (tip_cob.equals("SP")) {
-            parameter.put("SP", "X");
-            parameter.put("PA", "");
-            parameter.put("PR", "");
-        } else if (tip_cob.equals("PA")) {
-            parameter.put("SP", "");
-            parameter.put("PA", "X");
-            parameter.put("PR", "");
-        } else {
-            parameter.put("SP", "");
-            parameter.put("PA", "");
-            parameter.put("PR", "X");
-        }
+                    ResultSet rs = con.consulta("select tip_cob,tip_cons from recetas where fol_rec='" + Folio + "' and cant_sur!=0 GROUP BY fol_rec");
+                    if (rs.next()) {
+                        tip_cob = rs.getString(1);
+                        tip_cons=rs.getString(2);
+                    }
+                    System.out.println("TIP-COB->"+tip_cob+" TIP-CONS->"+tip_cons);
+                } catch (Exception ex) {
+                    System.out.println("Error al buscar" + ex);
+                }
+                Map parameter = new HashMap();
+                parameter.put("firma", session.getAttribute("id_usu"));
+                parameter.put("folio", Folio);
+                parameter.put("logo1", Imagen);
+                parameter.put("logo2", Imagen2);
+                parameter.put("logo3", Imagen3);
+                parameter.put("reporte", Reporte);
+                System.out.println("FolioS22-->" + Folio);
+                if (tip_cob.equals("SP")) {
+                    parameter.put("SP", "X");
+                    parameter.put("PA", "");
+                    parameter.put("PR", "");
+                } else if (tip_cob.equals("PA")) {
+                    parameter.put("SP", "");
+                    parameter.put("PA", "X");
+                    parameter.put("PR", "");
+                } else {
+                    parameter.put("SP", "");
+                    parameter.put("PA", "");
+                    parameter.put("PR", "X");
+                }
+                if(tip_cons.equals("Consulta Externa")){
+                    parameter.put("CEX","X");
+                    parameter.put("URG","");
+                    parameter.put("HOS","");
+                }else if(tip_cons.equals("Urgencias")){
+                    parameter.put("CEX","");
+                    parameter.put("URG","X");
+                    parameter.put("HOS","");
+                }else if(tip_cons.equals("Hospitalizacion")){
+                    parameter.put("CEX","");
+                    parameter.put("URG","");
+                    parameter.put("HOS","X");
+                }
         try {
             byte[] bytes = JasperRunManager.runReportToPdf(reportFile.getPath(), parameter, conexion);
             /*Indicamos que la respuesta va a ser en formato PDF*/

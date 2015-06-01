@@ -8,7 +8,6 @@ package Servlets;
 import Clases.ConectionDB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.servlet.ServletException;
@@ -57,7 +56,7 @@ public class ModiPacientes extends HttpServlet {
                 String nombre = new String(a, "UTF-8");
                 String  completo = ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase(); 
                 
-                con.actualizar("update pacientes set num_afi='"+request.getParameter("no_afi")+"',tip_cob='" + request.getParameter("afi") + "',ape_pat='"+ape_pat.toUpperCase()+"',ape_mat='"+ape_mat.toUpperCase()+"',nom_pac='" + nombre.toUpperCase() + "',nom_com='" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "',fec_nac='" + df.format(df2.parse(request.getParameter("fec_nac"))) + "',sexo='" + request.getParameter("sexo").toUpperCase() + "',expediente= '" + request.getParameter("no_exp") + "',ini_vig='" + df.format(df2.parse(request.getParameter("ini_vig"))) + "',fin_vig='" + df.format(df2.parse(request.getParameter("fin_vig"))) + "',f_status='" + request.getParameter("estatus") + "' WHERE id_pac='"+request.getParameter("no_pac")+"'");
+                con.actualizar("update pacientes set num_afi='"+request.getParameter("no_afi")+"',tip_cob='" + request.getParameter("afi") + "',ape_pat='"+ape_pat.toUpperCase()+"',ape_mat='"+ape_mat.toUpperCase()+"',nom_pac='" + nombre.toUpperCase() + "',nom_com='" + completo+ "',fec_nac='" + df.format(df2.parse(request.getParameter("fec_nac"))) + "',sexo='" + request.getParameter("sexo").toUpperCase() + "',expediente= '" + request.getParameter("no_exp") +  "',f_status='" + request.getParameter("estatus") + "' WHERE id_pac='"+request.getParameter("no_pac")+"'");
                 
                 json.put("mensaje", "Paciente actualizado correctamente con el folio "+request.getParameter("no_pac")+" ");                
                 json.put("ban","1");
@@ -105,15 +104,5 @@ public class ModiPacientes extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

@@ -73,6 +73,7 @@
             sesion.setAttribute("sexo", "");
             sesion.setAttribute("fec_nac", "");
             sesion.setAttribute("num_afi", "");
+            sesion.setAttribute("obser", "");
         }
     } catch (Exception e) {
 

@@ -91,7 +91,7 @@ public class ProductoClaveCol extends HttpServlet {
                         if (ban == 1) {
                             con.insertar("update receta set id_ser = '" + request.getParameter("id_ser") + "' where id_rec= '" + id_rec + "'");
                         } else {//Si no inserta la receta
-                            con.insertar("insert into receta values ('0', '" + request.getParameter("folio") + "', '1', '" + id_pac + "', '2', '" + sesion.getAttribute("id_usu") + "', '" + request.getParameter("cedula") + "', ' ', '" + request.getParameter("id_ser") + "',NOW(), '1', '0','0')");
+                            con.insertar("insert into receta values ('0', '" + request.getParameter("folio") + "', '1', '" + id_pac + "', '2', '" + sesion.getAttribute("id_usu") + "', '" + request.getParameter("cedula") + "', ' ', '" + request.getParameter("id_ser") + "',concat('"+request.getParameter("fecha")+" ',CURTIME()),'1', '0','0','','')");
                         }
 
                     } catch (Exception e) {

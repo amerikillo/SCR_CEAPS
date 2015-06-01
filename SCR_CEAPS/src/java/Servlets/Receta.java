@@ -45,8 +45,6 @@ public class Receta extends HttpServlet {
                 /*
                  *Para Receta Colectiva
                  */
-                DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 ConectionDB con = new ConectionDB();
                 JSONObject json = new JSONObject();
                 JSONArray jsona = new JSONArray();
@@ -83,7 +81,7 @@ public class Receta extends HttpServlet {
                         ban = 1;
                     }
                     if (ban == 0) {
-                        con.insertar("insert into receta values ('0', '" + folio_rec + "', '0', '-', '2', '" + sesion.getAttribute("id_usu") + "', '" + request.getParameter("encargado") + "', '-', '" + request.getParameter("select_serv") + "', NOW(), '1', '0', '0')");
+                        con.insertar("insert into receta values ('0', '" + folio_rec + "', '0', '-', '2', '" + sesion.getAttribute("id_usu") + "', '" + request.getParameter("encargado") + "', '-', '" + request.getParameter("select_serv") + "', NOW(), '1', '0', '0','')");
                     }
                     try {
                         System.out.println(request.getParameter("btn_clave"));
@@ -205,12 +203,34 @@ public class Receta extends HttpServlet {
                 String folio_rec = request.getParameter("folio");
                 String id_rec = "";
                 if (folio_rec.equals("")) {
+
                     try {
-                        ResultSet rset = con.consulta("select m.folAct from medicos m, usuarios u where u.cedula = m.cedula and u.id_usu = '" + sesion.getAttribute("id_usu") + "' ");
+                        String idRec = "";
+                        ResultSet rset = con.consulta("sele max(id_rec) as id_rec from receta where id_usu = '" + sesion.getAttribute("id_usu") + "' and transito='1'");
                         while (rset.next()) {
-                            id_rec = rset.getString(1);
+                            idRec = rset.getString("id_rec");
                         }
-                        con.actualizar("update medicos m, usuarios u set m.folAct= '" + (Integer.parseInt(id_rec) + 1) + "' where u.cedula = m.cedula and u.id_usu = '" + sesion.getAttribute("id_usu") + "' ");
+                        if (idRec.equals("") || idRec == null) {
+                            //id_rec = "1";
+
+                            rset = con.consulta("select m.folAct from medicos m, usuarios u where u.cedula = m.cedula and u.id_usu = '" + sesion.getAttribute("id_usu") + "' ");
+                            while (rset.next()) {
+                                id_rec = rset.getString(1);
+                            }
+                            con.actualizar("update medicos m, usuarios u set m.folAct= '" + (Integer.parseInt(id_rec) + 1) + "' where u.cedula = m.cedula and u.id_usu = '" + sesion.getAttribute("id_usu") + "' ");
+
+                        } else {
+
+                            rset = con.consulta("select m.folAct from medicos m, usuarios u where u.cedula = m.cedula and u.id_usu = '" + sesion.getAttribute("id_usu") + "' ");
+                            while (rset.next()) {
+                                id_rec = rset.getString(1);
+                            }
+                            if (Integer.parseInt(idRec) + 1 == Integer.parseInt(id_rec)) {
+                                con.actualizar("update medicos m, usuarios u set m.folAct= '" + (Integer.parseInt(id_rec) + 1) + "' where u.cedula = m.cedula and u.id_usu = '" + sesion.getAttribute("id_usu") + "' ");
+                            } else {
+                                id_rec = idRec;
+                            }
+                        }
                         json.put("fol_rec", id_rec);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
@@ -301,15 +321,4 @@ public class Receta extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

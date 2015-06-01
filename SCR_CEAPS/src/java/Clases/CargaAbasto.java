@@ -22,7 +22,7 @@ public class CargaAbasto {
                 boolean invIni = inventarioInicial(cla_uni);
                 con.conectar();
                 try {
-                    ResultSet rset = con.consulta("select * from carga_abasto");
+                    ResultSet rset = con.consulta("select * from carga_abasto where cantidad!=0");
                     while (rset.next()) {
                         String det_pro = comparaInsumo(rset.getString(2), rset.getString(3), rset.getString(4), rset.getString(6));
                         String id_inv = devuelveIndiceInventario(det_pro, cla_uni);

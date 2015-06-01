@@ -19,7 +19,7 @@
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
     DecimalFormatSymbols custom = new DecimalFormatSymbols();
-    ResultSet rset ;
+    ResultSet rset;
     ConectionDB con = new ConectionDB();
 %>
 <html>
@@ -52,10 +52,17 @@
                             <div class="row">
                                 <label for="tip_cob" class="col-sm-2 control-label">Tipo de Cobranza</label>
                                 <div class="col-sm-2">
-                                    <select class="form-control" id="tip_cob" name="tip_cob" onchange="numAfiPA();">
+                                    <select class="form-control" id="tip_cob" name="tip_cob" onchange="numAfiPA(this);">
                                         <option>SP</option>
                                         <option>PR</option>
                                         <option>PA</option>
+                                        <option value="60">Mas de 60</option>
+                                        <option value="IRA">Infecc. Resp Aguda</option>
+                                        <option>EDA</option>
+                                        <option value="AR">Antirrabico</option>
+                                        <option value="SE">Seguro Escolar</option>
+                                        <option value="IND">Indigente</option>
+                                        <option value="PN">Prenatal</option>
                                     </select>
                                 </div>
                                 <label for="no_afi" class="col-sm-2 control-label">Número de Afiliación</label>
@@ -78,7 +85,6 @@
                         </form>
                         <form class="form-horizontal" role="form" name="formulario_pacientes" id="formulario_pacientes" method="get" action="../../Pacientes">
                             <%
-
                                 int numAfiliados = 0;
                                 try {
                                     numAfiliados = Integer.parseInt(request.getParameter("numAfiliados"));
@@ -150,27 +156,9 @@
                                 </div>                                
                             </div>
                             <hr />
-                            <%
-                                }
-                                if (numAfiliados > 0) {
-                                    if (request.getParameter("tip_cob").equals("SP")) {
-                            %>
-                            <h4><label for="datosp" id="datosp" class="col-sm-2 control-label">Datos de la Poliza</label></h4>
-                            <div class="row">
-                                <label for="ini_vig" id="ini_vig1" class="col-sm-2 control-label">Inicio de Vigencia</label>
-                                <div class="col-sm-2">
-                                    <input type="date" class="form-control" id="ini_vig" name="ini_vig" required/>
-                                </div>
-                                <label for="fin_vig" id="fin_vig1" class="col-sm-2 control-label">Fin de Vigencia</label>
-                                <div class="col-sm-2">
-                                    <input type="date" class="form-control" id="fin_vig" name="fin_vig" required/>
-                                </div>
-                            </div>
-                            <br />
-                            <%
-                                    }
 
-                                }
+                            <%
+                                  } 
                                 if (numAfiliados > 0) {
                             %>
 
@@ -203,21 +191,29 @@
         <script src="../../js/bootstrap-datepicker.js"></script>
         <script src="../../js/moment.js"></script>
         <script>
-                                        function numAfiPA() {
+                                        function numAfiPA(e) {
+                                            var tipo = e.value;
                                             var d = new Date();
                                             //alert(d);
                                             var now = moment();
                                             now.format('dddd');
                                             //alert(now);
-                                            var tipo = "";
+                                            //var tipo = "";
+                                            if(tipo===""){
+                                                
+                                            }
                                             if (document.getElementById('tip_cob').value === 'PR') {
                                                 tipo = 'PR';
                                                 document.getElementById('numAfiliados').value = 1;
                                                 document.getElementById('numAfiliados').readOnly = true;
                                             } else if (document.getElementById('tip_cob').value === 'PA') {
                                                 tipo = 'PA';
-                                                document.getElementById('numAfiliados').value = 1;
-                                                document.getElementById('numAfiliados').readOnly = true;
+                                                document.getElementById('numAfiliados').value = 0;
+                                                document.getElementById('numAfiliados').readOnly = false;
+                                            } else if (document.getElementById('tip_cob').value === 'SP') {
+                                                tipo = 'SP';
+                                                document.getElementById('numAfiliados').value = 0;
+                                                document.getElementById('numAfiliados').readOnly = false;
                                             }
                                             document.getElementById('no_afi').value = tipo + now.format('YYMMDDHHmmss');
                                             document.getElementById('no_afi').readOnly = true;

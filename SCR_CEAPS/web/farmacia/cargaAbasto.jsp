@@ -4,11 +4,14 @@
     Author     : Americo
 --%>
 
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.util.Date"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Clases.ConectionDB"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%    HttpSession sesion = request.getSession();
+<%    DecimalFormat formatter = new DecimalFormat("#,###,###");
+    HttpSession sesion = request.getSession();
     String id_usu = "", ver = "hidden";
     ConectionDB con = new ConectionDB();
     try {
@@ -62,7 +65,7 @@
                     <div class="row">
                         <label class="form-horizontal col-lg-4">Seleccione un archivo:</label>
                         <div class="col-lg-8">
-                            <input type="file" class="form-control" name="archivo" accept=".csv">
+                            <input type="file" class="form-control" name="archivo" accept="text/csv">
                         </div>
                     </div>
                     <br />
@@ -84,13 +87,30 @@
                 </div>
             </div>
             <br/><br/>
+
             <div class="panel <%=ver%>"  id="paAbasto">
+                <%
+                    try {
+                        con.conectar();
+                        ResultSet rs = con.consulta("Select sum(cantidad) from carga_abasto");
+                        while (rs.next()) {
+                %>
+
+                <h3>Total de piezas: <%=formatter.format(rs.getInt(1))%></h3>
+                <%
+                        }
+                        con.cierraConexion();
+                    } catch (Exception e) {
+
+                    }
+                %>
                 <table id="tbAbastos" class="table table-bordered">
                     <thead>
                         <tr>
                             <th class="h2 text-center" colspan="7">Abasto</th>
                         </tr>
                         <tr>
+                            <th></th>
                             <th>Clave</th>
                             <th>Lote</th>
                             <th>Caducidad</th>
@@ -101,12 +121,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%                            try {
+                        <%
+                            try {
                                 con.conectar();
                                 ResultSet rs = con.consulta("Select clave,lote,caducidad,cantidad,origen,cb,id from carga_abasto");
                                 while (rs.next()) {
+
+                                    String cadu = "1";
+                                    String caducado = "";
+                                    if (rs.getDate(3).before(new Date())) {
+                                        cadu = "0";
+                                        caducado = "class='danger'";
+                                    }
                         %>
-                        <tr id="f_<%=rs.getString(7)%>">
+                        <tr id="f_<%=rs.getString(7)%>" <%=caducado%> >
+                            <td><div class="hidden"><%=cadu%></div></td>
                             <td><%=rs.getString(1)%></td>
                             <td><%=rs.getString(2)%></td>
                             <td><%=rs.getString(3)%></td>
@@ -124,7 +153,7 @@
                         %>
                     </tbody>
                 </table>
-                <center> <button type="button" class="btn btn-primary btn-lg" id="ValidarAbasto" onclick="return confirm('Desea validar el abasto?')">Validad Abasto</button></center>
+                <center> <button type="button" class="btn btn-primary btn-lg" id="ValidarAbasto" onclick="return confirm('Desea validar el abasto?')">Validar Abasto</button></center>
             </div>
             <div class="progress hidden" id="loadProg"></div>
         </div>
@@ -160,6 +189,7 @@
                                             ori = rs.getString(5);
                                             cb = rs.getString(6);
                                             id = rs.getString(7);
+
                                         }
                                     } catch (Exception ex) {
                                         System.out.println("ErrorEC->" + ex);
@@ -185,7 +215,7 @@
                                         <div class="row">
                                             <label class="col-sm-2">Cantidad</label>
                                             <div class="col-sm-2">
-                                                <input class="form-control" name="cant" onkeypress="isNumberKey(event,this)" id="cant" type="text" value="<%=cant%>">
+                                                <input class="form-control" name="cant" onkeypress="isNumberKey(event, this)" id="cant" type="number" value="<%=cant%>" min="0">
                                             </div>
                                             <label class="col-sm-1">Origen</label>
                                             <div class="col-sm-2">
@@ -216,130 +246,136 @@
         <script src="../js/dataTables.bootstrap.js"></script>
         <script src="../js/jquery.progressTimer.js"></script>
         <script type="text/javascript">
-                    $(document).ready(function () {
-                        $('#imgCarga').toggle();
-                        $('#tbAbastos').dataTable();
-                    });
+                                                    $(document).ready(function() {
+                                                        $('#imgCarga').toggle();
+                                                        $('#tbAbastos').dataTable();
+                                                    });
 
-                    function funcionCarga() {
-                        $('#btnCarga').attr('disabled', true);
-                        $('#imgCarga').toggle();
-                    }
-                    function comparaClave() {
-                        var pass = document.getElementById('contra').value;
-                        var result = CryptoJS.MD5(pass);
-                        result = result + "";
+                                                    function funcionCarga() {
+                                                        $('#btnCarga').attr('disabled', true);
+                                                        $('#imgCarga').toggle();
+                                                    }
+                                                    function comparaClave() {
+                                                        var pass = document.getElementById('contra').value;
+                                                        var result = CryptoJS.MD5(pass);
+                                                        result = result + "";
             <%                for (int i = 0; i < pass.size(); i++) {
             %>
 
-                        if (result === "<%=pass.get(i)%>") {
-                            alert("Datos correctos");
-                            return true;
-                        }
+                                                        if (result === "<%=pass.get(i)%>") {
+                                                            alert("Datos correctos");
+                                                            return true;
+                                                        }
             <%
                 }
             %>
-                        alert("Datos incorrectos");
-                        return false;
-                    }
-                    function EditarAb(id) {
-                        var dir = "../EditaAbasto";
-                        $.ajax({
-                            url: dir,
-                            data: {que: "V", id: id},
-                            success: function (data) {
-                                $('#tbEditaClave').load('cargaAbasto.jsp #tbEditaClave');
-                            },
-                            error: function () {
-                                alert("Ocurrió un error");
-                            }
-                        });
-                    }
-                    $('#Guardar').click(function () {
-                        if ($('#lote').val() === "" || $('#caduc').val() === "" || $('#cant').val() === "" || $('#ori').val() === "") {
-                            alert("Hay campos vacios, por favor verifique");
-                            return false;
-                        }
-                        var ori = $('#ori').val();
-                        if (!(ori === "2" || ori === "1")) {
-                            alert("El origen debe ser 1 o 2");
-                            $('#ori').val("");
-                            return false;
-                        }
-                        var id = $('#hId').val();
-                        var dir = "../EditaAbasto";
-                        $.ajax({
-                            url: dir,
-                            data: {que: "E", id: id, lote: $('#lote').val(), caduc: $('#caduc').val(), cant: $('#cant').val(), ori: $('#ori').val()},
-                            success: function (data) {
-                                var json = JSON.parse(data);
-                                if (json.msg === "0") {
-                                    alert('Error al Editar');
-                                } else {
-                                    $('#f_' + id).html("<td>" + json.clave + "</td>" +
-                                            "<td>" + json.lote + "</td>" +
-                                            "<td>" + json.caducidad + "</td>" +
-                                            "<td>" + json.cantidad + "</<td>" +
-                                            "<td>" + json.origen + "</<td>" +
-                                            "<td>" + json.editar + "</<td>");
-                                    $('#EditarAbasto').click();
-                                }
-                            },
-                            error: function () {
-                                alert("Ocurrió un error");
-                            }
-                        });
-                    });
+                                                        alert("Datos incorrectos");
+                                                        return false;
+                                                    }
+                                                    function EditarAb(id) {
+                                                        var dir = "../EditaAbasto";
+                                                        $.ajax({
+                                                            url: dir,
+                                                            data: {que: "V", id: id},
+                                                            success: function(data) {
+                                                                $('#tbEditaClave').load('cargaAbasto.jsp #tbEditaClave');
+                                                            },
+                                                            error: function() {
+                                                                alert("Ocurrió un error");
+                                                            }
+                                                        });
+                                                    }
+                                                    $('#Guardar').click(function() {
+                                                        if ($('#lote').val() === "" || $('#caduc').val() === "" || $('#cant').val() === "" || $('#ori').val() === "") {
+                                                            alert("Hay campos vacios, por favor verifique");
+                                                            return false;
+                                                        }
+                                                        var ori = $('#ori').val();
+                                                        if (!(ori === "2" || ori === "1")) {
+                                                            alert("El origen debe ser 1 o 2");
+                                                            $('#ori').val("");
+                                                            return false;
+                                                        }
+                                                        var cant = $('#cant').val();
+                                                        if (parseInt(cant) < 0) {
+                                                            alert("La Cantidad no puede ser menor a 0");
+                                                            $('#cant').focus();
+                                                            return false;
+                                                        }
+                                                        var id = $('#hId').val();
+                                                        var dir = "../EditaAbasto";
+                                                        $.ajax({
+                                                            url: dir,
+                                                            data: {que: "E", id: id, lote: $('#lote').val(), caduc: $('#caduc').val(), cant: $('#cant').val(), ori: $('#ori').val()},
+                                                            success: function(data) {
+                                                                var json = JSON.parse(data);
+                                                                if (json.msg === "0") {
+                                                                    alert('Error al Editar');
+                                                                } else {
+                                                                    $('#f_' + id).html("<td></td><td>" + json.clave + "</td>" +
+                                                                            "<td>" + json.lote + "</td>" +
+                                                                            "<td>" + json.caducidad + "</td>" +
+                                                                            "<td>" + json.cantidad + "</<td>" +
+                                                                            "<td>" + json.origen + "</<td>" +
+                                                                            "<td>" + json.editar + "</<td>");
+                                                                    $('#EditarAbasto').click();
+                                                                }
+                                                            },
+                                                            error: function() {
+                                                                alert("Ocurrió un error");
+                                                            }
+                                                        });
+                                                    });
 
-                    $('#ValidarAbasto').click(function () {
-                        var dir = "../EditaAbasto";
-                        $('#ValidarAbasto').attr("disabled", "disabled");
-                        $("#loadProg").removeClass("hidden");
-                        var progress = $("#loadProg").progressTimer({
-                            timeLimit: 150,
-                            onFinish: function () {
-                            }
-                        });
-                        $.ajax({
-                            url: dir,
-                            data: {que: "Val"},
-                            success: function (data) {
-                                progress.progressTimer('complete');
-                                alert(data);
-                                window.location.reload();
-                            },
-                            error: function () {
-                                alert("Ocurrió un error");
-                                $("#loadProg").addClass()("hidden");
-                                $('#ValidarAbasto').attr("disabled", "");
-                            }
-                        });
-                    });
-                    function isNumberKey(evt, obj)
-                    {
-                        var charCode = (evt.which) ? evt.which : event.keyCode;
-                        if (charCode === 13 || charCode > 31 && (charCode < 48 || charCode > 57)) {
-                            if (charCode === 13) {
-                                frm = obj.form;
-                                for (i = 0; i < frm.elements.length; i++)
-                                    if (frm.elements[i] === obj)
-                                    {
-                                        if (i === frm.elements.length - 1)
-                                            i = -1;
-                                        break
-                                    }
-                                /*ACA ESTA EL CAMBIO*/
-                                if (frm.elements[i + 1].disabled === true)
-                                    tabular(e, frm.elements[i + 1]);
-                                else
-                                    frm.elements[i + 1].focus();
-                                return false;
-                            }
-                            return false;
-                        }
-                        return true;
+                                                    $('#ValidarAbasto').click(function() {
+                                                        var dir = "../EditaAbasto";
+                                                        $('#ValidarAbasto').attr("disabled", "disabled");
+                                                        $("#loadProg").removeClass("hidden");
+                                                        var progress = $("#loadProg").progressTimer({
+                                                            timeLimit: 150,
+                                                            onFinish: function() {
+                                                            }
+                                                        });
+                                                        $.ajax({
+                                                            url: dir,
+                                                            data: {que: "Val"},
+                                                            success: function(data) {
+                                                                progress.progressTimer('complete');
+                                                                alert(data);
+                                                                window.location.reload();
+                                                            },
+                                                            error: function() {
+                                                                alert("Ocurrió un error");
+                                                                $("#loadProg").addClass()("hidden");
+                                                                $('#ValidarAbasto').attr("disabled", "");
+                                                            }
+                                                        });
+                                                    });
+                                                    function isNumberKey(evt, obj)
+                                                    {
+                                                        var charCode = (evt.which) ? evt.which : event.keyCode;
+                                                        if (charCode === 13 || charCode > 31 && (charCode < 48 || charCode > 57)) {
+                                                            if (charCode === 13) {
+                                                                frm = obj.form;
+                                                                for (i = 0; i < frm.elements.length; i++)
+                                                                    if (frm.elements[i] === obj)
+                                                                    {
+                                                                        if (i === frm.elements.length - 1)
+                                                                            i = -1;
+                                                                        break
+                                                                    }
+                                                                /*ACA ESTA EL CAMBIO*/
+                                                                if (frm.elements[i + 1].disabled === true)
+                                                                    tabular(e, frm.elements[i + 1]);
+                                                                else
+                                                                    frm.elements[i + 1].focus();
+                                                                return false;
+                                                            }
+                                                            return false;
+                                                        }
+                                                        return true;
 
-                    }
+                                                    }
         </script>
         <br/>
     </body>

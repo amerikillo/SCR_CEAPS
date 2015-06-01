@@ -79,7 +79,8 @@ public class Medicos extends HttpServlet {
                     byte[] a = request.getParameter("ape_pat").getBytes("ISO-8859-1");
                     String ape_pat = new String(a, "UTF-8");
                     a = request.getParameter("ape_mat").getBytes("ISO-8859-1");
-                    String ape_mat = new String(a, "UTF-8");
+                    String ape_mat = new String(a, "UTF-8");                   
+                    String tipoConsu = request.getParameter("slcTipoConsu");
                     a = request.getParameter("nombre").getBytes("ISO-8859-1");
                     String nombre = new String(a, "UTF-8");
                     String completo = ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase();
@@ -99,7 +100,7 @@ public class Medicos extends HttpServlet {
                         json.put("mensaje", "Medico Existente, Clave Médico= " + foliop + "");
                         json.put("ban", "1");
                     } else {
-                        con.insertar("insert into medicos values('" + nombre.toUpperCase() + "', '" + ape_pat.toUpperCase() + "', '" + ape_mat.toUpperCase() + "',  '" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "', 0,'1', '" + request.getParameter("rfc").toUpperCase() + "','" + Unidad + "', '" + request.getParameter("cedula") + "','A','" + request.getParameter("fec_nac") + "', '" + request.getParameter("folIni") + "', '" + request.getParameter("folFin") + "','" + request.getParameter("folIni") + "');");
+                        con.insertar("insert into medicos values('" + nombre.toUpperCase() + "', '" + ape_pat.toUpperCase() + "', '" + ape_mat.toUpperCase() + "',  '" + (ape_pat.toUpperCase() + " " + ape_mat.toUpperCase() + " " + nombre.toUpperCase()) + "', 0,'1', '" + request.getParameter("rfc").toUpperCase() + "','" + Unidad + "', '" + request.getParameter("cedula") + "','A','" + request.getParameter("fec_nac") + "', '" + request.getParameter("folIni") + "', '" + request.getParameter("folFin") + "','" + request.getParameter("folIni") + "','"+tipoConsu+"');");
                         ResultSet rset2 = con.consulta("SELECT cedula FROM medicos WHERE nom_com='" + completo + "'");
                         while (rset2.next()) {
                             foliop = Integer.parseInt(rset2.getString("cedula"));

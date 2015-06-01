@@ -44,7 +44,7 @@ public class BuscaFolio extends HttpServlet {
             if(folio==null)
                 folio="";
             con.conectar();
-            ResultSet rs=con.consulta("SELECT receta.fol_rec FROM receta WHERE receta.fol_rec = '"+folio+"' LIMIT 1");
+            ResultSet rs=con.consulta("SELECT recetas.fol_rec FROM recetas WHERE recetas.fol_rec = '"+folio+"' LIMIT 1");
             if(rs.next())
                 resp="si";
             out.print(resp);

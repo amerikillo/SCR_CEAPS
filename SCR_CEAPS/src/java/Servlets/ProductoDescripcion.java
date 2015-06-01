@@ -61,6 +61,12 @@ public class ProductoDescripcion extends HttpServlet {
                         String tipo = "1";
                         ResultSet rset = null;
                         String carnet = "-";
+                        String obser = "";
+
+                        byte[] b = request.getParameter("observaciones").getBytes("ISO-8859-1");
+                        obser = new String(b, "UTF-8");
+
+                        sesion.setAttribute("obser", obser);
                         String nom_pac = request.getParameter("nom_pac");
                         if (nom_pac == null) {
                             nom_pac = "-";
@@ -93,9 +99,9 @@ public class ProductoDescripcion extends HttpServlet {
 
                         json.put("carnet", carnet);
                         if (ban == 1) {
-                            con.insertar("update receta set id_pac = '" + id_pac + "', cedula='" + request.getParameter("cedula") + "', carnet= '" + carnet + "' where id_rec= '" + id_rec + "'");
+                            con.insertar("update receta set id_pac = '" + id_pac + "', cedula='" + request.getParameter("cedula") + "', carnet= '" + carnet + "' , tip_cons='" + request.getParameter("tipoCons") + "' where id_rec= '" + id_rec + "'");
                         } else {//Si no inserta la receta
-                            con.insertar("insert into receta values ('0', '" + request.getParameter("folio") + "', '" + id_pac + "', '" + request.getParameter("cedula") + "', '" + tipo + "', '" + sesion.getAttribute("id_usu") + "', '-', '" + carnet + "', '1', NOW(),'1', '0', '0')");
+                            con.insertar("insert into receta values ('0', '" + request.getParameter("folio") + "', '" + id_pac + "', '" + request.getParameter("cedula") + "', '" + tipo + "', '" + sesion.getAttribute("id_usu") + "', '-', '" + carnet + "', '1', NOW(),'1', '0', '0','" + obser + "','" + request.getParameter("tipoCons") + "')");
                         }
                     } catch (Exception e) {
                     }

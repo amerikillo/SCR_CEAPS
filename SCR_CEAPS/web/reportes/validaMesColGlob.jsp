@@ -207,11 +207,11 @@
                                             <td width="125"><div align="center"><span class="Estilo13">UM </span></div></td>
                                             <td width="108"><div align="center"><span class="Estilo13">LOTE </span></div></td>
                                             <td width="121"><div align="center"><span class="Estilo13">CADUCIDAD </span></div></td>
-                                            <td width="111"><div align="center"><span class="Estilo13">Total Piezas </span></div></td>
-                                            <td width="111"><div align="center"><span class="Estilo13">Presentación </span></div></td>
+                                            <td width="111"><div align="center"><span class="Estilo13">Total Cajas </span></div></td>
+                                            <!--td width="111"><div align="center"><span class="Estilo13">Presentación </span></div></td>
                                             <td width="111"><div align="center"><span class="Estilo13">Cajas </span></div></td>
                                             <td width="111"><div align="center"><span class="Estilo13">Piezas Próximas a Cobrar </span></div></td>
-                                            <td width="111"><div align="center"><span class="Estilo13">Financiamiento </span></div></td>
+                                            <td width="111"><div align="center"><span class="Estilo13">Financiamiento </span></div></td-->
                                         </tr>
                                         <%
                                             int total = 0;
@@ -233,10 +233,10 @@
                                             <td align="center" class="Estilo9"><%=rset.getString("lot_pro")%></td>
                                             <td align="center" class="Estilo9"><%=df2.format(df.parse(rset.getString("cad_pro")))%></td>
                                             <td align="center" class="Estilo9"><%=rset.getString("sur")%></td>
-                                            <td align="center" class="Estilo9"><%=rset.getString("amp_pro")%></td>
+                                            <!--td align="center" class="Estilo9"><%=rset.getString("amp_pro")%></td>
                                             <td align="center" class="Estilo9"><%=formatter.format(Math.floor(rset.getDouble("sur") / rset.getDouble("amp_pro")))%></td>
                                             <td align="center" class="Estilo9"><%=formatter.format(rset.getDouble("sur") % rset.getDouble("amp_pro"))%></td>
-                                            <td align="center" class="Estilo9"><%=financ%></td>
+                                            <td align="center" class="Estilo9"><%=financ%></td-->
                                         </tr>
                                         <%
                                                     int sumar = (int) Math.floor(rset.getDouble("sur") / rset.getDouble("amp_pro"));
@@ -250,10 +250,6 @@
                                         <tr>
                                             <td>&nbsp;</td>
                                             <td></td>
-                                            <td align="center" class="Estilo9">&nbsp;</td>
-                                            <td align="center" class="Estilo9">&nbsp;</td>
-                                            <td align="center" class="Estilo9">&nbsp;</td>
-                                            <td align="center" class="Estilo9">&nbsp;</td>
                                             <td align="center" class="Estilo9">Total</td>
                                             <td align="center" class="Estilo9"><%=total%></td>
                                             <td align="center" class="Estilo9">&nbsp;</td>

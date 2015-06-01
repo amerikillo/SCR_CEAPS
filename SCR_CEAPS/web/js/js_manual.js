@@ -13,7 +13,7 @@
 function focoInicial() {
     document.getElementById('nombre_jq').focus();
     if (document.getElementById('nom_pac').value !== "") {
-        document.getElementById('cla_pro').focus();
+        document.getElementById('causes').focus();
     }
 }
 
@@ -156,7 +156,7 @@ $(function() {
         $("#carnet").focus();
     }
     if ($("#carnet").val() !== "") {
-        $("#cla_pro").focus();
+        $("#causes").focus();
     }
 
     $("#fecha").datepicker();
@@ -183,7 +183,7 @@ $(function() {
         $("#ori2").attr("value", "");
         $("#existencias").attr("value", "");
         $("#indica").val("");
-        $("#causes").val("");
+        //$("#causes").val("");
         $("#can_sol").val("");
     }
 
@@ -196,8 +196,9 @@ $(function() {
                 .append($("<td>").append("Descripción"))
                 //.append($("<td>").append("Lote"))
                 //.append($("<td>").append("Caducidad"))
-                .append($("<td>").append("Cant. Sol."))
-                .append($("<td>").append("Cant. Sur."))
+                .append($("<td>").append("Diag 1"))
+                .append($("<td>").append("Diag 2"))
+                //.append($("<td>").append("Cant. Sur."))
                 //.append($("<td>").append("Origen."))
                 .append($("<td>").append(""))
                 );
@@ -206,22 +207,41 @@ $(function() {
             var des_pro = json[i].des_pro;
             var lot_pro = json[i].lot_pro;
             var cad_pro = json[i].cad_pro;
+            if (cad_pro === "01/01/2020") {
+                cad_pro = "-";
+            }
             var fol_det = json[i].fol_det;
             var can_sol = json[i].can_sol;
             var cant_sur = json[i].cant_sur;
             var id_ori = json[i].id_ori;
-            var btn_modi = "<a class='btn btn-warning' id='btn_modi' value = '" + fol_det + "' name = 'btn_modi'  data-toggle=\'modal\'  href=\'#edita_clave_" + fol_det + "\'><span class='glyphicon glyphicon-pencil' ></span></a>";
-            var btn_eliminar = "<a class='btn btn-danger' id='btn_eli' value = '" + fol_det + "' name = 'btn_eli' data-toggle=\'modal\'  href=\'#elimina_clave_" + fol_det + "\'><span class='glyphicon glyphicon-remove' ></span></a>";
+            var indicaciones = json[i].indicaciones;
+            var id_cau = json[i].id_cau;
+            var id_cau2 = json[i].id_cau2;
+            var duracionArray = indicaciones.split("POR");
+            var duracionArray2 = duracionArray[1].split("|");
+            var duracion = duracionArray2[0];
+            if (cant_sur === "0") {
+                lot_pro = '-';
+                cad_pro = '-';
+            }
+            var btn_modi = "<a class='btn btn-warning btn-sm' id='btn_modi' value = '" + fol_det + "' name = 'btn_modi'  data-toggle=\'modal\'  href=\'#edita_clave_" + fol_det + "\'><span class='glyphicon glyphicon-pencil' ></span></a>";
+            var btn_eliminar = "<a class='btn btn-danger btn-sm' id='btn_eli' value = '" + fol_det + "' name = 'btn_eli' data-toggle=\'modal\'  href=\'#elimina_clave_" + fol_det + "\'><span class='glyphicon glyphicon-remove' ></span></a>";
             $("#tablaMedicamentos").append(
                     $("<tr>")
                     .append($("<td>").append(cla_pro))
                     .append($("<td>").append(des_pro))
                     //.append($("<td>").append(lot_pro))
                     //.append($("<td>").append(cad_pro))
-                    .append($("<td>").append(can_sol))
-                    .append($("<td>").append(cant_sur))
+                    .append($("<td>").append(id_cau))
+                    .append($("<td>").append(id_cau2))
                     //.append($("<td>").append(id_ori))
                     .append($("<td>").append(btn_modi).append(btn_eliminar))
+                    );
+            $("#tablaMedicamentos").append(
+                    $("<tr>")
+                    .append($("<td colspan='3'>").append("Indicaciones: " + indicaciones))
+                    .append($("<td>").append("Duración: " + duracion))
+                    .append($("<td>").append("Can. Sol.: " + can_sol))
                     );
         }
     }
@@ -237,15 +257,22 @@ $(document).ready(function() {
     $('#btn_capturar').click(function() {
         var cla_pro = $('#cla_pro').val();
         var des_pro = $('#des_pro').val();
+        var hora = $('#horas').val();
+        var dias = $('#dias').val();
         var form = $('#formulario_receta');
+        var indicaciones = $('#indicacionesRM').val();
         if (cla_pro !== "" && des_pro !== "") {
             if ($('#causes').val() === "") {
                 alert('Capture las causes');
                 $('#causes').focus();
-            } else if ($('#can_sol').val() === "") {
+            } else if ($('#can_sol').val() === "" || $('#can_sol').val() === "0") {
                 alert('Capture la cantidad a entregar');
-            } else {
-                document.getElementById('formulario_receta').action = "../CapturaMedicamento";
+            } else if (dias === "" || dias === "0" ) {
+                alert('Capture Horas/Días');
+            } else if (indicaciones === "") {
+                alert('Capture Indicaciones');
+            }else {
+                document.getElementById('formulario_receta').action = "../CapturaMedicamentoManual";
                 document.getElementById('formulario_receta').submit();
                 /*$.ajax({
                  type: 'POST',
@@ -270,7 +297,7 @@ $(document).ready(function() {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    //$("#causes").val("");
                     $("#can_sol").val("");
                 }
 
@@ -281,11 +308,12 @@ $(document).ready(function() {
                             $("<tr>")
                             .append($("<td>").append("Clave"))
                             .append($("<td>").append("Descripción"))
-                            .append($("<td>").append("Lote"))
-                            .append($("<td>").append("Caducidad"))
-                            .append($("<td>").append("Cant. Sol."))
-                            .append($("<td>").append("Cant. Sur."))
-                            .append($("<td>").append("Origen."))
+                            //.append($("<td>").append("Lote"))
+                            //.append($("<td>").append("Caducidad"))
+                            .append($("<td>").append("Diag 1"))
+                            .append($("<td>").append("Diag 2"))
+                            //.append($("<td>").append("Cant. Sur."))
+                            //.append($("<td>").append("Origen."))
                             .append($("<td>").append(""))
                             );
                     for (var i = 0; i < json.length; i++) {
@@ -293,28 +321,43 @@ $(document).ready(function() {
                         var des_pro = json[i].des_pro;
                         var lot_pro = json[i].lot_pro;
                         var cad_pro = json[i].cad_pro;
+                        if (cad_pro === "01/01/2020") {
+                            cad_pro = "-";
+                        }
                         var fol_det = json[i].fol_det;
                         var can_sol = json[i].can_sol;
                         var cant_sur = json[i].cant_sur;
-                        var btn_modi = "<a class='btn btn-warning' id='btn_modi' value = '" + fol_det + "' name = 'btn_modi'  data-toggle=\'modal\'  href=\'#edita_clave_" + fol_det + "\'><span class='glyphicon glyphicon-pencil' ></span></a>";
-                        var btn_eliminar = "<a class='btn btn-danger' id='btn_eli' value = '" + fol_det + "' name = 'btn_eli' data-toggle=\'modal\'  href=\'#elimina_clave_" + fol_det + "\'><span class='glyphicon glyphicon-remove' ></span></a>";
+                        var id_ori = json[i].id_ori;
+                        var indicaciones = json[i].indicaciones;
+                        var id_cau = json[i].id_cau;
+                        var id_cau2 = json[i].id_cau2;
+                        var duracionArray = indicaciones.split("POR");
+                        var duracion = duracionArray[1];
+                        if (cant_sur === "0") {
+                            lot_pro = '-';
+                            cad_pro = '-';
+                        }
+                        var btn_modi = "<a class='btn btn-warning btn-sm' id='btn_modi' value = '" + fol_det + "' name = 'btn_modi'  data-toggle=\'modal\'  href=\'#edita_clave_" + fol_det + "\'><span class='glyphicon glyphicon-pencil' ></span></a>";
+                        var btn_eliminar = "<a class='btn btn-danger btn-sm' id='btn_eli' value = '" + fol_det + "' name = 'btn_eli' data-toggle=\'modal\'  href=\'#elimina_clave_" + fol_det + "\'><span class='glyphicon glyphicon-remove' ></span></a>";
                         $("#tablaMedicamentos").append(
                                 $("<tr>")
                                 .append($("<td>").append(cla_pro))
                                 .append($("<td>").append(des_pro))
-                                .append($("<td>").append(lot_pro))
-                                .append($("<td>").append(cad_pro))
-                                .append($("<td>").append(can_sol))
-                                .append($("<td>").append(cant_sur))
+                                //.append($("<td>").append(lot_pro))
+                                //.append($("<td>").append(cad_pro))
+                                .append($("<td>").append(id_cau))
+                                .append($("<td>").append(id_cau2))
+                                //.append($("<td>").append(id_ori))
                                 .append($("<td>").append(btn_modi).append(btn_eliminar))
+                                );
+                        $("#tablaMedicamentos").append(
+                                $("<tr>")
+                                .append($("<td colspan='3'>").append("Indicaciones: " + indicaciones))
+                                .append($("<td>").append("Duracion: " + duracion))
+                                .append($("<td>").append("Can. Sol.: " + can_sol))
                                 );
                     }
                 }
-                //$('#tablaMedicamento').load('receta_Farmacia.jsp #tablaMedicamento');
-
-                //window.location.reload();
-
-                //$("#cla_pro").focus();
             }
         }
         else {
@@ -358,7 +401,7 @@ $(document).ready(function() {
                     $("#ori2").attr("value", "");
                     $("#existencias").attr("value", "");
                     $("#indica").val("");
-                    $("#causes").val("");
+                    //$("#causes").val("");
                     $("#can_sol").val("");
                 }
 
@@ -369,11 +412,12 @@ $(document).ready(function() {
                             $("<tr>")
                             .append($("<td>").append("Clave"))
                             .append($("<td>").append("Descripción"))
-                            .append($("<td>").append("Lote"))
-                            .append($("<td>").append("Caducidad"))
-                            .append($("<td>").append("Cant. Sol."))
-                            .append($("<td>").append("Cant. Sur."))
-                            .append($("<td>").append("Origen."))
+                            //.append($("<td>").append("Lote"))
+                            //.append($("<td>").append("Caducidad"))
+                            .append($("<td>").append("Diag 1"))
+                            .append($("<td>").append("Diag 2"))
+                            //.append($("<td>").append("Cant. Sur."))
+                            //.append($("<td>").append("Origen."))
                             .append($("<td>").append(""))
                             );
                     for (var i = 0; i < json.length; i++) {
@@ -381,28 +425,43 @@ $(document).ready(function() {
                         var des_pro = json[i].des_pro;
                         var lot_pro = json[i].lot_pro;
                         var cad_pro = json[i].cad_pro;
+                        if (cad_pro === "01/01/2020") {
+                            cad_pro = "-";
+                        }
                         var fol_det = json[i].fol_det;
                         var can_sol = json[i].can_sol;
                         var cant_sur = json[i].cant_sur;
-                        var btn_modi = "<a class='btn btn-warning' id='btn_modi' value = '" + fol_det + "' name = 'btn_modi'  data-toggle=\'modal\'  href=\'#edita_clave_" + fol_det + "\'><span class='glyphicon glyphicon-pencil' ></span></a>";
-                        var btn_eliminar = "<a class='btn btn-danger' id='btn_eli' value = '" + fol_det + "' name = 'btn_eli' data-toggle=\'modal\'  href=\'#elimina_clave_" + fol_det + "\'><span class='glyphicon glyphicon-remove' ></span></a>";
+                        var id_ori = json[i].id_ori;
+                        var indicaciones = json[i].indicaciones;
+                        var id_cau = json[i].id_cau;
+                        var id_cau2 = json[i].id_cau2;
+                        var duracionArray = indicaciones.split("POR");
+                        var duracion = duracionArray[1];
+                        if (cant_sur === "0") {
+                            lot_pro = '-';
+                            cad_pro = '-';
+                        }
+                        var btn_modi = "<a class='btn btn-warning btn-sm' id='btn_modi' value = '" + fol_det + "' name = 'btn_modi'  data-toggle=\'modal\'  href=\'#edita_clave_" + fol_det + "\'><span class='glyphicon glyphicon-pencil' ></span></a>";
+                        var btn_eliminar = "<a class='btn btn-danger btn-sm' id='btn_eli' value = '" + fol_det + "' name = 'btn_eli' data-toggle=\'modal\'  href=\'#elimina_clave_" + fol_det + "\'><span class='glyphicon glyphicon-remove' ></span></a>";
                         $("#tablaMedicamentos").append(
                                 $("<tr>")
                                 .append($("<td>").append(cla_pro))
                                 .append($("<td>").append(des_pro))
-                                .append($("<td>").append(lot_pro))
-                                .append($("<td>").append(cad_pro))
-                                .append($("<td>").append(can_sol))
-                                .append($("<td>").append(cant_sur))
+                                //.append($("<td>").append(lot_pro))
+                                //.append($("<td>").append(cad_pro))
+                                .append($("<td>").append(id_cau))
+                                .append($("<td>").append(id_cau2))
+                                //.append($("<td>").append(id_ori))
                                 .append($("<td>").append(btn_modi).append(btn_eliminar))
+                                );
+                        $("#tablaMedicamentos").append(
+                                $("<tr>")
+                                .append($("<td colspan='3'>").append("Indicaciones: " + indicaciones))
+                                .append($("<td>").append("Duracion: " + duracion))
+                                .append($("<td>").append("Can. Sol.: " + can_sol))
                                 );
                     }
                 }
-                //$('#tablaMedicamento').load('receta_Farmacia.jsp #tablaMedicamento');
-
-                //window.location.reload();
-
-                //$("#cla_pro").focus();
             }
         }
         else {
@@ -415,8 +474,8 @@ $(document).ready(function() {
     $('#btn_descripcion').click(function() {
         var dir = '../ProductoDescripcion';
         var form = $('#formulario_receta');
-        var folio_sp = $('#fol_sp').val();
-        if (folio_sp === "") {
+        var nom_pac = $('#nom_pac').val();
+        if (nom_pac === "") {
             alert("Capture el paciente");
         }
         if ($('#des_pro').val() === "") {
@@ -449,7 +508,7 @@ $(document).ready(function() {
                     $("#existencias").attr("value", total);
                     $("#cla_pro").val(cla_pro);
                     $("#amp").attr("value", ampuleo);
-                    $("#causes").focus();
+                    $("#unidades").focus();
                     if (cla_pro === null) {
                         alert('Clave fuera de Catálogo');
                         $("#cla_pro").val("");
@@ -459,7 +518,7 @@ $(document).ready(function() {
                         $("#ori2").attr("value", "");
                         $("#existencias").attr("value", "");
                         $("#indica").val("");
-                        $("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
                         $("#des_pro").focus();
                     }
@@ -472,7 +531,7 @@ $(document).ready(function() {
                         $("#ori2").attr("value", "0");
                         $("#existencias").attr("value", "0");
                         $("#indica").val("");
-                        $("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
                         $("#des_pro").focus();
                     }
@@ -484,13 +543,13 @@ $(document).ready(function() {
     $('#btn_clave').click(function() {
         var dir = '../ProductoClave';
         var form = $('#formulario_receta');
-        var folio_sp = $('#fol_sp').val();
-        if (folio_sp === "") {
+        var nom_pac = $('#nom_pac').val();
+        if (nom_pac === "") {
             alert("Capture el paciente");
         }
         if ($('#cla_pro').val() === "") {
             alert("Capture una clave");
-            $('#cla_pro').focus();
+            $('#causes').focus();
         }
         else {
             $.ajax({
@@ -520,7 +579,7 @@ $(document).ready(function() {
                     $("#existencias").attr("value", total);
                     $("#des_pro").val(descripcion);
                     $("#amp").attr("value", ampuleo);
-                    $("#causes").focus();
+                    $("#unidades").focus();
 
                     if (descripcion === "null") {
                         alert('Clave fuera de Catálogo');
@@ -531,9 +590,9 @@ $(document).ready(function() {
                         $("#ori2").attr("value", "");
                         $("#existencias").attr("value", "");
                         $("#indica").val("");
-                        $("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
-                        $("#cla_pro").focus();
+                        $("#causes").focus();
                     }
                     //if (total === null && descripcion !== null) {
                     if (total === null && descripcion !== "null") {
@@ -545,7 +604,7 @@ $(document).ready(function() {
                         $("#ori2").attr("value", "0");
                         $("#existencias").attr("value", "0");
                         $("#indica").val("");
-                        //$("#causes").val("");
+                        ////$("#causes").val("");
                         $("#can_sol").val("");
                         $("#causes").focus();
                     }
@@ -563,6 +622,11 @@ $(document).ready(function() {
         var sp_pac = $('#sp_pac').val();
         var dir = '../Receta';
         var form = $('#formulario_receta');
+        if($('#tipoCons').val()==="0"){
+            alert("seleccione el tipo de consulta");
+            $('#tipoCons').focus();
+            return false;            
+        }
         if ($('#folio').val() === "") {
             alert("Ingrese folio");
             $('#folio').focus();
@@ -614,7 +678,7 @@ $(document).ready(function() {
 
     $('#select_pac').change(function() {
         var select_pac = $('#select_pac').val();
-        $('#nombre_jq').attr("value", "");
+        $('#nombre_jq').val("");
         //alert(sp_pac);
         var dir = '../RecetaNombre';
         var form = $('#formulario_receta');
@@ -640,15 +704,15 @@ $(document).ready(function() {
                 var mensaje = json[i].mensaje;
                 var carnet = json[i].carnet;
                 //alert(mensaje);
-                if (mensaje === "vig_no_val") {
-                    $("#nom_pac").val("");
-                    $("#sexo").val("");
-                    $("#fec_nac").val("");
-                    $("#fol_sp").val("");
-                    $("#nombre_jq").val("");
-                    $("#nombre_jq").focus();
-                    alert("Vigencia no Valida");
-                }
+                /*if (mensaje === "vig_no_val") {
+                 $("#nom_pac").val("");
+                 $("#sexo").val("");
+                 $("#fec_nac").val("");
+                 $("#fol_sp").val("");
+                 $("#nombre_jq").val("");
+                 $("#nombre_jq").focus();
+                 alert("Vigencia no Valida");
+                 }*/
                 if (mensaje === "inexistente") {
                     alert("Paciente Inexistente");
                     $("#nom_pac").val("");
@@ -665,7 +729,7 @@ $(document).ready(function() {
                     $("#fec_nac").val(fec_nac);
                     $("#fol_sp").val(num_afi);
                     $("#carnet").val(carnet);
-                    $("#cla_pro").focus();
+                    $("#causes").focus();
                 }
             }
         }
@@ -675,8 +739,13 @@ $(document).ready(function() {
 
     $('#mostrar2').click(function() {
         var sp_pac = $('#sp_pac').val();
-        var dir = '../RecetaNombre';
+        var dir = '../RecetaNombre?tipoRec=manual';
         var form = $('#formulario_receta');
+        if($('#tipoCons').val()==="0"){
+            alert("seleccione el tipo de consulta");
+            $('#tipoCons').focus();
+            return false;            
+        }
         if ($('#folio').val() === "") {
             alert("Ingrese folio");
             $('#folio').focus();
@@ -709,16 +778,16 @@ $(document).ready(function() {
                 $("#fec_nac").val(fec_nac);
                 $("#fol_sp").val(num_afi);
                 $("#carnet").val(carnet);
-                $("#cla_pro").focus();
-                if (mensaje === "vig_no_val") {
-                    $("#nom_pac").val("");
-                    $("#sexo").val("");
-                    $("#fec_nac").val("");
-                    $("#fol_sp").val("");
-                    $("#nombre_jq").val("");
-                    $("#nombre_jq").focus();
-                    alert("Vigencia no valida");
-                }
+                $("#causes").focus();
+                /*if (mensaje === "vig_no_val") {
+                 $("#nom_pac").val("");
+                 $("#sexo").val("");
+                 $("#fec_nac").val("");
+                 $("#fol_sp").val("");
+                 $("#nombre_jq").val("");
+                 $("#nombre_jq").focus();
+                 alert("Vigencia no valida");
+                 }*/
                 if (mensaje === "inexistente") {
                     alert("Paciente Inexistente");
                     $("#nom_pac").val("");
@@ -757,22 +826,26 @@ $(document).ready(function() {
                 var mensaje = json[i].mensaje;
                 var fol_rec = json[i].fol_rec;
                 var nom_med = json[i].nom_med;
+                var tipoConsulta = json[i].tipoConsulta;
                 var cedula = json[i].cedula;
 
                 // $("#folio").val(fol_rec);
                 $("#medico").val(nom_med);
                 $("#cedula").val(cedula);
+                $("#tipoConsulta").val(tipoConsulta);
                 $("#nombre_jq").focus();
-                if (mensaje === "vig_no_val") {
-                    $("#medico").val("");
-                    $("#cedula").val("");
-                    $("#medico_jq").focus();
-                    alert("Vigencia no valida");
-                }
+                /*if (mensaje === "vig_no_val") {
+                 $("#medico").val("");
+                 $("#cedula").val("");
+                 $("#tipoConsulta").val("");
+                 $("#medico_jq").focus();
+                 alert("Vigencia no valida");
+                 }*/
                 if (mensaje === "inexistente") {
                     alert("Médico Inexistente");
                     $("#medico").val("");
                     $("#cedula").val("");
+                    $("#tipoConsulta").val("");
                     $("#medico_jq").focus();
                 }
             }

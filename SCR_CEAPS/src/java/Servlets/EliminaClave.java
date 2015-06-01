@@ -63,10 +63,10 @@ public class EliminaClave extends HttpServlet {
 
                 System.out.println("update detreceta set can_sol = '0', cant_sur = '0', baja='1' where fol_det = '" + request.getParameter("fol_det") + "' ");
                 System.out.println("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
-                System.out.println("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL IVENTARIO', '-', NOW(), 'SE ELIMINA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                System.out.println("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE ELIMINA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                 con.insertar("update detreceta set can_sol = '0', cant_sur = '0', baja='1' where fol_det = '" + request.getParameter("fol_det") + "' ");
                 con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
-                con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL IVENTARIO', '-', NOW(), 'SE ELIMINA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
+                con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE ELIMINA INSUMO DE RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
             } catch (Exception e) {
                 System.out.println("ErrorEli->"+e);
             }

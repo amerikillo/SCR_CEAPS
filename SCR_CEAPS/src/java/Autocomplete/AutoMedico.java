@@ -45,10 +45,12 @@ public class AutoMedico extends HttpServlet {
         JSONObject json = new JSONObject();
         JSONArray jsona = new JSONArray();
         HttpSession sesion = request.getSession(true);
+        byte[] a = request.getParameter("nombre").getBytes("ISO-8859-1");
+        String nombre = new String(a, "UTF-8");
 
         try {
             con.conectar();
-            ResultSet rset2 = con.consulta("SELECT cedula, nom_com FROM medicos WHERE nom_com like '%" + request.getParameter("nombre") + "%' limit 0,10");
+            ResultSet rset2 = con.consulta("SELECT cedula, nom_com FROM medicos WHERE nom_com like '%" + nombre + "%' limit 0,10");
             try {
                 while (rset2.next()) {
                     json.put("cedula", rset2.getString("cedula"));

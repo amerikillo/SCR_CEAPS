@@ -20,7 +20,9 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Receta Electr&oacute;nica <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a href="/SCR_CEAPS/receta/receta_farmacia.jsp">Captura de Receta</a></li>
-                    <li><a href="/SCR_CEAPS/receta/receta_manual.jsp">Receta Manual</a></li>
+                    <!--li><a href="/SCR_CEAPS/receta/receta_manual.jsp">Receta Manual</a></li-->
+                    <li class="divider"></li>
+                    <li><a href="/SCR_CEAPS/farmacia/modRecetasSurtidas.jsp">Ver Recetas</a></li>
 
                     <!-- <li><a href="receta/reimpresion_ticket.jsp">Reimpresión Ticket</a></li>-->
 
@@ -40,7 +42,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administración del Sistema<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="/SCR_CEAPS/admin/recetas/folio.jsp">Parametros</a></li>
+                    <li><a href="/SCR_CEAPS/admin/recetas/folio.jsp">Parámetros</a></li>
                 </ul>
             </li>
             <li class="dropdown">
@@ -67,11 +69,12 @@
                     <li><a href="/SCR_CEAPS/farmacia/modSurteFarmacia.jsp">Surtido Receta</a></li>
                     <li><a href="/SCR_CEAPS/farmacia/modSurteFarmaciaP.jsp">Surtido Receta Pendientes</a></li>
                     <!--li><a href="/SCR_CEAPS/farmacia/modSurteFarmaciaCol.jsp">Surtido Recetas Colectivas</a></li-->
-                        <li class="divider"></li>
+                    <li class="divider"></li>
                     <li><a href="/SCR_CEAPS/receta/receta_manual.jsp">Receta Manual</a></li>
                     <li><a href="/SCR_CEAPS/receta/receta_colectiva.jsp">Receta Colectiva</a></li>
-                        <li class="divider"></li>
-                    <li><a href="/SCR_CEAPS/farmacia/modRecetasSurtidas.jsp">Consultas</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/SCR_CEAPS/farmacia/modRecetasSurtidas.jsp">Ver Recetas Surtidas</a></li>
+                    <li><a href="/SCR_CEAPS/farmacia/modRecetasCanceladas.jsp">Ver Recetas Canceladas</a></li>
 
                     <!--   <li><a href="receta/reimpresion_ticket.jsp">Reimpresión Ticket</a></li>
                        <li><a href="receta/reimpresion_ticket_colec.jsp">Reimpresión Ticket Colectiva</a></li>-->
@@ -84,16 +87,16 @@
                     <li><a href="repMensFarmacia.jsp">Reporte Mensual por Receta</a></li>
                     <li><a href="repConsSemanal.jsp">Consumo Semanal</a></li-->
                     <li><a href="/SCR_CEAPS/reportes/movClaves.jsp">Alto/Bajo/Nulo Movimiento</a></li>
-                        <li class="divider"></li>
+                    <li class="divider"></li>
                     <li><a href="/SCR_CEAPS/farmacia/repSolSur.jsp">Solicitado / Surtido</a></li>
                     <li><a href="/SCR_CEAPS/reportes/dispensadoReceta.jsp">Dispensado Receta</a></li>
                     <li><a href="/SCR_CEAPS/reportes/dispensadoRecetaCol.jsp">Dispensado Receta Colectiva</a></li>
-                        <li class="divider"></li>
+                    <li class="divider"></li>
                     <!--li><a href="/SCR_CEAPS/reportes/diarioReceta.jsp">Reporte Diario Receta</a></li>
                     <li><a href="/SCR_CEAPS/reportes/diarioRecetaCol.jsp">Reporte Diario Receta Colectiva</a></li-->
                     <li><a href="/SCR_CEAPS/reportes/validaMesRec.jsp">Reporte Validación Mensual</a></li>
                     <li><a href="/SCR_CEAPS/reportes/validaMesCol.jsp">Reporte Validación Mensual Colectiva</a></li>
-                        <li class="divider"></li>
+                    <li class="divider"></li>
                     <li><a href="/SCR_CEAPS/reportes/rep_reabastecimiento.jsp">Reporte Reabastecimiento</a></li>
                     <li><a href="/SCR_CEAPS/reportes/rep_nivserv.jsp">Reporte Nivel de servicio</a></li>
                 </ul>
@@ -114,8 +117,11 @@
                 <ul class="dropdown-menu">
                     <li><a href="/SCR_CEAPS/farmacia/existencias.jsp">Existencias</a></li>
                     <li><a href="/SCR_CEAPS/farmacia/cargaAbasto.jsp">Cargar Abasto</a></li>
-                    <li><a href="/SCR_CEAPS/farmacia/kardex.jsp">Kardex</a></li>
                     <li><a href="/SCR_CEAPS/reportes/reporteAbasto.jsp">Abastos</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/SCR_CEAPS/farmacia/kardex.jsp">Kardex</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/SCR_CEAPS/farmacia/salidasAjuste.jsp">Salidas por Ajuste</a></li>
                 </ul>
             </li>
             <li class="dropdown">

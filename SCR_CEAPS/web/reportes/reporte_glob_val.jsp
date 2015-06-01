@@ -194,7 +194,7 @@
                                             <td width="108"><div align="center"><span class="Estilo13">LOTE </span></div></td>
                                             <td width="121"><div align="center"><span class="Estilo13">CADUCIDAD </span></div></td>
                                             <td width="111"><div align="center"><span class="Estilo13">Total Cajas </span></div></td>
-                                            <td width="111"><div align="center"><span class="Estilo13">Financiamiento </span></div></td>
+                                            <!--td width="111"><div align="center"><span class="Estilo13">Financiamiento </span></div></td-->
                                         </tr>
                                         <%
                                             rset = stmt.executeQuery("SELECT p.pres_pro, r.fol_rec, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, sum(dr.cant_sur) as sur FROM bitacora bi, unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE r.id_rec = bi.id_rec and r.id_tip = '1' and un.cla_uni = us.cla_uni AND us.id_usu = r.id_usu AND r.num_afi = pa.num_afi AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("cla_uni") + "' AND bi.fec_carga BETWEEN '" + df.format(df2.parse(request.getParameter("f1"))) + " 00:00:01' and '" + df.format(df2.parse(request.getParameter("f2"))) + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and dr.baja!=1 and dr.cant_sur != 0 group by p.cla_pro, dp.lot_pro, dp.cad_pro ;");
@@ -217,7 +217,7 @@
                                             <td align="center" class="Estilo9"><%=rset.getString("lot_pro")%></td>
                                             <td align="center" class="Estilo9"><%=df2.format(df.parse(rset.getString("cad_pro")))%></td>
                                             <td align="center" class="Estilo9"><%=rset.getString("sur")%></td>
-                                            <td align="center" class="Estilo9"><%=financ%></td>
+                                            <!--td align="center" class="Estilo9"><%=financ%></td-->
                                         </tr>
                                         <%
                                             }

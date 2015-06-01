@@ -10,7 +10,7 @@
       xmlns:x="urn:schemas-microsoft-com:office:excel"
       xmlns="http://www.w3.org/TR/REC-html40">
     <%
-    //  Conexión a la BDD -------------------------------------------------------------
+        //  Conexión a la BDD -------------------------------------------------------------
         ConectionDB conn = new ConectionDB();
         conn.conectar();
         Connection con = conn.getConn();
@@ -18,7 +18,7 @@
         ResultSet rset = null;
         Statement stmt2 = con.createStatement();
         ResultSet rset2 = null;
-    // fin objetos de conexión ------------------------------------------------------
+        // fin objetos de conexión ------------------------------------------------------
         int ban = 0;
         int total = 0;
         response.setContentType("application/vnd.ms-excel");
@@ -230,6 +230,7 @@
 
 
                                         <%try {
+                                                int totCantSur = 0, totCantSol = 0, cantFol = 0, c = 1;
                                                 System.out.println("SELECT r.fecha_hora, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dp.cla_fin FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("unidad") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0;");
 
                                                 rset = stmt.executeQuery("SELECT r.fecha_hora, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur, dp.cla_fin FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND pa.id_pac = r.id_pac AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("unidad") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0 group by dr.fol_det;");
@@ -241,10 +242,16 @@
                                                     } else if (rset.getString("dp.cla_fin").equals("2")) {
                                                         financ = "FASSA";
                                                     }
+                                                    ResultSet rs = conn.consulta("SELECT r.fol_rec, Sum(dr.can_sol), Sum(dr.cant_sur), Count(dr.fol_det)                                                                                FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND pa.id_pac = r.id_pac AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("unidad") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' and dr.baja!=1 and dr.cant_sur!=0 AND r.fol_rec ='" + rset.getString("fol_rec") + "' group by r.fol_rec;");
+                                                    if (rs.next()) {
+                                                        totCantSol = rs.getInt(2);
+                                                        totCantSur = rs.getInt(3);
+                                                        cantFol = rs.getInt(4);
+                                                    }
                                         %>
                                         <tr>
-                                            <td style="border:double" class="Estilo8"><%=df2.format(df.parse(rset.getString(1)))%></td>
-                                            <td style="border:double" > <%=rset.getString("fol_rec")%></td>
+                                            <td style="border:double"><%=df2.format(df.parse(rset.getString(1)))%></td>
+                                            <td style="border:double"> <%=rset.getString("fol_rec")%></td>
                                             <td style="border:double"><%=rset.getString("num_afi")%></td>
                                             <td style="border:double"><%=rset.getString("cedula")%></td>
                                             <td style="border:double"><%=rset.getString("nom_med")%></td>
@@ -258,12 +265,58 @@
                                             <td width="68" align="center" style="border:double"><%=rset.getString("cant_sur")%></td>
                                         </tr>
                                         <%
+                                            if (c >= cantFol) {
+                                        %>
+                                        <tr>
+                                            <td><strong>TOTAL FOLIO</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                            <td align="center"><strong><%=totCantSol%></strong></td>
+                                            <td align="center"><strong><%=totCantSur%></strong></td>
+                                        </tr>
+                                        <%
+                                                        c = 0;
+                                                    }
+                                                    c++;
                                                 }
                                             } catch (Exception ex) {
                                                 System.out.println("Error->" + ex.getMessage());
                                             }
                                         %>
+                                        <tr >
+                                            <td><strong>TOTALES</strong></td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
 
+                                            <td align="right"></td>
+                                            <td align="center">&nbsp;</td>
+                                            <td align="center"></td>
+                                            <td align="center">&nbsp;</td>
+                                            <%
+                                                try {
+                                                    int cantTotalSur = 0;
+                                                    int cantTotalSol = 0;
+                                                    System.out.println("2--> SELECT r.fecha_hora, dr.fec_sur, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, dr.can_sol, dr.cant_sur FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND us.id_usu = r.id_usu AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("unidad") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' group by un.cla_uni;");
+
+                                                    rset = stmt.executeQuery("SELECT r.fecha_hora, dr.fec_sur, r.fol_rec, pa.num_afi, r.cedula, m.nom_med, pa.nom_pac, p.cla_pro, p.des_pro, dp.lot_pro, dp.cad_pro, sum(dr.can_sol) as sol, sum(dr.cant_sur) as sur FROM unidades un, usuarios us, receta r, pacientes pa, medicos m, detreceta dr, detalle_productos dp, productos p WHERE un.cla_uni = us.cla_uni AND us.id_usu = r.id_usu AND pa.id_pac = r.id_pac AND r.cedula = m.cedula AND r.id_rec = dr.id_rec AND dr.det_pro = dp.det_pro AND dp.cla_pro = p.cla_pro AND un.cla_uni = '" + request.getParameter("unidad") + "' AND r.fecha_hora BETWEEN '" + request.getParameter("f1") + " 00:00:01' and '" + request.getParameter("f2") + " 23:59:59' and dp.id_ori like '%" + request.getParameter("ori") + "%' and r.id_tip = '1' group by un.cla_uni;");
+                                                    while (rset.next()) {
+                                                        ban = 1;
+                                                        cantTotalSur = cantTotalSur + rset.getInt("sur");
+                                                        cantTotalSol = cantTotalSol + rset.getInt("sol");
+                                                    }
+                                            %>
+
+                                            <td align="center"><h3><%=cantTotalSol%></h3></td>
+                                            <td align="center"><h3><%=cantTotalSur%></h3></td>
+                                            <%
+                                                } catch (Exception ex) {
+                                                    System.out.println("Error2-> " + ex.getMessage());
+                                                }
+                                            %>
+                                            <td></td>
+                                        </tr>
                                     </table>
                                     <p>&nbsp;</p>
                                 </body>
