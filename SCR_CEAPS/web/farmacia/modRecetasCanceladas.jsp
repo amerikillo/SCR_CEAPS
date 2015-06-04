@@ -19,9 +19,10 @@
         //response.sendRedirect("index.jsp");
     }
 
-    String fol_rec = "", nom_pac = "", fec_sur = "", fec_sur2 = "", id_rec = "";
+    String fol_rec = "", nom_pac = "", fec_sur = "", fec_sur2 = "", id_rec = "", id_tip = "";
     try {
         id_rec = request.getParameter("id_rec");
+        id_tip = request.getParameter("id_tip");
         fol_rec = request.getParameter("fol_rec");
         nom_pac = request.getParameter("nom_pac");
         fec_sur = request.getParameter("fec_sur");
@@ -43,6 +44,12 @@
     }
     if (id_rec == null) {
         id_rec = "";
+    }
+    if (id_tip == null) {
+        id_tip = "";
+    }
+    if (!id_tip.equals("")) {
+        id_tip = " id_tip = '" + id_tip + "' and ";
     }
     if (!id_rec.equals("")) {
         id_rec = " id_rec = '" + id_rec + "' and ";
@@ -90,6 +97,16 @@
                             </div>
                             <div class="panel-body">
                                 <form>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <input type="radio" name="id_tip" id="id_tip" value="" checked>
+                                            Todas
+                                            <input type="radio" name="id_tip" id="id_tip" value="1">
+                                            Farmacia
+                                            <input type="radio" name="id_tip" id="id_tip" value="2">
+                                            Colectiva
+                                        </div>
+                                    </div>
                                     Consecutivo:
                                     <input type="text" class="form-control" name="id_rec" />
                                     Por Folio:
@@ -111,9 +128,9 @@
                                     int sumSol = 0, sumSur = 0;
                                     try {
                                         con.conectar();
-                                        String qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito!=1 and baja=1 group by id_rec ";
+                                        String qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  transito!=1 and baja=1 group by id_rec ";
                                         if (((String) sesion.getAttribute("tipo")).equals("FARMACIA")) {
-                                            qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where id_usu='" + id_usu + "' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " and transito!=1 and baja=1  group by id_rec";
+                                            qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where id_usu='" + id_usu + "' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  and transito!=1 and baja=1  group by id_rec";
                                         }
                                         ResultSet rset = con.consulta(qry);
                                         while (rset.next()) {
@@ -139,9 +156,9 @@
                                 <%
                                     try {
                                         con.conectar();
-                                        String qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito!=1 and baja=1 order by id_rec asc limit 0,50 ;";
+                                        String qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  transito!=1 and baja=1 order by id_rec asc limit 0,50 ;";
                                         if (((String) sesion.getAttribute("tipo")).equals("FARMACIA")) {
-                                            qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico from recetas where id_usu='" + id_usu + "' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " and transito!=1 and baja=1 order by id_rec asc limit 0,50 ;";
+                                            qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico from recetas where id_usu='" + id_usu + "' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  and transito!=1 and baja=1 order by id_rec asc limit 0,50 ;";
                                         }
                                         ResultSet rset = con.consulta(qry);
                                         while (rset.next()) {
@@ -228,7 +245,6 @@
 
         </div>
 
-    </body>
     <!-- 
     ================================================== -->
     <!-- Se coloca al final del documento para que cargue mas rapido -->
@@ -276,5 +292,6 @@
                                             return false;
                                         }
     </script>
+    </body>
 </html>
 

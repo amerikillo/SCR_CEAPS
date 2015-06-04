@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -17,11 +18,12 @@ import java.text.SimpleDateFormat;
  */
 public class LeerCSV {
 
-    DateFormat df3 = new SimpleDateFormat("dd/MM/yyyy");
-    DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
-    ConectionDB con = new ConectionDB();
-
     public boolean leeCSV(String ruta, String nombre) {
+        DateFormat df3 = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
+        ConectionDB con = new ConectionDB();
+        DecimalFormat formatter = new DecimalFormat("0000");
+        DecimalFormat formatterDeci = new DecimalFormat("0000.00");
         String csvFile = ruta + "/abastos/" + nombre;
         BufferedReader br = null;
         String line = "";
@@ -45,6 +47,14 @@ public class LeerCSV {
                                 if (i == 3) {
                                     String cadu = df2.format(df3.parse(linea[i]));
                                     inserta = inserta + " '" + cadu.trim() + "' , ";
+                                } else if (i == 0) {
+                                    System.out.println(linea[i]);
+                                    System.out.println(linea[i].indexOf('.'));
+                                    if (linea[i].indexOf('.') < 0) {
+                                        inserta = inserta + " '" + formatter.format(Integer.parseInt(linea[i])) + "' , ";
+                                    } else {
+                                        inserta = inserta + " '" + formatterDeci.format(Float.parseFloat(linea[i])) + "' , ";
+                                    }
                                 } else {
                                     if (i == linea.length - 1) {
                                         inserta = inserta + " '" + linea[i].trim() + "' ) ";

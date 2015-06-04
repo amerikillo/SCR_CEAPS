@@ -85,11 +85,6 @@
 			<line>
 				<reportElement uuid="db932e42-bb6c-4073-b452-1ac2d5e438b9" x="0" y="111" width="572" height="1"/>
 			</line>
-			<textField>
-				<reportElement uuid="bb3e1504-4e96-45f2-b038-566cc43a3427" x="75" y="52" width="322" height="20"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{nom_com}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement uuid="24a29a0c-c2c7-41e7-8d9b-ea46f041dbf2" x="0" y="112" width="47" height="13"/>
 				<textElement textAlignment="Center">

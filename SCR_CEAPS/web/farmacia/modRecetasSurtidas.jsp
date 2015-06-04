@@ -18,10 +18,20 @@
     if (id_usu == null) {
         //response.sendRedirect("index.jsp");
     }
-
-    String fol_rec = "", nom_pac = "", fec_sur = "", fec_sur2 = "", id_rec = "";
+    String passReal = "";
+    try {
+        con.conectar();
+        ResultSet RsetUsu = con.consulta("SELECT nombre, passReal FROM usuarios WHERE id_usu='" + id_usu + "'");
+        if (RsetUsu.next()) {
+            passReal = RsetUsu.getString(2);
+        }
+        con.cierraConexion();
+    } catch (Exception ex) {
+    }
+    String fol_rec = "", nom_pac = "", fec_sur = "", fec_sur2 = "", id_rec = "", id_tip = "";
     try {
         id_rec = request.getParameter("id_rec");
+        id_tip = request.getParameter("id_tip");
         fol_rec = request.getParameter("fol_rec");
         nom_pac = request.getParameter("nom_pac");
         fec_sur = request.getParameter("fec_sur");
@@ -43,6 +53,12 @@
     }
     if (id_rec == null) {
         id_rec = "";
+    }
+    if (id_tip == null) {
+        id_tip = "";
+    }
+    if (!id_tip.equals("")) {
+        id_tip = " id_tip = '" + id_tip + "' and ";
     }
     if (!id_rec.equals("")) {
         id_rec = " id_rec = '" + id_rec + "' and ";
@@ -96,6 +112,16 @@
                             </div>
                             <div class="panel-body">
                                 <form method="post">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <input type="radio" name="id_tip" id="id_tip" value="" checked>
+                                            Todas
+                                            <input type="radio" name="id_tip" id="id_tip" value="1">
+                                            Farmacia
+                                            <input type="radio" name="id_tip" id="id_tip" value="2">
+                                            Colectiva
+                                        </div>
+                                    </div>
                                     Consecutivo:
                                     <input type="text" class="form-control" name="id_rec" />
                                     Por Folio:
@@ -123,9 +149,9 @@
                                     int gSumSol = 0, gSumSur = 0;
                                     try {
                                         con.conectar();
-                                        String qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito=0 and baja in (0,2) group by id_rec ";
+                                        String qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+" transito=0 and baja in (0,2) group by id_rec ";
                                         if (((String) sesion.getAttribute("tipo")).equals("FARMACIA")) {
-                                            qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where id_usu='" + id_usu + "' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito!=5 group by id_rec";
+                                            qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where id_usu='" + id_usu + "' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+" transito!=5 group by id_rec";
                                         }
                                         ResultSet rset = con.consulta(qry);
                                         while (rset.next()) {
@@ -137,18 +163,18 @@
                                             sumSol = sumSol + rset.getInt("can_sol");
                                             sumSur = sumSur + rset.getInt("cant_sur");
                                         }
-                                        rset = con.consulta("SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " 5=5 group by id_rec ");
+                                        rset = con.consulta("SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+" 5=5 group by id_rec ");
                                         while (rset.next()) {
                                             totalReceta++;
                                             gSumSol = gSumSol + rset.getInt("can_sol");
                                             gSumSur = gSumSur + rset.getInt("cant_sur");
                                         }
 
-                                        rset = con.consulta("SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito in (1,2) and baja=0 group by id_rec ");
+                                        rset = con.consulta("SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+" transito in (1,2) and baja=0 group by id_rec ");
                                         while (rset.next()) {
                                             recetaPorSur++;
                                         }
-                                        rset = con.consulta("SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + "  baja=1 group by id_rec ");
+                                        rset = con.consulta("SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  baja=1 group by id_rec ");
                                         while (rset.next()) {
                                             recetasCancel++;
                                         }
@@ -179,9 +205,9 @@
                                 <%
                                     try {
                                         con.conectar();
-                                        String qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito=0 and baja in (0,2) order by id_rec asc limit 0,50 ;";
+                                        String qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico,baja from recetas where 1=1 and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+" transito=0 and baja in (0,2) order by id_rec asc limit 0,50 ;";
                                         if (((String) sesion.getAttribute("tipo")).equals("FARMACIA")) {
-                                            qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico,baja from recetas where id_usu=' " + id_usu + "' and " + fec_sur + " " + fol_rec + " " + nom_pac + " " + id_rec + " transito!=5 order by id_rec asc limit 0,50 ;";
+                                            qry = "SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, id_tip, medico,baja from recetas where id_usu=' " + id_usu + "' and " + fec_sur + " " + fol_rec + " " + nom_pac + " " + id_rec + " "+id_tip+" transito!=5 order by id_rec asc limit 0,50 ;";
                                         }
                                         ResultSet rset = con.consulta(qry);
                                         while (rset.next()) {
@@ -225,11 +251,22 @@
                                                 <b>Fecha y hora:</b><br /><%=df3.format(df2.parse(rset.getString(3)))%>
                                                 <br /><%=df1.format(df2.parse(rset.getString(3)))%>
                                                 <br/><br/><br/>
-                                                <%
-                                                    if (pend.equals("2")) {
-                                                        out.println("<span class='alert alert-danger'>Receta Pendiente por Surtir</span>");
-                                                    }
-                                                %>
+                                                <div class="row">
+                                                    <%
+                                                        if (pend.equals("2")) {
+                                                            out.println("<span class='alert alert-danger'>Receta Pendiente por Surtir</span>");
+                                                        }
+                                                        if (((String) sesion.getAttribute("tipo")).equals("ADMON")) {
+
+                                                    %>
+                                                </div>
+                                                <br/>
+                                                <div class="row">
+                                                    <button type="button" class="btn btn-block btn-danger" data-toggle="modal" data-target="#Observaciones" >Cancelar</button>
+                                                    <button class="hidden" type="submit" name="accion" value="cancelar" id="btnCancelarReceta" onclick="return confirm('Seguro que desea cancelar esta receta?')">Cancelar</button>
+                                                    <%                                                    }
+                                                    %>
+                                                </div>
                                             </div>
                                             <div class="col-lg-8">
                                                 <table class="table table-bordered">
@@ -274,54 +311,91 @@
             </div>
 
         </div>
+        <!--
+Modal
+        -->
+        <div class="modal fade" id="Observaciones" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                Cancelar Receta
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="modal-title" id="myModalLabel">Contraseña para cancelar</h4>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <input class="form-control" type="password" onkeyup="validaContra(this)" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnPassCancela" type="button" disabled class="btn btn-primary" onclick="$('#btnCancelarReceta').click()" >Cancelar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--
+        /Modal
+        -->
+        <!-- 
+           ================================================== -->
+        <!-- Se coloca al final del documento para que cargue mas rapido -->
+        <!-- Se debe de seguir ese orden al momento de llamar los JS -->
+        <script src="../js/jquery-1.9.1.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/jquery-ui.js"></script>
+        <script type="text/javascript">
+                                function validaContra(e) {
+                                    var pass = e.value;
+                                    if (pass === "<%=passReal%>") {
+                                        $('#btnPassCancela').attr("disabled", false);
+                                    }
+                                }
+                                $(document).ready(function() {
+                                    $("#nom_pac").keyup(function() {
+                                        var nombre2 = $("#nom_pac").val();
+                                        $("#nom_pac").autocomplete({
+                                            source: "../AutoPacientes?nombre=" + nombre2,
+                                            minLength: 2,
+                                            select: function(event, ui) {
+                                                $("#nom_pac").val(ui.item.nom_com);
+                                                return false;
+                                            }
+                                        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                                            return $("<li>")
+                                                    .data("ui-autocomplete-item", item)
+                                                    .append("<a>" + item.nom_com + "</a>")
+                                                    .appendTo(ul);
+                                        };
+                                    });
+                                });
 
+                                function tabular(e, obj) {
+                                    tecla = (document.all) ? e.keyCode : e.which;
+                                    if (tecla !== 13)
+                                        return;
+                                    frm = obj.form;
+                                    for (i = 0; i < frm.elements.length; i++)
+                                        if (frm.elements[i] === obj)
+                                        {
+                                            if (i === frm.elements.length - 1)
+                                                i = -1;
+                                            break
+                                        }
+                                    /*ACA ESTA EL CAMBIO*/
+                                    if (frm.elements[i + 1].disabled === true)
+                                        tabular(e, frm.elements[i + 1]);
+                                    else
+                                        frm.elements[i + 1].focus();
+                                    return false;
+                                }
+        </script>
     </body>
-    <!-- 
-    ================================================== -->
-    <!-- Se coloca al final del documento para que cargue mas rapido -->
-    <!-- Se debe de seguir ese orden al momento de llamar los JS -->
-    <script src="../js/jquery-1.9.1.js"></script>
-    <script src="../js/bootstrap.js"></script>
-    <script src="../js/jquery-ui.js"></script>
-    <script type="text/javascript">
-                                                        $(document).ready(function() {
-                                                            $("#nom_pac").keyup(function() {
-                                                                var nombre2 = $("#nom_pac").val();
-                                                                $("#nom_pac").autocomplete({
-                                                                    source: "../AutoPacientes?nombre=" + nombre2,
-                                                                    minLength: 2,
-                                                                    select: function(event, ui) {
-                                                                        $("#nom_pac").val(ui.item.nom_com);
-                                                                        return false;
-                                                                    }
-                                                                }).data("ui-autocomplete")._renderItem = function(ul, item) {
-                                                                    return $("<li>")
-                                                                            .data("ui-autocomplete-item", item)
-                                                                            .append("<a>" + item.nom_com + "</a>")
-                                                                            .appendTo(ul);
-                                                                };
-                                                            });
-                                                        });
 
-                                                        function tabular(e, obj) {
-                                                            tecla = (document.all) ? e.keyCode : e.which;
-                                                            if (tecla !== 13)
-                                                                return;
-                                                            frm = obj.form;
-                                                            for (i = 0; i < frm.elements.length; i++)
-                                                                if (frm.elements[i] === obj)
-                                                                {
-                                                                    if (i === frm.elements.length - 1)
-                                                                        i = -1;
-                                                                    break
-                                                                }
-                                                            /*ACA ESTA EL CAMBIO*/
-                                                            if (frm.elements[i + 1].disabled === true)
-                                                                tabular(e, frm.elements[i + 1]);
-                                                            else
-                                                                frm.elements[i + 1].focus();
-                                                            return false;
-                                                        }
-    </script>
 </html>
 

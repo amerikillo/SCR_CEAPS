@@ -25,6 +25,7 @@
     ConectionDB con = new ConectionDB();
 
     int sumTotal = 0, pendSur = 0, cajAmp = 0;
+    String porReceta = request.getParameter("receta");
 
     String origen = "";
     try {
@@ -49,11 +50,10 @@
         while (rset.next()) {
             cla_uni = rset.getString("cla_uni");
             des_uni = rset.getString("des_uni");
-            
+
         }
         con.cierraConexion();
     } catch (Exception e) {
-
     }
 %>
 <html>
@@ -66,7 +66,8 @@
         </style>
     </head>
     <body class="container">
-        <%            try {
+        <%
+            try {
 
         %>
         <div class="text-center">
@@ -77,18 +78,20 @@
             REPORTE POR CLAVE DEL CONSUMO POR RECETA  <br/>            
             PERIODO: <%=request.getParameter("hora_ini")%> al <%=request.getParameter("hora_fin")%>  <br/>                        
         </div>
-        <%} catch (Exception e) {
+        <%
+            } catch (Exception e) {
 
             }
         %>
         <a class="btn btn-default" href="../farmacia/repSolSur.jsp">Regresar</a>
-        <a class="btn btn-default" href="gnrRepSolSur.jsp?hora_ini=<%=request.getParameter("hora_ini")%>&hora_fin=<%=request.getParameter("hora_fin")%>"><span class="glyphicon glyphicon-download"></span></a>
-        <%
-            /*
-             Para origen 1
-             */
-            try {
-        %>
+        <a class="btn btn-default" href="gnrRepSolSur.jsp?hora_ini=<%=request.getParameter("hora_ini")%>&hora_fin=<%=request.getParameter("hora_fin")%>&receta=si"><span class="glyphicon glyphicon-download"></span></a>
+            <%
+                /*
+                 Para origen 1
+                 */
+                if (porReceta == null) {
+                    try {
+            %>
         <table class="table table-bordered table-condensed table-striped" >
             <tr>
                 <td>Clave</td>
@@ -150,6 +153,97 @@
                         con.cierraConexion();
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
+                    }
+
+                %>
+            </tr>
+            <tr>
+                <td colspan="6">
+
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="6">
+                    <div style="float: left">
+                        Administrador de la Unidad
+                    </div>
+                    <div style="float: right">
+                        Filtro de la Secretaría de Salud del Estado de México
+                    </div>
+                    <div style="text-align: center ">
+                        Encargado de la Farmacia
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <%        } else {
+            try {
+        %>
+        <table class="table table-bordered table-condensed table-striped" >
+            <tr>
+                <td width="200">Folio</td>
+                <td>Clave</td>
+                <td>Descripción</td>
+                <!--td>Amp Sol</td>
+                <td>Amp Sur</td-->
+                <td>Cajas Sol</td>
+                <td>Cajas Sur</td>
+            </tr>
+            <%
+                con.conectar();
+                ResultSet rset2 = con.consulta("select id_rec, fol_rec, SUM(can_sol) as can_sol, SUM(cant_sur) as cant_sur from recetas where  cla_uni = '" + cla_uni + "' and fecha_hora between '" + request.getParameter("hora_ini") + " 00:00:01' and '" + request.getParameter("hora_fin") + " 23:59:59' and transito=0 and baja in (0,2) group by id_rec order by fecha_hora asc;");
+                while (rset2.next()) {
+                    ResultSet rset = con.consulta("select fol_rec,cla_pro, des_pro, sum(can_sol) as caj_sol, sum(cant_sur) as caj_sur from recetas where id_rec='" + rset2.getString("id_rec") + "'  and transito=0 and baja in (0,2) group by cla_pro,id_rec order by fecha_hora asc;");
+                    while (rset.next()) {
+                        //System.out.println(rset.getString("cla_pro"));
+                        //System.out.println("holaa");
+            %>
+            <tr>
+                <td><%=rset.getString("fol_rec")%></td>
+                <td><%=rset.getString("cla_pro")%></td>
+                <td><%=rset.getString("des_pro")%></td>                        
+                <td class="text-right"><%=formatter.format(Math.floor(rset.getDouble("caj_sol")))%></td>      
+                <td class="text-right"><%=formatter.format(Math.floor(rset.getDouble("caj_sur")))%></td>
+
+            </tr>
+            <%                }
+            %>
+            <tr class="success">
+                <td><%=rset2.getString("fol_rec")%></td>
+                <td></td>
+                <td></td>                        
+                <td class="text-right"><%=formatter.format(Math.floor(rset2.getDouble("can_sol")))%></td>      
+                <td class="text-right"><%=formatter.format(Math.floor(rset2.getDouble("cant_sur")))%></td>
+
+            </tr>
+            <%
+                    }
+                    con.cierraConexion();
+                } catch (Exception e) {
+                    out.println(e.getMessage());
+                }
+            %>
+            <tr class="danger">
+                <td></td>                
+                <td></td>
+                <td>Totales</td>
+                <%
+                    try {
+                        double totalSol = 0, totalSur = 0;
+                        con.conectar();
+                        ResultSet rset = con.consulta("select sum(can_sol), sum(cant_sur) from recetas where fecha_hora between '" + request.getParameter("hora_ini") + " 00:00:01' and '" + request.getParameter("hora_fin") + " 23:59:59' and transito=0 and baja in (0,2) ");
+                        while (rset.next()) {
+                %>
+                <td class="text-right"><%=formatter.format(rset.getInt(1))%></td>
+                <td class="text-right"><%=formatter.format(rset.getInt(2))%></td>
+                <%
+                            }
+                            double cajasSol = 0;
+                            double cajasSur = 0;
+                        } catch (Exception e) {
+                            out.println(e.getMessage());
+                        }
                     }
                 %>
 

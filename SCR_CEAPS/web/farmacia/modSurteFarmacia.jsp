@@ -19,9 +19,10 @@
         //response.sendRedirect("index.jsp");
     }
 
-    String fol_rec = "", nom_pac = "", fec_sur = "", fec_sur2 = "", id_rec = "";
+    String fol_rec = "", nom_pac = "", fec_sur = "", fec_sur2 = "", id_rec = "", id_tip = "";
     try {
         id_rec = request.getParameter("id_rec");
+        id_tip = request.getParameter("id_tip");
         fol_rec = request.getParameter("fol_rec");
         nom_pac = request.getParameter("nom_pac");
         fec_sur = request.getParameter("fec_sur");
@@ -63,6 +64,12 @@
     }
     if (id_rec == null) {
         id_rec = "";
+    }
+    if (id_tip == null) {
+        id_tip = "";
+    }
+    if (!id_tip.equals("")) {
+        id_tip = " id_tip = '" + id_tip + "' and ";
     }
     if (!id_rec.equals("")) {
         id_rec = " id_rec = '" + id_rec + "' and ";
@@ -110,6 +117,16 @@
                             </div>
                             <div class="panel-body">
                                 <form method="post">
+                                    <div class="hidden">
+                                        <div class="col-sm-12">
+                                            <input type="radio" name="id_tip" id="id_tip" value="" checked>
+                                            Todas
+                                            <input type="radio" name="id_tip" id="id_tip" value="1">
+                                            Farmacia
+                                            <input type="radio" name="id_tip" id="id_tip" value="2">
+                                            Colectiva
+                                        </div>
+                                    </div>
                                     Consecutivo:
                                     <input type="text" class="form-control" name="id_rec" />
                                     Por Folio:
@@ -132,7 +149,7 @@
                                     int sumSol = 0, sumSur = 0;
                                     try {
                                         con.conectar();
-                                        String qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where id_usu like '%%' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito!=0 and baja=0 and id_tip='1'  group by id_rec ;";
+                                        String qry = "SELECT sum(can_sol) as can_sol, sum(cant_sur) as cant_sur from recetas where id_usu like '%%' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  transito!=0 and baja=0 and id_tip='1'  group by id_rec ;";
                                         ResultSet rset = con.consulta(qry);
                                         while (rset.next()) {
                                             numRecetas++;
@@ -156,7 +173,7 @@
                             <div class="panel-body">
                                 <%                                    try {
                                         con.conectar();
-                                        ResultSet rset = con.consulta("SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, medico from recetas where id_usu like '%%' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " transito!=0 and baja=0 and id_tip='1' order by id_rec asc ;");
+                                        ResultSet rset = con.consulta("SELECT DISTINCT(fol_rec), nom_com, fecha_hora, id_rec, medico from recetas where id_usu like '%%' and " + id_rec + " " + fec_sur + " " + fol_rec + " " + nom_pac + " "+id_tip+"  transito!=0 and baja=0 and id_tip='1' order by id_rec asc ;");
                                         while (rset.next()) {
                                 %>
                                 <form action="../Farmacias" name="form_<%=rset.getString(4)%>" method="post">
@@ -336,17 +353,17 @@
                                     $('#surtir' + folio).attr("disabled", false);
                                 }
                             }
-                            $(document).ready(function () {
-                                $("#nom_pac").keyup(function () {
+                            $(document).ready(function() {
+                                $("#nom_pac").keyup(function() {
                                     var nombre2 = $("#nom_pac").val();
                                     $("#nom_pac").autocomplete({
                                         source: "../AutoPacientes?nombre=" + nombre2,
                                         minLength: 2,
-                                        select: function (event, ui) {
+                                        select: function(event, ui) {
                                             $("#nom_pac").val(ui.item.nom_com);
                                             return false;
                                         }
-                                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                    }).data("ui-autocomplete")._renderItem = function(ul, item) {
                                         return $("<li>")
                                                 .data("ui-autocomplete-item", item)
                                                 .append("<a>" + item.nom_com + "</a>")

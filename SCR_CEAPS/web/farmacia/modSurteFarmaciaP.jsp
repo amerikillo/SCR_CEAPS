@@ -188,10 +188,11 @@
                                                         <td>Sur:</td>
                                                         <td>Pend:</td>
                                                         <td>Lote/Caducidad</td>
+                                                        <td></td>
                                                     </tr>
                                                     <%
                                                         int sol = 0, sur = 0, dife = 0;
-                                                        ResultSet rset2 = con.consulta("select cla_pro, des_pro, can_sol, cant_sur, fol_det, lote,DATE_FORMAT(caducidad,'%d/%m/%Y') AS caducidad from recetas where id_rec = '" + rset.getString(4) + "' and can_sol!=cant_sur ");
+                                                        ResultSet rset2 = con.consulta("select cla_pro, des_pro, can_sol, cant_sur, fol_det, lote,DATE_FORMAT(caducidad,'%d/%m/%Y') AS caducidad, fol_det from recetas where id_rec = '" + rset.getString(4) + "' and can_sol!=cant_sur ");
                                                         while (rset2.next()) {
                                                             sol = Integer.parseInt(rset2.getString(3));
                                                             sur = Integer.parseInt(rset2.getString(4));
@@ -204,6 +205,7 @@
                                                         <td><input type="text" class="form-control" value="<%=sur%>" name="sur1_<%=rset2.getString(5)%>" readonly="true"  /></td>
                                                         <td><input type="number" class="form-control" value="<%=dife%>" name="sur_<%=rset2.getString(5)%>" onkeypress="return isNumberKey(event, this);" min="0" /></td>
                                                         <td>Lote:&nbsp;<%=rset2.getString(6)%><br />Cadu:&nbsp;<%=rset2.getString(7)%></td>
+                                                        <td><button class="btn btn-sm btn-danger" name="CancelaInsumo" value="<%=rset2.getString("fol_det")%>"><span class="glyphicon glyphicon-remove"></span></button></td>
                                                     </tr>
                                                     <%
                                                         }
@@ -264,17 +266,17 @@
 
                                                             }
 
-                                                            $(document).ready(function () {
-                                                                $("#nom_pac").keyup(function () {
+                                                            $(document).ready(function() {
+                                                                $("#nom_pac").keyup(function() {
                                                                     var nombre2 = $("#nom_pac").val();
                                                                     $("#nom_pac").autocomplete({
                                                                         source: "../AutoPacientes?nombre=" + nombre2,
                                                                         minLength: 2,
-                                                                        select: function (event, ui) {
+                                                                        select: function(event, ui) {
                                                                             $("#nom_pac").val(ui.item.nom_com);
                                                                             return false;
                                                                         }
-                                                                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                                                    }).data("ui-autocomplete")._renderItem = function(ul, item) {
                                                                         return $("<li>")
                                                                                 .data("ui-autocomplete-item", item)
                                                                                 .append("<a>" + item.nom_com + "</a>")

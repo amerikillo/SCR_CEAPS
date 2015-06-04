@@ -7,8 +7,7 @@
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Clases.ConectionDB"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    ConectionDB con = new ConectionDB();
+<%    ConectionDB con = new ConectionDB();
     HttpSession sesion = request.getSession();
     ResultSet rset = null;
     String id_usu = "", f1 = "", f2 = "";
@@ -59,7 +58,7 @@
         <br />
         <div class="container-fluid">
             <div class="container">
-                <form class="form-horizontal" action="../reportes/repSolSur.jsp">
+                <form class="form-horizontal" action="../reportes/repSolSur.jsp" method="post">
 
                     <div class="row">
                         <div class="col-md-5"><h3>Reporte Solicitado Contra Surtido</h3></div>
@@ -77,7 +76,10 @@
                         <div class="col-lg-2">
                             <input class="form-control" data-date-format="yyyy/mm/dd" id="hora_fin" name="hora_fin" />
                         </div>                        
-                        <div class="col-lg-1">
+                        <div class="hidden">
+                            <label>
+                                <input type="checkbox" name="receta" value="1" checked> Por Receta?
+                            </label>
                         </div>
                         <div class="col-lg-2">
                             <button class="btn btn-primary btn-block" onclick="return validaReporte();">Generar Reporte</button>
@@ -101,40 +103,40 @@
         <script src="../js/jquery-ui-1.10.3.custom.js"></script>
         <script src="../js/bootstrap-datepicker.js"></script>
         <script>
-            $("#hora_ini").datepicker({minDate: 0});
-            $("#hora_fin").datepicker({minDate: 0});
+                                $("#hora_ini").datepicker({minDate: 0});
+                                $("#hora_fin").datepicker({minDate: 0});
 
-            function validaReporte() {
-                //var unidad = document.getElementById("unidad").value;
-                //var origen = document.getElementById("id_origen").value;
-                var hora_ini = document.getElementById("hora_ini").value;
-                var hora_fin = document.getElementById("hora_fin").value;
+                                function validaReporte() {
+                                    //var unidad = document.getElementById("unidad").value;
+                                    //var origen = document.getElementById("id_origen").value;
+                                    var hora_ini = document.getElementById("hora_ini").value;
+                                    var hora_fin = document.getElementById("hora_fin").value;
 
-                //if (unidad === "" || origen === "" || hora_ini === "" || hora_fin === "") {
-                if (hora_ini === "" || hora_fin === "") {
-                    alert("Seleccione todos los parametros");
-                    return false;
-                }
-                return true;
-            }
+                                    //if (unidad === "" || origen === "" || hora_ini === "" || hora_fin === "") {
+                                    if (hora_ini === "" || hora_fin === "") {
+                                        alert("Seleccione todos los parametros");
+                                        return false;
+                                    }
+                                    return true;
+                                }
 
 
 
-            function generaExcel() {
-                //var unidad = document.getElementById("unidad").value;
-                //var origen = document.getElementById("id_origen").value;
-                var hora_ini = document.getElementById("hora_ini").value;
-                var hora_fin = document.getElementById("hora_fin").value;
-                //if (unidad === "" || origen === "" || hora_ini === "" || hora_fin === "") {
-                if (hora_ini === "" || hora_fin === "") {
-                    alert("Seleccione todos los parametros");
-                    return false;
-                } else {
-                    //window.location = "../reportes/gnrRepSolSur.jsp?unidad=" + unidad + "&id_origen=" + origen + "&hora_ini=" + hora_ini + "&hora_fin=" + hora_fin + "";
-                    window.location = "../reportes/gnrRepSolSur.jsp?hora_ini=" + hora_ini + "&hora_fin=" + hora_fin + "";
-                }
+                                function generaExcel() {
+                                    //var unidad = document.getElementById("unidad").value;
+                                    //var origen = document.getElementById("id_origen").value;
+                                    var hora_ini = document.getElementById("hora_ini").value;
+                                    var hora_fin = document.getElementById("hora_fin").value;
+                                    //if (unidad === "" || origen === "" || hora_ini === "" || hora_fin === "") {
+                                    if (hora_ini === "" || hora_fin === "") {
+                                        alert("Seleccione todos los parametros");
+                                        return false;
+                                    } else {
+                                        //window.location = "../reportes/gnrRepSolSur.jsp?unidad=" + unidad + "&id_origen=" + origen + "&hora_ini=" + hora_ini + "&hora_fin=" + hora_fin + "";
+                                        window.location = "../reportes/gnrRepSolSur.jsp?hora_ini=" + hora_ini + "&hora_fin=" + hora_fin + "";
+                                    }
 
-            }
+                                }
         </script>
     </body>
     <!-- 

@@ -26,8 +26,6 @@ import javax.servlet.http.HttpSession;
  */
 public class Farmacias extends HttpServlet {
 
-    ConectionDB con = new ConectionDB();
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,6 +37,8 @@ public class Farmacias extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ConectionDB con = new ConectionDB();
+
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
@@ -47,7 +47,30 @@ public class Farmacias extends HttpServlet {
         String fecha1 = df.format(new Date());
         String fecha2 = "2050-01-01";
         String imp = "";
-
+        try {
+            if (request.getParameter("CancelaInsumo") != null) {
+                con.conectar();
+                int banDet = 0;
+                String id_rec = "";
+                con.insertar("update detreceta set can_sol=0, cant_sur=0, status=1, baja='1' where fol_det='" + request.getParameter("CancelaInsumo") + "'");
+                ResultSet rset = con.consulta("select id_rec from detreceta where fol_det='" + request.getParameter("CancelaInsumo") + "'");
+                while (rset.next()) {
+                    id_rec = rset.getString("id_rec");
+                    ResultSet rset2 = con.consulta("select status from detreceta where id_rec='" + rset.getString("id_rec") + "' and status=0");
+                    while (rset2.next()) {
+                        if (rset2.getString("status").equals("0")) {
+                            banDet = 1;
+                        }
+                    }
+                }
+                if (banDet == 0) {
+                    con.insertar("update receta set transito='0', baja=0 where id_rec='" + id_rec + "'");
+                }
+                con.cierraConexion();
+                out.println("<script>window.location='farmacia/modSurteFarmaciaP.jsp'</script>");
+            }
+        } catch (Exception e) {
+        }
         try {
             String NombreUsu = "";
             String usuario = (String) sesion.getAttribute("id_usu");
