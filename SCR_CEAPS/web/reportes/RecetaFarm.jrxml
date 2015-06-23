@@ -109,7 +109,7 @@
 		<parameter name="folio" class="java.lang.String"/>
 		<parameter name="CantSur" class="java.lang.String"/>
 		<queryString>
-			<![CDATA[select * from recetas where fol_rec=$P{folio}]]>
+			<![CDATA[select * from recetas where fol_rec=$P{folio} and can_sol!=0]]>
 		</queryString>
 		<field name="fol_det" class="java.lang.Integer">
 			<fieldDescription><![CDATA[]]></fieldDescription>
@@ -229,6 +229,9 @@
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="id_usu" class="java.lang.Integer">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="costo" class="java.math.BigDecimal">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 	</subDataset>

@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="folio" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT fol_rec,nom_com,fecha_hora,cla_pro,des_pro,lote,DATE_FORMAT(caducidad,'%d/%m/%Y') as caducidad,can_sol,cant_sur, uni, nom_ser,medico FROM recetas where fol_rec=$P{folio} and id_tip='2']]>
+		<![CDATA[SELECT fol_rec,nom_com,fecha_hora,cla_pro,des_pro,lote,DATE_FORMAT(caducidad,'%d/%m/%Y') as caducidad,can_sol,cant_sur, uni, nom_ser,medico FROM recetas where fol_rec=$P{folio} and id_tip='2' and can_sol!=0]]>
 	</queryString>
 	<field name="fol_rec" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

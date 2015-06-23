@@ -191,9 +191,9 @@
             </tr>
             <%
                 con.conectar();
-                ResultSet rset2 = con.consulta("select id_rec, fol_rec, SUM(can_sol) as can_sol, SUM(cant_sur) as cant_sur from recetas where  cla_uni = '" + cla_uni + "' and fecha_hora between '" + request.getParameter("hora_ini") + " 00:00:01' and '" + request.getParameter("hora_fin") + " 23:59:59' and transito=0 and baja in (0,2) group by id_rec order by fecha_hora asc;");
+                ResultSet rset2 = con.consulta("select id_rec, fol_rec, SUM(can_sol) as can_sol, SUM(cant_sur) as cant_sur from repsolsur where cla_uni = '" + cla_uni + "' and DATE(fecha_hora) between '" + request.getParameter("hora_ini") + "' and '" + request.getParameter("hora_fin") + "' and can_sol!=0 group by id_rec order by fecha_hora asc;");
                 while (rset2.next()) {
-                    ResultSet rset = con.consulta("select fol_rec,cla_pro, des_pro, sum(can_sol) as caj_sol, sum(cant_sur) as caj_sur from recetas where id_rec='" + rset2.getString("id_rec") + "' and transito=0 and baja in (0,2) group by cla_pro,id_rec order by fecha_hora asc;");
+                    ResultSet rset = con.consulta("select fol_rec,cla_pro, des_pro, sum(can_sol) as caj_sol, sum(cant_sur) as caj_sur from repsolsur where id_rec='" + rset2.getString("id_rec") + "' and can_sol!=0 group by cla_pro,id_rec order by fecha_hora asc;");
                     while (rset.next()) {
                         //System.out.println(rset.getString("cla_pro"));
                         //System.out.println("holaa");
@@ -231,7 +231,7 @@
                     try {
                         double totalSol = 0, totalSur = 0;
                         con.conectar();
-                        ResultSet rset = con.consulta("select sum(can_sol), sum(cant_sur) from recetas where fecha_hora between '" + request.getParameter("hora_ini") + " 00:00:01' and '" + request.getParameter("hora_fin") + " 23:59:59' and transito=0 and baja in (0,2)");
+                       ResultSet rset = con.consulta("select sum(can_sol), sum(cant_sur) from repsolsur where DATE(fecha_hora) between '" + request.getParameter("hora_ini") + "' and '" + request.getParameter("hora_fin") + "' and can_sol!=0  ");
                         while (rset.next()) {
                 %>
                 <td class="text-right"><%=formatter.format(rset.getInt(1))%></td>

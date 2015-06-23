@@ -1,0 +1,9 @@
+desde terminal...
+
+mysql -u root -p <enter>
+pass: eve9397
+
+grant all on *.* to 'root'@'%' identified by 'eve9397';   <enter>
+
+
+Después reiniciar Mysql (o reinicien todo el PC)

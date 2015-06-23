@@ -29,7 +29,10 @@
 
         <link href="../css/bootstrap.css" rel="stylesheet" media="screen">
         <link href="../css/topPadding.css" rel="stylesheet">
-        <link href="../css/dataTables.bootStrap.css" rel="stylesheet">
+
+        <script src="../js/jquery-1.9.1.js"></script>
+        <script src="../js/jquery-ui.js"></script>
+        <script src="../js/bootstrap.js"></script>
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <title>Kardex</title>
     </head>
@@ -59,7 +62,7 @@
                         ResultSet rset = con.consulta("select cla_pro, des_pro from productos p, tb_codigob cb where p.cla_pro = cb.F_Clave and (p.cla_pro = '" + request.getParameter("cla_pro") + "' or cb.F_Cb='" + request.getParameter("cb") + "') group by cla_pro");
                         while (rset.next()) {
             %>
-            <form action="kardex.jsp" method="get">
+            <form action="kardex.jsp" method="post">
                 <div class="row">
                     <h4 class="col-sm-12">
                         <input class="hidden" placeholder="Clave" name="cla_pro" value="<%=rset.getString("cla_pro")%>" />
@@ -85,7 +88,7 @@
                         </select>
                     </div>
                     <div class="col-sm-2">
-                        <select class="form-control" onchange="cambiaLoteCadu(this);" name="lot_pro">
+                        <select class="form-control" name="lot_pro" id="lot_pro">
                             <option value="">Lote</option>
                             <%
                                 rset2 = con.consulta("select lot_pro from detalle_productos where cla_pro = '" + rset.getString("cla_pro") + "' ");
@@ -121,7 +124,7 @@
                     ResultSet rset = con.consulta("select cla_pro, des_pro from productos p, tb_codigob cb where p.cla_pro = cb.F_Clave and (p.cla_pro = '" + request.getParameter("cla_pro") + "' or cb.F_Cb='" + request.getParameter("cb") + "') group by cla_pro");
                     while (rset.next()) {
             %>
-            <form action="kardex.jsp" method="get">
+            <form action="kardex.jsp" method="post">
                 <div class="row">
                     <h4 class="col-sm-12">
                         <input class="hidden" placeholder="Clave" name="cla_pro" value="<%=rset.getString("cla_pro")%>" />
@@ -147,7 +150,7 @@
                         </select>
                     </div>
                     <div class="col-sm-2">
-                        <select class="form-control" onchange="cambiaLoteCadu(this);" name="lot_pro">
+                        <select class="form-control" name="lot_pro" id="lot_pro">
                             <option value="">Lote</option>
                             <%
                                 rset2 = con.consulta("select lot_pro from detalle_productos where cla_pro = '" + rset.getString("cla_pro") + "' ");
@@ -178,54 +181,20 @@
                 </div>
             </form>
             <hr/>
+        </div>
+        <div style="width: 90%; margin: auto">
+            <%
+                rset2 = con.consulta("select cant from existencias where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "' ");
+                while (rset2.next()) {
+                    out.println("Existencias: " + rset2.getInt(1));
+                }
+            %>
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    Entradas
+                    Kardex
                 </div>
                 <div class="panel-body">
-                    <table class="table table-bordered table-condensed table-striped" id="tbEntradas">
-                        <thead>
-                        <tr>
-                            <td>Clave</td>
-                            <td>Lote</td>
-                            <td>Caducidad</td>
-                            <td>Origen</td>
-                            <td>Cantidad</td>
-                            <td>Tipo Mov</td>
-                            <td>Abasto</td>
-                            <td>Fecha</td>
-                            <td>Observaciones</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <%
-                            rset2 = con.consulta("select * from ventradas where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "' ");
-                            while (rset2.next()) {
-                        %>
-                        <tr>
-                            <td><%=rset2.getString("cla_pro")%></td>
-                            <td><%=rset2.getString("lot_pro")%></td>
-                            <td><%=rset2.getString("cad_pro")%></td>
-                            <td><%=rset2.getString("id_ori")%></td>
-                            <td><%=rset2.getString("cant")%></td>
-                            <td><%=rset2.getString("tipo_mov")%></td>
-                            <td><%=rset2.getString("fol_aba")%></td>
-                            <td><%=rset2.getString("fecha")%></td>
-                            <td><%=rset2.getString("obser")%></td>
-                        </tr>
-                        <%
-                            }
-                        %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    Salidas
-                </div>
-                <div class="panel-body">
-                    <table class="table table-bordered table-condensed table-striped" id="tbSalidas">
+                    <table class="table table-bordered table-condensed table-hover" id="tbEntradas">
                         <thead>
                             <tr>
                                 <td>Clave</td>
@@ -234,30 +203,45 @@
                                 <td>Origen</td>
                                 <td>Cantidad</td>
                                 <td>Tipo Mov</td>
+                                <td>Abasto</td>
                                 <td>FolReceta</td>
                                 <td>Paciente</td>
                                 <td>Médico</td>
                                 <td>Fecha</td>
                                 <td>Observaciones</td>
+                                <td>Sumatoria</td>
                             </tr>
                         </thead>
                         <tbody>
                             <%
-                                rset2 = con.consulta("select * from vsalidas where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "' union select * from vsalidasajustes where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "' ");
+                                int sumatoria = 0;
+                                rset2 = con.consulta("select cla_pro, lot_pro, cad_pro, id_ori, cant, tipo_mov, fol_aba      , '' as fol_rec,'' as paciente, '' as medico, fecha, obser from ventradas where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "' union all "
+                                        + "(select cla_pro, lot_pro, cad_pro, id_ori, -cant, tipo_mov, '' as fol_aba,       fol_rec,      paciente,       medico, fecha, obser from vsalidas where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "') union all "
+                                        + "(select cla_pro, lot_pro, cad_pro, id_ori, -cant, tipo_mov, '' as fol_aba,       fol_rec,      paciente,       medico, fecha, obser from vsalidasajustes where cla_pro = '" + request.getParameter("cla_pro") + "' and lot_pro = '" + request.getParameter("lot_pro") + "' and cad_pro = '" + request.getParameter("cad_pro") + "' and id_ori = '" + request.getParameter("id_ori") + "') order by fecha asc;");
                                 while (rset2.next()) {
+                                    sumatoria += rset2.getInt("cant");
                             %>
-                            <tr>
+                            <tr class="
+                                <%
+                                    if (rset2.getInt("cant") > 0) {
+                                        out.println("success");
+                                    }
+                                %>
+                                "
+                                >
                                 <td><%=rset2.getString("cla_pro")%></td>
                                 <td><%=rset2.getString("lot_pro")%></td>
                                 <td><%=rset2.getString("cad_pro")%></td>
                                 <td><%=rset2.getString("id_ori")%></td>
                                 <td><%=rset2.getString("cant")%></td>
                                 <td><%=rset2.getString("tipo_mov")%></td>
+                                <td><%=rset2.getString("fol_aba")%></td>
                                 <td><%=rset2.getString("fol_rec")%></td>
                                 <td><%=rset2.getString("paciente")%></td>
                                 <td><%=rset2.getString("medico")%></td>
                                 <td><%=rset2.getString("fecha")%></td>
                                 <td><%=rset2.getString("obser")%></td>
+                                <td><%=sumatoria%></td>
                             </tr>
                             <%
                                 }
@@ -266,6 +250,7 @@
                     </table>
                 </div>
             </div>
+
             <%
                         }
                     }
@@ -280,15 +265,18 @@
         ================================================== -->
         <!-- Se coloca al final del documento para que cargue mas rapido -->
         <!-- Se debe de seguir ese orden al momento de llamar los JS -->
-        <script src="../js/jquery-1.9.1.js"></script>
-        <script src="../js/bootstrap.js"></script>
+
         <script src="../js/jquery.dataTables.js"></script>
         <script src="../js/dataTables.bootstrap.js"></script>
-        <script src="../js/jquery-ui-1.10.3.custom.js"></script>
         <script>
                             $(document).ready(function() {
                                 $('#tbSalidas').dataTable();
                                 $('#tbEntradas').dataTable();
+                            });
+
+                            $('#lot_pro').change(function() {
+                                var idx = this.selectedIndex;
+                                $("#Cadu").prop('selectedIndex', idx);
                             });
         </script>
     </body>

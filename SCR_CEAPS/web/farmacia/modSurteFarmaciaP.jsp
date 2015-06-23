@@ -44,6 +44,13 @@
     if (id_rec == null) {
         id_rec = "";
     }
+    if (id_rec.equals("")) {
+        id_rec = (String) sesion.getAttribute("id_rec");
+        sesion.setAttribute("id_rec", "");
+    }
+    if (id_rec == null) {
+        id_rec = "";
+    }
     if (!id_rec.equals("")) {
         id_rec = " id_rec = '" + id_rec + "' and ";
     }

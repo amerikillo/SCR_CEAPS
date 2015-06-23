@@ -63,8 +63,10 @@ public class Farmacias extends HttpServlet {
                         }
                     }
                 }
+                sesion.setAttribute("id_rec", id_rec);
                 if (banDet == 0) {
                     con.insertar("update receta set transito='0', baja=0 where id_rec='" + id_rec + "'");
+                sesion.setAttribute("id_rec", "");
                 }
                 con.cierraConexion();
                 out.println("<script>window.location='farmacia/modSurteFarmaciaP.jsp'</script>");
@@ -335,7 +337,7 @@ public class Farmacias extends HttpServlet {
                             id_rec = rset2.getString(5);
                             n_cant = cant_inv + cant_sur;
 
-                            con.insertar("update detreceta set cant_sur = '0', baja='1' where fol_det = '" + rset.getString(1) + "' ");
+                            con.insertar("update detreceta set can_sol=0, cant_sur = '0', baja='1' where fol_det = '" + rset.getString(1) + "' ");
                             con.insertar("update inventario set cant = '" + n_cant + "' where det_pro = '" + det_pro + "' ");
                             con.insertar("insert into kardex values ('0', '" + id_rec + "', '" + det_pro + "', '" + cant_sur + "', 'REINTEGRA AL INVENTARIO', '-', NOW(), 'SE SE CANCELA RECETA', '" + sesion.getAttribute("id_usu") + "', '0'); ");
                         }

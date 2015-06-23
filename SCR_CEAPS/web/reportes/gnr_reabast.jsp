@@ -81,7 +81,7 @@
         <table width="780" border="1" style="font-size: 8px;">
             <tr>
                 <td width="258"><Strong>Descripcion</Strong></td>
-                <td width="53"><Strong>IFQ</Strong></td>
+                <td width="53"><Strong>IFS</Strong></td>
                 <td width="57"><Strong>Exist.<br/>Inventario</Strong></td>
                 <td width="54"><Strong>Sobreabasto</Strong></td>
                 <td width="54"><Strong>Recomendado<br /> a Surtir</Strong></td>
@@ -93,7 +93,7 @@
             <%
                 String clave_rf = "", descrip_rf = "";
 
-                String qry_clave = "select cla_pro, des_pro from productos order by cla_pro+0";
+                String qry_clave = "select cla_pro, des_pro from productos where f_status='A' order by cla_pro";
                 //out.print(qry_clave);
 
                 rset = con.consulta(qry_clave);
@@ -101,7 +101,7 @@
                     clave_rf = rset.getString("cla_pro");
                     descrip_rf = rset.getString("des_pro");
                     String cant_rf = "0", cant_rc = "0", cant_inv = "0";
-                    String qry_rf = "select sum(dr.can_sol) from detreceta dr, detalle_productos dp where dr.fec_sur>='" + fecha_act + "' and dp.cla_pro='" + clave_rf + "' and dr.det_pro = dp.det_pro group by dp.cla_pro";
+                    String qry_rf = "select sum(can_sol) from recetas where DATE(fecha_hora) between '" + fecha_act + "' and DATE(NOW()) and cla_pro='" + clave_rf + "' and baja!=1 group by cla_pro";
                     //out.print(qry_rf+"<br>");
                     ResultSet rset2 = con.consulta(qry_rf);
                     while (rset2.next()) {
@@ -128,7 +128,7 @@
                         float cons_dia = con_diario;
                         double dia_abasto2 = Math.ceil(cons_dia * dias);
                         int dia_abasto = (int) (dia_abasto2);
-                        float cant_quincenal = (float) (Math.ceil(cant_total / 2));
+                        float cant_quincenal = (float) (Math.ceil(cant_total / 4));
                         float cant_semana = (float) (Math.ceil(cant_quincenal / 2));
                         float sobre = 0;
                         int exist_fut = (Integer.parseInt(cant_inv)) - dia_abasto;
@@ -141,7 +141,7 @@
                         float x = 3;
                         float y = 30;
                         float min_con = (x / y);
-                        //out.print(qry_rf+"<br>");
+                                //out.print(qry_rf+"<br>");
                         //cant_rf=rset.getString("sum(cant_sol)");
                         //out.print(clave_rf + " " + cant_rf+"<br>");
 
@@ -160,8 +160,6 @@
                         if (cant_total != 0) {
                             String qry_inserta = "insert into reabastecimientos () values ()";
                         }
-
-
             %>
             <tr <%/*
                  if (cant_total == 0) {

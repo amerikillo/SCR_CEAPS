@@ -51,7 +51,7 @@ public class LeerCSV {
                                     System.out.println(linea[i]);
                                     System.out.println(linea[i].indexOf('.'));
                                     if (linea[i].indexOf('.') < 0) {
-                                        inserta = inserta + " '" + formatter.format(Integer.parseInt(linea[i])) + "' , ";
+                                        inserta = inserta + " '" + formatter.format(Long.parseLong(linea[i])) + "' , ";
                                     } else {
                                         inserta = inserta + " '" + formatterDeci.format(Float.parseFloat(linea[i])) + "' , ";
                                     }
