@@ -181,6 +181,7 @@
         %>
         <table border="1" >
             <tr>
+                <td width="200">Consecutivo</td>
                 <td width="200">Folio</td>
                 <td>Clave</td>
                 <td>Descripción</td>
@@ -191,14 +192,15 @@
             </tr>
             <%
                 con.conectar();
-                ResultSet rset2 = con.consulta("select id_rec, fol_rec, SUM(can_sol) as can_sol, SUM(cant_sur) as cant_sur from repsolsur where cla_uni = '" + cla_uni + "' and DATE(fecha_hora) between '" + request.getParameter("hora_ini") + "' and '" + request.getParameter("hora_fin") + "' and can_sol!=0 group by id_rec order by fecha_hora asc;");
+                ResultSet rset2 = con.consulta("select id_rec, fol_rec, SUM(can_sol) as can_sol, SUM(cant_sur) as cant_sur,id_rec from repsolsur where cla_uni = '" + cla_uni + "' and DATE(fecha_hora) between '" + request.getParameter("hora_ini") + "' and '" + request.getParameter("hora_fin") + "' and can_sol!=0 group by id_rec order by id_rec asc;");
                 while (rset2.next()) {
-                    ResultSet rset = con.consulta("select fol_rec,cla_pro, des_pro, sum(can_sol) as caj_sol, sum(cant_sur) as caj_sur from repsolsur where id_rec='" + rset2.getString("id_rec") + "' and can_sol!=0 group by cla_pro,id_rec order by fecha_hora asc;");
+                    ResultSet rset = con.consulta("select fol_rec,cla_pro, des_pro, sum(can_sol) as caj_sol, sum(cant_sur) as caj_sur, id_rec from repsolsur where id_rec='" + rset2.getString("id_rec") + "' and can_sol!=0 group by cla_pro,id_rec order by id_rec asc;");
                     while (rset.next()) {
                         //System.out.println(rset.getString("cla_pro"));
                         //System.out.println("holaa");
             %>
             <tr>
+                <td><%=rset.getString("id_rec")%></td>
                 <td><%=rset.getString("fol_rec")%></td>
                 <td><%=rset.getString("cla_pro")%></td>
                 <td><%=rset.getString("des_pro")%></td>                        
@@ -209,6 +211,7 @@
             <%                }
             %>
             <tr class="success">
+                <td><%=rset2.getString("id_rec")%></td>
                 <td><%=rset2.getString("fol_rec")%></td>
                 <td></td>
                 <td></td>                        
