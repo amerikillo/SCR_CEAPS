@@ -129,7 +129,7 @@ public class ProductoDescripcion extends HttpServlet {
                         + "p.cla_pro = dp.cla_pro\n"
                         + "and dp.det_pro = i.det_pro\n"
                         + "and i.cla_uni='" + cla_uni + "'\n"
-                        + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                        + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                         + ";");
                 while (rset.next()) {
                     json.put("total", rset.getString(1));
@@ -142,7 +142,7 @@ public class ProductoDescripcion extends HttpServlet {
                         + "and dp.det_pro = i.det_pro\n"
                         + "and dp.id_ori = '0'\n"
                         + "and i.cla_uni='" + cla_uni + "'\n"
-                        + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                        + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                         + ";");
                 while (rset.next()) {
                     json.put("origen0", rset.getString(1));
@@ -155,7 +155,7 @@ public class ProductoDescripcion extends HttpServlet {
                         + "and dp.det_pro = i.det_pro\n"
                         + "and dp.id_ori = '1'\n"
                         + "and i.cla_uni='" + cla_uni + "'\n"
-                        + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                        + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                         + ";");
                 while (rset.next()) {
                     json.put("origen1", rset.getString(1));
@@ -168,7 +168,7 @@ public class ProductoDescripcion extends HttpServlet {
                         + "and dp.det_pro = i.det_pro\n"
                         + "and dp.id_ori = '2'\n"
                         + "and i.cla_uni='" + cla_uni + "'\n"
-                        + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                        + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                         + ";");
                 while (rset.next()) {
                     json.put("origen2", rset.getString(1));

@@ -96,7 +96,7 @@ public class Receta extends HttpServlet {
                                     + "WHERE\n"
                                     + "p.cla_pro = dp.cla_pro\n"
                                     + "and dp.det_pro = i.det_pro\n"
-                                    + "and p.cla_pro='" + request.getParameter("cla_pro") + "'\n"
+                                    + "and p.cla_pro='" + request.getParameter("cla_pro") + "' and p.f_status='A'\n"
                                     + ";");
                             while (rset.next()) {
                                 json.put("total", rset.getString(1));
@@ -108,7 +108,7 @@ public class Receta extends HttpServlet {
                                     + "p.cla_pro = dp.cla_pro\n"
                                     + "and dp.det_pro = i.det_pro\n"
                                     + "and dp.id_ori = '1'\n"
-                                    + "and p.cla_pro='" + request.getParameter("cla_pro") + "'\n"
+                                    + "and p.cla_pro='" + request.getParameter("cla_pro") + "' and p.f_status='A'\n"
                                     + ";");
                             while (rset.next()) {
                                 json.put("origen1", rset.getString(1));
@@ -120,7 +120,7 @@ public class Receta extends HttpServlet {
                                     + "p.cla_pro = dp.cla_pro\n"
                                     + "and dp.det_pro = i.det_pro\n"
                                     + "and dp.id_ori = '2'\n"
-                                    + "and p.cla_pro='" + request.getParameter("cla_pro") + "'\n"
+                                    + "and p.cla_pro='" + request.getParameter("cla_pro") + "' and p.f_status='A'\n"
                                     + ";");
                             while (rset.next()) {
                                 json.put("origen2", rset.getString(1));
@@ -145,7 +145,7 @@ public class Receta extends HttpServlet {
                                     + "WHERE\n"
                                     + "p.cla_pro = dp.cla_pro\n"
                                     + "and dp.det_pro = i.det_pro\n"
-                                    + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                                    + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                                     + ";");
                             while (rset.next()) {
                                 json.put("total", rset.getString(1));
@@ -157,7 +157,7 @@ public class Receta extends HttpServlet {
                                     + "p.cla_pro = dp.cla_pro\n"
                                     + "and dp.det_pro = i.det_pro\n"
                                     + "and dp.id_ori = '1'\n"
-                                    + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                                    + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                                     + ";");
                             while (rset.next()) {
                                 json.put("origen1", rset.getString(1));
@@ -169,7 +169,7 @@ public class Receta extends HttpServlet {
                                     + "p.cla_pro = dp.cla_pro\n"
                                     + "and dp.det_pro = i.det_pro\n"
                                     + "and dp.id_ori = '2'\n"
-                                    + "and p.des_pro='" + request.getParameter("des_pro") + "'\n"
+                                    + "and p.des_pro='" + request.getParameter("des_pro") + "' and p.f_status='A'\n"
                                     + ";");
                             while (rset.next()) {
                                 json.put("origen2", rset.getString(1));

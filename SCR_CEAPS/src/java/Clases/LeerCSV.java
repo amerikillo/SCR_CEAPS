@@ -24,6 +24,7 @@ public class LeerCSV {
         ConectionDB con = new ConectionDB();
         DecimalFormat formatter = new DecimalFormat("0000");
         DecimalFormat formatterDeci = new DecimalFormat("0000.00");
+        DecimalFormat formatterDeci2 = new DecimalFormat("0000.0");
         String csvFile = ruta + "/abastos/" + nombre;
         BufferedReader br = null;
         String line = "";
@@ -41,19 +42,25 @@ public class LeerCSV {
                     // use comma as separator
                     String inserta = "insert into carga_abasto values (0,";
                     String[] linea = line.split(cvsSplitBy);
-                    if (!linea[0].equals("")) {
-                        for (int i = 0; i < linea.length; i++) {
-                            if (i != 1) {
-                                if (i == 3) {
+                    if (!linea[0].equals("")) {//Si el primer valor es diferente de vacío (o sea si hay clave)
+                        for (int i = 0; i < linea.length; i++) {//Para recorrer la linea
+                            if (i != 1) { //si la linea tiene más de un elemento
+                                if (i == 3) {//para el campo de la caducidad
                                     String cadu = df2.format(df3.parse(linea[i]));
                                     inserta = inserta + " '" + cadu.trim() + "' , ";
                                 } else if (i == 0) {
                                     System.out.println(linea[i]);
                                     System.out.println(linea[i].indexOf('.'));
-                                    if (linea[i].indexOf('.') < 0) {
+                                    if (linea[i].indexOf('.') < 0) {//si no se tiene '.' en la clave
                                         inserta = inserta + " '" + formatter.format(Long.parseLong(linea[i])) + "' , ";
                                     } else {
-                                        inserta = inserta + " '" + formatterDeci.format(Float.parseFloat(linea[i])) + "' , ";
+                                        if (linea[i].indexOf(".1") > 0) { //si se tiene .1 en la clave
+                                            inserta = inserta + " '" + formatterDeci2.format(Float.parseFloat(linea[i])) + "' , ";
+                                        } else if (linea[i].indexOf(".2") > 0) { //si se tiene .2 en la clave
+                                            inserta = inserta + " '" + formatterDeci2.format(Float.parseFloat(linea[i])) + "' , ";
+                                        } else { //si se tiene .01 o similares en la clave
+                                            inserta = inserta + " '" + formatterDeci.format(Float.parseFloat(linea[i])) + "' , ";
+                                        }
                                     }
                                 } else {
                                     if (i == linea.length - 1) {

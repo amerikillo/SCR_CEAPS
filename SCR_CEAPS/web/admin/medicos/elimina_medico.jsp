@@ -14,7 +14,9 @@
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-   
+    /**
+     * No se usa
+     */
     ConectionDB con = new ConectionDB();
     HttpSession sesion = request.getSession();
     String id_usu = "";
@@ -27,28 +29,29 @@
         response.sendRedirect("index.jsp");
     }
 
-  String clave="";
+    String clave = "";
     try {
-        clave = request.getParameter("id");        
+        clave = request.getParameter("id");
     } catch (Exception e) {
     }
-    
+
     try {
         con.conectar();
-        con.actualizar("update medicos set f_status='S' where cedula='"+clave+"'");
+        con.actualizar("update medicos set f_status='S' where cedula='" + clave + "'");
         out.println("<script>window.location='medico.jsp'</script>");
         con.cierraConexion();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+    }
 %>
 <!DOCTYPE html>
 <html>
     <head>
-       
+
     </head>
     <body>
-        
 
-        
+
+
     </body>
-    
+
 </html>

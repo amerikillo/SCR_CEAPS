@@ -202,10 +202,12 @@ public class Farmacias extends HttpServlet {
                                                 con.insertar("update receta set baja = '0' where id_rec = '" + request.getParameter("id_rec") + "'");
                                                 con.insertar("update detreceta set cant_sur = '" + sol2 + "' , det_pro = '" + det_pro + "' where id_rec = '" + request.getParameter("id_rec") + "' and fol_det='" + folio + "'");
                                                 con.insertar("UPDATE inventario SET cant='" + exist + "' WHERE det_pro='" + det_pro + "'");
+                                                con.insertar("insert into kardex values ('0', '" + request.getParameter("id_rec") + "', '" + det_pro + "', '" + sur21 + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                             } else {
                                                 total2 = exist + sur12;
                                                 con.insertar("update detreceta set cant_sur = '" + total2 + "' , det_pro = '" + det_pro + "' where id_rec = '" + request.getParameter("id_rec") + "' and fol_det='" + folio + "'  ");
                                                 con.insertar("UPDATE inventario SET cant='0' WHERE det_pro='" + det_pro + "'");
+                                                con.insertar("insert into kardex values ('0', '" + request.getParameter("id_rec") + "', '" + det_pro + "', '" + exist + "', 'SALIDA RECETA', '-', NOW(), 'SALIDA POR RECETA FAR', '" + sesion.getAttribute("id_usu") + "', '0')");
                                                 sur21 = sur21 - exist;
                                             }
                                             cont = 0;

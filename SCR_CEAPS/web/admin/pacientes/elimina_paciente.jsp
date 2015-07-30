@@ -14,7 +14,9 @@
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-   
+   /**
+    * NO SE USA
+    */
     ConectionDB con = new ConectionDB();
     HttpSession sesion = request.getSession();
     String id_usu = "";

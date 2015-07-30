@@ -13,6 +13,9 @@
 <%java.text.DateFormat df2 = new java.text.SimpleDateFormat("yyyy-MM-dd"); %>
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%
+    /**
+     * Lista de Médicos
+     */
     HttpSession sesion = request.getSession();
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
@@ -111,21 +114,21 @@
 
             </div>
         </div>
+        <!-- 
+        ================================================== -->
+        <!-- Se coloca al final del documento para que cargue mas rapido -->
+        <!-- Se debe de seguir ese orden al momento de llamar los JS -->
+        <script src="../../js/jquery-1.9.1.js"></script>
+        <script src="../../js/bootstrap.js"></script>
+        <script src="../../js/jquery-ui-1.10.3.custom.js"></script>
+        <script src="../../js/bootstrap-datepicker.js"></script>
+        <script src="../../js/moment.js"></script>
+        <script src="../../js/jquery.dataTables.js"></script>
+        <script src="../../js/dataTables.bootstrap.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#datosPacientes').dataTable();
+            });
+        </script>
     </body>
 </html>
-<!-- 
-================================================== -->
-<!-- Se coloca al final del documento para que cargue mas rapido -->
-<!-- Se debe de seguir ese orden al momento de llamar los JS -->
-<script src="../../js/jquery-1.9.1.js"></script>
-<script src="../../js/bootstrap.js"></script>
-<script src="../../js/jquery-ui-1.10.3.custom.js"></script>
-<script src="../../js/bootstrap-datepicker.js"></script>
-<script src="../../js/moment.js"></script>
-<script src="../../js/jquery.dataTables.js"></script>
-<script src="../../js/dataTables.bootstrap.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#datosPacientes').dataTable();
-    });
-</script>

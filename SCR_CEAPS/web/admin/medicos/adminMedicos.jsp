@@ -15,11 +15,14 @@
 <%java.text.DateFormat df2 = new java.text.SimpleDateFormat("yyyy-MM-dd"); %>
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%
+/**
+ * No Se Usa
+ */
     HttpSession sesion = request.getSession();
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
     DecimalFormatSymbols custom = new DecimalFormatSymbols();
-    ResultSet rset ;
+    ResultSet rset;
     ConectionDB con = new ConectionDB();
 %>
 <html>
@@ -63,13 +66,13 @@
                 </div>
             </div>
         </div>
+        <!-- 
+        ================================================== -->
+        <!-- Se coloca al final del documento para que cargue mas rapido -->
+        <!-- Se debe de seguir ese orden al momento de llamar los JS -->
+        <script src="../../js/jquery-1.9.1.js"></script>
+        <script src="../../js/bootstrap.js"></script>
+        <script src="../../js/jquery-ui.js"></script>
     </body>
 
-    <!-- 
-    ================================================== -->
-    <!-- Se coloca al final del documento para que cargue mas rapido -->
-    <!-- Se debe de seguir ese orden al momento de llamar los JS -->
-    <script src="../../js/jquery-1.9.1.js"></script>
-    <script src="../../js/bootstrap.js"></script>
-    <script src="../../js/jquery-ui.js"></script>
 </html>

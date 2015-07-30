@@ -13,6 +13,9 @@
 <%java.text.DateFormat df2 = new java.text.SimpleDateFormat("yyyy-MM-dd"); %>
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%
+    /**
+     * Para edición de médico
+     */
     HttpSession sesion = request.getSession();
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
@@ -20,7 +23,7 @@
     ResultSet rset;
     ConectionDB con = new ConectionDB();
 
-    String id = "", cedula = "", ape_pat = "", ape_mat = "", nom_pac = "", rfc = "", cedulap = "", f_status = "", usuario = "", password = "", iniRec = "", finRec = "", folAct = "",tipoConsu="";
+    String id = "", cedula = "", ape_pat = "", ape_mat = "", nom_pac = "", rfc = "", cedulap = "", f_status = "", usuario = "", password = "", iniRec = "", finRec = "", folAct = "", tipoConsu = "";
     try {
         id = request.getParameter("id");
 
@@ -29,6 +32,9 @@
 
     try {
         con.conectar();
+        /**
+         * Se obtienen los datos del médico a editar
+         */
         rset = con.consulta("SELECT m.cedula,m.ape_pat,m.ape_mat,nom_med,rfc,cedulapro,f_status,u.user,u.passReal,m.iniRec,m.finRec,m.folAct,m.tipoConsulta FROM medicos m INNER JOIN usuarios u on m.cedula=u.cedula WHERE u.cedula='" + id + "'");
         if (rset.next()) {
             cedula = rset.getString(1);
@@ -43,7 +49,7 @@
             iniRec = rset.getString(10);
             finRec = rset.getString(11);
             folAct = rset.getString(12);
-            tipoConsu=rset.getString(13);
+            tipoConsu = rset.getString(13);
         }
         con.cierraConexion();
     } catch (Exception e) {
@@ -51,8 +57,8 @@
     }
 
     System.out.println(id);
-    
-    
+
+
 %>
 <html>
     <head>
@@ -65,7 +71,7 @@
         <title>Edición Médico</title>
     </head>
     <body onload="focoInicial();">
-        
+
         <%@include file="../../jspf/mainMenu.jspf" %> 
         <div class="container-fluid">
             <div class="container">
@@ -144,25 +150,25 @@
                                         <option value="">---Seleccione---</option>
                                         <option value="Consulta Externa" 
                                                 <%
-                                                if(tipoConsu.equals("Consulta Externa")){
-                                                    out.println("selected");
-                                                }
+                                                    if (tipoConsu.equals("Consulta Externa")) {
+                                                        out.println("selected");
+                                                    }
                                                 %>
                                                 >Consulta Externa</option>
                                         <option value="Urgencias"
                                                 <%
-                                                if(tipoConsu.equals("Urgencias")){
-                                                    out.println("selected");
-                                                }
+                                                    if (tipoConsu.equals("Urgencias")) {
+                                                        out.println("selected");
+                                                    }
                                                 %>
-                                               >Urgencias</option>
+                                                >Urgencias</option>
                                         <option value="Hospitalizacion"
                                                 <%
-                                                if(tipoConsu.equals("Hospitalizacion")){
-                                                    out.println("selected");
-                                                }
+                                                    if (tipoConsu.equals("Hospitalizacion")) {
+                                                        out.println("selected");
+                                                    }
                                                 %>
-                                               >Hospitalización</option>
+                                                >Hospitalización</option>
                                     </select>
                                 </div>
                             </div><br/> 
@@ -191,17 +197,20 @@
             </div>
         </div>
 
-    <!-- 
-    ================================================== -->
-    <!-- Se coloca al final del documento para que cargue mas rapido -->
-    <!-- Se debe de seguir ese orden al momento de llamar los JS -->
-    <script src="../../js/jquery-1.9.1.js"></script>
-    <script src="../../js/bootstrap.js"></script>
-    <script src="../../js/jquery-ui-1.10.3.custom.js"></script>
-    <script src="../../js/bootstrap-datepicker.js"></script>    
-    <script>
+        <!-- 
+        ================================================== -->
+        <!-- Se coloca al final del documento para que cargue mas rapido -->
+        <!-- Se debe de seguir ese orden al momento de llamar los JS -->
+        <script src="../../js/jquery-1.9.1.js"></script>
+        <script src="../../js/bootstrap.js"></script>
+        <script src="../../js/jquery-ui-1.10.3.custom.js"></script>
+        <script src="../../js/bootstrap-datepicker.js"></script>    
+        <script>
                                         function tabular(e, obj)
                                         {
+                                            /**
+                                             * Saltar al siguiente objeto
+                                             */
                                             tecla = (document.all) ? e.keyCode : e.which;
                                             if (tecla != 13)
                                                 return;
@@ -223,6 +232,9 @@
 
                                         otro = 0;
                                         function LP_data() {
+                                            /**
+                                             * Solo números
+                                             */
                                             var key = window.event.keyCode;//codigo de tecla. 
                                             if (key < 48 || key > 57) {//si no es numero 
                                                 window.event.keyCode = 0;//anula la entrada de texto. 
@@ -231,6 +243,9 @@
 
                                         function isNumberKey(evt)
                                         {
+                                            /**
+                                             * Sólo números
+                                             */
                                             var charCode = (evt.which) ? evt.which : event.keyCode
                                             if (charCode > 31 && (charCode < 48 || charCode > 57))
                                                 return false;
@@ -240,24 +255,39 @@
 
                                         function upperCase(x)
                                         {
+                                            /**
+                                             * Parsear a enteros cada letra
+                                             */
                                             var y = document.getElementById(x).value;
                                             document.getElementById(x).value = y.toUpperCase();
                                             document.getElementById("mySpan").value = y.toUpperCase();
 
                                         }
-                                        $(document).ready(function () {
-                                            $('#selectsts').change(function () {
+                                        $(document).ready(function() {
+                                            $('#selectsts').change(function() {
+                                                /**
+                                                 * Cambia status
+                                                 */
                                                 var valor = $('#selectsts').val();
                                                 $('#estatus').val(valor);
                                             });
-                                            $('#slcTipoConsu').change(function(){
+                                            $('#slcTipoConsu').change(function() {
+                                                /**
+                                                 * Cambia tipo de consulta
+                                                 */
                                                 $('#txtTipoConsu').val($('#slcTipoConsu').val());
                                             });
-                                            $('#formulario_pacientes').submit(function () {
+                                            $('#formulario_pacientes').submit(function() {
+                                                /**
+                                                 * No se ejecute el formulario
+                                                 */
                                                 //alert("Ingresó");
                                                 return false;
                                             });
-                                            $('#Guardar').click(function () {
+                                            $('#Guardar').click(function() {
+                                                /**
+                                                 * Guardar cambios
+                                                 */
                                                 var RegExPattern = /^\d{1,2}\/\d{1,2}\/\d{4,4}$/;
 
                                                 var iniRec = $('#iniRec').val();
@@ -270,7 +300,7 @@
                                                 var estatus = $('#estatus').val();
                                                 var password = $('#password').val();
                                                 var form = $('#formulario_pacientes');
-                                                if (ape_pat === "" || ape_mat === "" || nombre === "" || rfc === "" || password === "" || iniRec === "" || finRec === "" || folAct === "" || $('#slcTipoConsu').val()==="") {
+                                                if (ape_pat === "" || ape_mat === "" || nombre === "" || rfc === "" || password === "" || iniRec === "" || finRec === "" || folAct === "" || $('#slcTipoConsu').val() === "") {
                                                     alert("Tiene campos vacíos, verifique.");
                                                     return false;
                                                 }
@@ -291,14 +321,17 @@
                                                     type: form.attr('method'),
                                                     url: form.attr('action'),
                                                     data: form.serialize(),
-                                                    success: function (data) {
+                                                    success: function(data) {
                                                         devuelveFolio(data);
                                                     },
-                                                    error: function () {
+                                                    error: function() {
                                                         alert("Ha ocurrido un error");
                                                     }
                                                 });
 
+                                                /**
+                                                 * Nos devuelve los cambios hechos
+                                                 */
                                                 function devuelveFolio(data) {
                                                     var json = JSON.parse(data);
                                                     for (var i = 0; i < json.length; i++) {
@@ -316,10 +349,10 @@
                                                     }
                                                 }
                                             });
-                                            $('#Regresar').click(function () {
+                                            $('#Regresar').click(function() {
                                                 self.location = 'medico.jsp';
                                             });
                                         });
-    </script>
-        </body>
+        </script>
+    </body>
 </html>

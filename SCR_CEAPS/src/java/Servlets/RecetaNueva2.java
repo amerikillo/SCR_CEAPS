@@ -73,7 +73,7 @@ public class RecetaNueva2 extends HttpServlet {
             } catch (Exception e) {
             }
             if (!folio.equals("")) {
-                //out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + folio + "&tipo=4&usuario=" + NombreUsu + "', '', 'width=1200,height=800,left=50,top=50,toolbar=no');</script>");
+                out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + folio + "&tipo=4&usuario=" + NombreUsu + "', '', 'width=1200,height=800,left=50,top=50,toolbar=no');</script>");
             }
             out.println("<script>alert('Receta número [" + id_rec + "] Creada con el Folio [" + (String) sesion.getAttribute("folio_rec") + "]')</script>");
             sesion.setAttribute("folio_rec", "");
@@ -99,7 +99,7 @@ public class RecetaNueva2 extends HttpServlet {
             } catch (Exception e) {
             }
             if (!folio.equals("")) {
-                // out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + folio + "&tipo=4&usuario=" + NombreUsu + "','', 'width=1200,height=800,left=50,top=50,toolbar=no');</script>");
+                out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + folio + "&tipo=4&usuario=" + NombreUsu + "','', 'width=1200,height=800,left=50,top=50,toolbar=no');</script>");
             }
             out.println("<script>alert('Receta colectiva Creada con el Folio " + (String) sesion.getAttribute("folio_rec") + "')</script>");
             sesion.setAttribute("folio_rec", "");
@@ -127,7 +127,7 @@ public class RecetaNueva2 extends HttpServlet {
             } catch (Exception e) {
             }
             if (!folio.equals("")) {
-                // out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + folio + "&tipo=4&usuario=" + NombreUsu + "','', 'width=1200,height=800,left=50,top=50,toolbar=no');</script>");
+                out.println("<script>window.open('reportes/RecetaFarm.jsp?fol_rec=" + folio + "&tipo=4&usuario=" + NombreUsu + "','', 'width=1200,height=800,left=50,top=50,toolbar=no');</script>");
             }
             out.println("<script>alert('Receta número [" + id_rec + "] Creada con el Folio [" + (String) sesion.getAttribute("folio_rec") + "]')</script>");
             sesion.setAttribute("folio_rec", "");

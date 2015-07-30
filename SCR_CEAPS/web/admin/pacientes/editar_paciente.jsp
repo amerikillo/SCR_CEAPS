@@ -13,6 +13,9 @@
 <%java.text.DateFormat df2 = new java.text.SimpleDateFormat("yyyy-MM-dd"); %>
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%
+    /**
+     * Edición de pacientes
+     */
     HttpSession sesion = request.getSession();
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
@@ -29,6 +32,9 @@
 
     try {
         con.conectar();
+        /**
+         * Se obtiene la información del paciente a editar
+         */
         rset = con.consulta("SELECT num_afi,tip_cob,ape_pat,ape_mat,nom_pac,DATE_FORMAT(fec_nac,'%d/%m/%Y') AS fec_nac,sexo,expediente,DATE_FORMAT(ini_vig,'%d/%m/%Y') AS ini_vig,DATE_FORMAT(fin_vig,'%d/%m/%Y') AS fin_vig,f_status FROM pacientes WHERE id_pac='" + id + "'");
         if (rset.next()) {
             num_afi = rset.getString(1);
@@ -61,7 +67,7 @@
         <title>Alta Paciente</title>
     </head>
     <body onload="focoInicial();">
-        
+
         <%@include file="../../jspf/mainMenu.jspf" %> 
         <div class="container-fluid">
             <div class="container">
@@ -176,7 +182,6 @@
                 </div>
             </div>
         </div>
-    </body>
     <!-- 
     ================================================== -->
     <!-- Se coloca al final del documento para que cargue mas rapido -->
@@ -309,7 +314,7 @@
                                                 var no_exp = $('#no_exp').val();
                                                 var estatus = $('#estatus').val();
                                                 var form = $('#formulario_pacientes');
-                                                if (no_afi === "" || tip_cob === "" || ape_pat === "" || ape_mat === "" || nombre === "" || fec_nac === "" || sexo === "" || no_exp === "" ) {
+                                                if (no_afi === "" || tip_cob === "" || ape_pat === "" || ape_mat === "" || nombre === "" || fec_nac === "" || sexo === "" || no_exp === "") {
                                                     alert("Tiene campos vacíos, verifique.");
                                                     return false;
                                                 }
@@ -332,7 +337,7 @@
                                                     alert("Fecha Nacimiento Incorrecta, verifique.");
                                                     return false;
                                                 }
-     
+
                                                 $.ajax({
                                                     type: form.attr('method'),
                                                     url: form.attr('action'),
@@ -360,7 +365,7 @@
                                                             $('#fec_nac').val("");
                                                             $('#sexo').val("");
                                                             $('#no_exp').val("");
-      
+
 
                                                             self.location = 'pacientes.jsp';
                                                         }
@@ -379,4 +384,5 @@
 
 
     </script>
+    </body>
 </html>

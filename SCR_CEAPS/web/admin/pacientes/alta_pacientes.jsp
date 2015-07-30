@@ -15,6 +15,9 @@
 <%java.text.DateFormat df2 = new java.text.SimpleDateFormat("yyyy-MM-dd"); %>
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%
+    /**
+     * alta de pacientes
+     */
     HttpSession sesion = request.getSession();
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
@@ -53,6 +56,7 @@
                                 <label for="tip_cob" class="col-sm-2 control-label">Tipo de Cobranza</label>
                                 <div class="col-sm-2">
                                     <select class="form-control" id="tip_cob" name="tip_cob" onchange="numAfiPA(this);">
+                                        <!--Tipo de cobranza de los pacientes-->
                                         <option>SP</option>
                                         <option>PR</option>
                                         <option>PA</option>
@@ -67,6 +71,7 @@
                                 </div>
                                 <label for="no_afi" class="col-sm-2 control-label">Número de Afiliación</label>
                                 <div class="col-sm-4">
+                                    <!-- Número de afiliacion -->
                                     <input type="text" class="form-control" id="no_afi" name="no_afi" onkeypress="return isNumberKey(event)" placeholder=""  value="" required/>
                                 </div>
                             </div>
@@ -75,6 +80,7 @@
                             <div class="row">
                                 <label for="num_afil" class="col-sm-2 control-label">Número de Afiliados</label>
                                 <div class="col-sm-2">
+                                    <!-- Número de afiliados -->
                                     <input type="number" name="numAfiliados" id="numAfiliados" class="form-control" required="" />
                                 </div>
                                 <div class="col-sm-2">
@@ -92,6 +98,9 @@
                                     numAfiliados = 0;
                                 }
                                 if (numAfiliados > 0) {
+                                    /**
+                                     * Muesta los datos de los afiliados
+                                     */
                             %>
                             <div class="row">
                                 <label for="no_afi" class="col-sm-2 control-label">Número de Afiliación</label>
@@ -109,6 +118,10 @@
                             <%
                                 }
                                 for (int i = 1; i <= numAfiliados; i++) {
+                                    /**
+                                     * Número de afiliados, captura de cada uno
+                                     * de ellos
+                                     */
                             %>
                             <h3>Afiliado <%=i%></h3>
                             <div class="row">
@@ -158,7 +171,7 @@
                             <hr />
 
                             <%
-                                  } 
+                                }
                                 if (numAfiliados > 0) {
                             %>
 
@@ -199,8 +212,8 @@
                                             now.format('dddd');
                                             //alert(now);
                                             //var tipo = "";
-                                            if(tipo===""){
-                                                
+                                            if (tipo === "") {
+
                                             }
                                             if (document.getElementById('tip_cob').value === 'PR') {
                                                 tipo = 'PR';
@@ -215,6 +228,9 @@
                                                 document.getElementById('numAfiliados').value = 0;
                                                 document.getElementById('numAfiliados').readOnly = false;
                                             }
+                                            /**
+                                             * Genera npumero de afiliación para PA
+                                             */
                                             document.getElementById('no_afi').value = tipo + now.format('YYMMDDHHmmss');
                                             document.getElementById('no_afi').readOnly = true;
                                             if (document.getElementById('tip_cob').value === 'SP') {
@@ -229,6 +245,9 @@
 
                                         function tabular(e, obj)
                                         {
+                                            /**
+                                             * Siguiente objeto al enter
+                                             */
                                             tecla = (document.all) ? e.keyCode : e.which;
                                             if (tecla != 13)
                                                 return;

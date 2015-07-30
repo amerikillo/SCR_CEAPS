@@ -49,8 +49,7 @@
     <head><title></title></head>
     <body>
         <img src="../imagenes/GNKL_Small.JPG" width="100" alt="Lgo">
-        <%  
-        ConectionDB con = new ConectionDB();
+        <%            ConectionDB con = new ConectionDB();
             Connection conn;
             con.conectar();
             conn = con.getConn();
@@ -85,14 +84,14 @@
                     System.out.println("ErrorRuta1->" + ex);
                     reportfile = new File("/home/linux9/NetBeansProjects/SCR_MEDALFA/SCR_MEDALFA/web/reportes/RecetaFarm.jasper");
                 }
-                String tip_cob = "",tip_cons="";
+                String tip_cob = "", tip_cons = "";
                 try {
                     ResultSet rs = con.consulta("select tip_cob,tip_cons from recetas where fol_rec='" + Folio + "' and cant_sur!=0 GROUP BY fol_rec");
                     if (rs.next()) {
                         tip_cob = rs.getString(1);
-                        tip_cons=rs.getString(2);
+                        tip_cons = rs.getString(2);
                     }
-                    System.out.println("TIP-COB->"+tip_cob+" TIP-CONS->"+tip_cons);
+                    System.out.println("TIP-COB->" + tip_cob + " TIP-CONS->" + tip_cons);
                 } catch (Exception ex) {
                     System.out.println("Error al buscar" + ex);
                 }
@@ -117,18 +116,18 @@
                     parameter.put("PA", "");
                     parameter.put("PR", "X");
                 }
-                if(tip_cons.equals("Consulta Externa")){
-                    parameter.put("CEX","X");
-                    parameter.put("URG","");
-                    parameter.put("HOS","");
-                }else if(tip_cons.equals("Urgencias")){
-                    parameter.put("CEX","");
-                    parameter.put("URG","X");
-                    parameter.put("HOS","");
-                }else if(tip_cons.equals("Hospitalizacion")){
-                    parameter.put("CEX","");
-                    parameter.put("URG","");
-                    parameter.put("HOS","X");
+                if (tip_cons.equals("Consulta Externa")) {
+                    parameter.put("CEX", "X");
+                    parameter.put("URG", "");
+                    parameter.put("HOS", "");
+                } else if (tip_cons.equals("Urgencias")) {
+                    parameter.put("CEX", "");
+                    parameter.put("URG", "X");
+                    parameter.put("HOS", "");
+                } else if (tip_cons.equals("Hospitalizacion")) {
+                    parameter.put("CEX", "");
+                    parameter.put("URG", "");
+                    parameter.put("HOS", "X");
                 }
                 JasperPrint jasperPrint = JasperFillManager.fillReport(reportfile.getPath(), parameter, conn);
 

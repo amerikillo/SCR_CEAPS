@@ -15,6 +15,9 @@
 <%java.text.DateFormat df2 = new java.text.SimpleDateFormat("yyyy-MM-dd"); %>
 <%java.text.DateFormat df3 = new java.text.SimpleDateFormat("dd/MM/yyyy"); %>
 <%
+    /**
+     * Alta de médicos
+     */
     HttpSession sesion = request.getSession();
     DecimalFormat formatter = new DecimalFormat("#,###,###");
     DecimalFormat formatter2 = new DecimalFormat("#,###,###.##");
@@ -45,7 +48,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        
+
         <%@include file="../../jspf/mainMenu.jspf" %> 
         <div class="container-fluid">
             <div class="container">
@@ -164,6 +167,9 @@
 
         <script>
                                         function generarRFC() {
+                                            /**
+                                             * Genera el RFC
+                                             */
                                             var apePat = $('#ape_pat').val();
                                             var apeMat = $('#ape_mat').val();
                                             var nombres = $('#nombre').val();
@@ -181,6 +187,9 @@
                                             }
                                         }
                                         function generarUserPass() {
+                                            /**
+                                             * Genera usuario y contraseñas
+                                             */
                                             var apePat = $('#ape_pat').val();
                                             var apeMat = $('#ape_mat').val();
                                             var nombres = $('#nombre').val();
@@ -199,6 +208,9 @@
                                         }
                                         function tabular(e, obj)
                                         {
+                                            /**
+                                             * Siguiente objeto
+                                             */
                                             tecla = (document.all) ? e.keyCode : e.which;
                                             if (tecla != 13)
                                                 return;
@@ -220,6 +232,9 @@
 
                                         otro = 0;
                                         function LP_data() {
+                                            /**
+                                             * Sólo números
+                                             */
                                             var key = window.event.keyCode;//codigo de tecla. 
                                             if (key < 48 || key > 57) {//si no es numero 
                                                 window.event.keyCode = 0;//anula la entrada de texto. 
@@ -246,6 +261,9 @@
 
                                         function isNumberKey(evt)
                                         {
+                                            /**
+                                             * Sólo números
+                                             */
                                             var charCode = (evt.which) ? evt.which : event.keyCode
                                             if (charCode > 31 && (charCode < 48 || charCode > 57))
                                                 return false;
@@ -255,6 +273,9 @@
 
                                         function upperCase(x)
                                         {
+                                            /**
+                                             * Mayúsculas
+                                             */
                                             var y = document.getElementById(x).value;
                                             document.getElementById(x).value = y.toUpperCase();
                                             document.getElementById("mySpan").value = y.toUpperCase();
@@ -264,12 +285,18 @@
 
 
 
-                                        $(document).ready(function () {
-                                            $('#formulario_pacientes').submit(function () {
+                                        $(document).ready(function() {
+                                            $('#formulario_pacientes').submit(function() {
+                                                /**
+                                                 * No se ejecute el form
+                                                 */
                                                 //alert("Ingresó");
                                                 return false;
                                             });
-                                            $('#Guardar').click(function () {
+                                            $('#Guardar').click(function() {
+                                                /**
+                                                 * Para darlo de alta
+                                                 */
                                                 var RegExPattern = /^\d{1,2}\/\d{1,2}\/\d{4,4}$/;
 
                                                 var ape_pat = $('#ape_pat').val();
@@ -292,7 +319,7 @@
                                                 $.ajax({
                                                     url: form.attr('action'),
                                                     data: {que: "F", iniRec: folIni, finRec: folFin},
-                                                    success: function (data) {
+                                                    success: function(data) {
                                                         var json = JSON.parse(data);
                                                         if (json[0].pasa === "1") {
                                                             alert(json[0].msg);
@@ -302,14 +329,17 @@
                                                                 type: form.attr('method'),
                                                                 url: form.attr('action'),
                                                                 data: form.serialize(),
-                                                                success: function (data) {
+                                                                success: function(data) {
                                                                     devuelveFolio(data);
                                                                 },
-                                                                error: function () {
+                                                                error: function() {
                                                                     alert("Ha ocurrido un error");
                                                                 }
                                                             });
 
+                                                            /**
+                                                             * Devuelve información el folio insertado
+                                                             */
                                                             function devuelveFolio(data) {
                                                                 var json = JSON.parse(data);
                                                                 for (var i = 0; i < json.length; i++) {
@@ -328,12 +358,12 @@
                                                             }
                                                         }
                                                     },
-                                                    error: function () {
+                                                    error: function() {
                                                         alert("Ha ocurrido un error");
                                                     }
                                                 });
                                             });
-                                            $('#Regresar').click(function () {
+                                            $('#Regresar').click(function() {
                                                 self.location = 'medico.jsp';
                                             });
 
